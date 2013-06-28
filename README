@@ -1,8 +1,6 @@
 CyniChat
 ========
 
-Not quite sure what to say about this now. It is forked from SimpleChatChannels, but aside from that, there's not much else in common with it. It is a chat channel plugin and it is open source, but it is being built anew now.
-
 Current Progress
 ----------------
 
@@ -11,10 +9,10 @@ At the moment, the plugin is in its' planning stage for the most part. I have ad
 To Do
 -----
 
--Add Permissions
--Add Methods for all commands
--Add in Player configuration files
--Add in Channel configuration files
+-Flesh out the permission planning
+-Add Methods for the majority of the remaining commands
+-Add in intra-player chatting
+-Allow for channels to be created and destroyed
 
 Note
 ----
