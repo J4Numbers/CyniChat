@@ -15,16 +15,29 @@ public class MasterCommand implements CommandExecutor {
 		this.plugin = plugin;
 	}
 	
+	/**
+	 * Wrap a string in necessary tags
+	 * @param option : This is what we're wrapping
+	 * @return the new string
+	 */
 	public static String necessary( String option ) {
 		String coloured = ChatColor.DARK_AQUA+"<"+option+">"+ChatColor.WHITE;
 		return coloured;
 	}
 	
+	/**
+	 * Wrap a string in optional tags
+	 * @param option : This is what we're wrapping
+	 * @return the new string
+	 */
 	public static String optional( String option ) {
 		String coloured = ChatColor.GRAY+"["+option+"]"+ChatColor.WHITE;
 		return coloured;
 	}
 	
+	/**
+	 * Iterate through all potential commands to allow a player to execute commands
+	 */
 	public boolean onCommand(CommandSender player, Command comm, String Label, String[] args) {
 		if ( CyniChat.debug == true ) {
 			CyniChat.printDebug(player.getName() + " -> " + comm.getLabel() + " -> " + Label + " -> " + args[0].toString() + " -> " + args[1].toString());

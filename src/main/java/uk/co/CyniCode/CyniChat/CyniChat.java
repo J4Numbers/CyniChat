@@ -1,11 +1,5 @@
 package uk.co.CyniCode.CyniChat;
 
-/*import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.List;
-import java.util.Properties;*/
 import java.util.HashMap;
 import java.util.logging.Logger;
 
@@ -18,14 +12,14 @@ import uk.co.CyniCode.CyniChat.Chatting.UserDetails;
 import uk.co.CyniCode.CyniChat.Command.MasterCommand;
 
 /**
- * Base class for EyeSpy. Main parts are the onEnable(), onDisable(), and the print areas at the moment.
+ * Base class for CyniChat. Main parts are the onEnable(), onDisable(), and the print areas at the moment.
  * @author Matthew Ball
  *
  */
 public class CyniChat extends JavaPlugin{
 	
 	public CyniChat plugin;
-	public Logger log = Logger.getLogger("Minecraft");
+	public Logger log = getLogger();
 	
 	public static String version;
 	public static String name;
@@ -45,8 +39,6 @@ public class CyniChat extends JavaPlugin{
 	public static HashMap<String, Channel> channels;
 	public static int counter;
 	
-	/*public static Properties props = new Properties();*/
-	
 	/**
 	 * This is the onEnable class for when the plugin starts up. Basic checks are run for the version, name and information of the plugin, then startup occurs.
 	 */
@@ -63,24 +55,6 @@ public class CyniChat extends JavaPlugin{
         PluginManager pm = getServer().getPluginManager();
         getConfig().options().copyDefaults(true);
         saveConfig();
-        
-        /*Load in the properties for the IRC channels and store them in the respective file.
-        props.setProperty("#mine", "Global");
-        props.setProperty("#dev", "Dev");
-        props.setProperty("#help", "Support");
-        props.setProperty("#mods", "Mods");
-        props.setProperty("#new", "New");
-        props.setProperty("#trade", "Trade");
-        try {
-			props.store(new FileOutputStream("chan.properties"), null);
-			printInfo("Properties stored.");
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} */
         
         //Collect config data
         def_chan = getConfig().getString("CyniChat.channels.default");

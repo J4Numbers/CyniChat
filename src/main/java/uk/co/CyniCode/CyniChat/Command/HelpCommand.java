@@ -5,6 +5,11 @@ import org.bukkit.command.CommandSender;
 
 public class HelpCommand {
 	
+	/**
+	 * Return the general help screen
+	 * @param player : The player we're sending stuff to
+	 * @return true when completed
+	 */
 	public static boolean info( CommandSender player ) {
 		player.sendMessage("===============CyniChat===============");
 		player.sendMessage("");
@@ -23,6 +28,11 @@ public class HelpCommand {
 		return true;
 	}
 	
+	/**
+	 * If a player is an admin, this will be echoed
+	 * @param player : This is who we're sending to
+	 * @return true when completed
+	 */
 	public static boolean admin( CommandSender player ) {
 		player.sendMessage("===============CyniChat===============");
 		player.sendMessage("");
@@ -32,6 +42,11 @@ public class HelpCommand {
 		return true;
 	}
 	
+	/**
+	 * If the player is a mod, this will be shown
+	 * @param player : This is who we're sending to
+	 * @return true when complete
+	 */
 	public static boolean mods( CommandSender player ) {
 		player.sendMessage("===============CyniChat===============");
 		player.sendMessage("");
@@ -44,6 +59,11 @@ public class HelpCommand {
 		return true;
 	}
 	
+	/**
+	 * Return the channel commands
+	 * @param player : The player we're sending to
+	 * @return true when complete
+	 */
 	public static boolean channels( CommandSender player ) {
 		player.sendMessage("===============CyniChat===============");
 		player.sendMessage("");
@@ -53,6 +73,11 @@ public class HelpCommand {
 		return true;
 	}
 	
+	/**
+	 * Return the user commands
+	 * @param player : The player we're sending to
+	 * @return true when complete
+	 */
 	public static boolean users( CommandSender player ) {
 		player.sendMessage("===============CyniChat===============");
 		player.sendMessage("");
