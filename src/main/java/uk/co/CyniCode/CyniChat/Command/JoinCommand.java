@@ -7,6 +7,13 @@ import uk.co.CyniCode.CyniChat.Channel.Channel;
 
 public class JoinCommand {
 	
+	/**
+	 * When a player joins a channel, this is ran. If the channel is non-existant, the the player is notified.
+	 * @param player : We need this to alter the players UserDetails file
+	 * @param channel : We need this to check the password and stuffs
+	 * @param pass : For use in comparison
+	 * @return true when complete
+	 */
 	public static boolean join( CommandSender player, String channel, String pass ) {
 		if ( CyniChat.channels.get(channel) != null ) {
 			Channel NewChan = CyniChat.channels.get(channel);
@@ -18,6 +25,11 @@ public class JoinCommand {
 		}
 	}
 	
+	/**
+	 * Return information on this specific command
+	 * @param player : This is the player we're sending to
+	 * @return true when complete, or false if the player doesn't have the permissions
+	 */
 	public static boolean info( CommandSender player ) {
 		if ( player.hasPermission("cynichat.basic.join.info") ) {
 			player.sendMessage("Type /cyn join "+MasterCommand.necessary("channel")+" "+MasterCommand.optional("password") );

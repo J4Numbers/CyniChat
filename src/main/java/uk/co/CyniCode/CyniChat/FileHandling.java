@@ -5,15 +5,12 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.HashMap;
-import java.util.List;
 
 import org.bukkit.craftbukkit.libs.com.google.gson.Gson;
 import org.bukkit.craftbukkit.libs.com.google.gson.JsonIOException;
 import org.bukkit.craftbukkit.libs.com.google.gson.JsonSyntaxException;
 import org.bukkit.craftbukkit.libs.com.google.gson.reflect.TypeToken;
-import org.bukkit.craftbukkit.libs.com.google.gson.stream.JsonWriter;
 import org.bukkit.entity.Player;
 
 import uk.co.CyniCode.CyniChat.Channel.Channel;
@@ -23,6 +20,11 @@ public class FileHandling {
 	
 	private static Gson gson = new Gson();
 	
+	/**
+	 * This is where we load the files. Given the path to a Json file, it will return the hashmap of all the details within.
+	 * @param file : This is the path to the file that is being read/loaded
+	 * @return HashMap of the details within the Json file
+	 */
 	private static HashMap<String, Object> loadDetailsFromJSON( File file ) {
 		
 		try {
@@ -44,6 +46,10 @@ public class FileHandling {
 		
 	}
 	
+	/**
+	 * This is for when the player leaves the server. The current UserDetails class for them is dumped into the Json file.
+	 * @param player : This is the player that we're editing.
+	 */
 	public static void dumpPlayerDetails( Player player ) {
 		char initial = player.getName().toLowerCase().charAt(0);
 		try {
@@ -60,6 +66,10 @@ public class FileHandling {
 		}
 	}
 	
+	/**
+	 * This is for when a player joins the server and needs all their details loading up.
+	 * @param player : This is the player that we're trying to find.
+	 */
 	public static void loadPlayerDetails( Player player ) {
 		
 		char initial = player.getName().toLowerCase().charAt(0);
@@ -93,6 +103,11 @@ public class FileHandling {
 		}
 	}
 	
+	/**
+	 * Here is where we consruct the HashMap from the UserDetails class.
+	 * @param user : This needs to belong to the correct user so that we can edit their file appropriately and store their data
+	 * @return HashMap of the new json config file.
+	 */
 	public static HashMap<String, Object> constructUserArray( UserDetails user ) {
 		HashMap<String, Object> newUser = new HashMap<String, Object>();
 		newUser.put("Name", user.getName() );
@@ -104,6 +119,10 @@ public class FileHandling {
 		return newUser;
 	}
 	
+	/**
+	 * Load up the channels folders. If there are no channel folders, create a global channel.
+	 * Assign them all to their HashMapped array in CyniChat root too.
+	 */
 	public static void loadChannels() {
 		try {
 			File dir = new File( CyniChat.self.getDataFolder(), "/channels/");
@@ -137,6 +156,11 @@ public class FileHandling {
 		}
 	}
 	
+	/**
+	 * This is the equivalent of the User construction array... except for channels of course
+	 * @param chan : This is the Channel object that we're messing with and taking the data from
+	 * @return HashMap of the channel data that we're going to be putting into the json
+	 */
 	public static HashMap<String, Object> constructChannelArray( Channel chan ) {
 		HashMap<String, Object> NewChannel = new HashMap<String, Object>();
 		NewChannel.put("ID", chan.getID() );
@@ -144,7 +168,7 @@ public class FileHandling {
 		NewChannel.put("Nickname", chan.getNick() );
 		NewChannel.put("Description", chan.getDesc() );
 		NewChannel.put("Password", chan.getPass() );
-		NewChannel.put("Protected", "false");
+		NewChannel.put("Protected", chan.isProtected().toString() );
 		NewChannel.put("Colour", chan.getColour().getChar() );
 		return NewChannel;
 	}
