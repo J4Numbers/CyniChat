@@ -1,2 +1,22 @@
+CyniChat
+========
 
-Contributions Welcome. :)
+Not quite sure what to say about this now. It is forked from SimpleChatChannels, but aside from that, there's not much else in common with it. It is a chat channel plugin and it is open source, but it is being built anew now.
+
+Current Progress
+----------------
+
+At the moment, the plugin is in its' planning stage for the most part. I have added the help documentation as a general reminder for me as to what commands to add at a later point in time, and the help does show up, so hooray for that.
+
+To Do
+-----
+
+-Add Permissions
+-Add Methods for all commands
+-Add in Player configuration files
+-Add in Channel configuration files
+
+Note
+----
+
+Aside from this, no further progress can be made until Bukkit 1.6 is created. This is due to potential changes in the formatting of chat messages and any chat events which may be relied upon.

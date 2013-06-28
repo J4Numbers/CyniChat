@@ -1,0 +1,6 @@
+CyniChat:
+  channels:
+    default: "global"
+  other:
+    debug: "false"
+    log-to-file: "false"
