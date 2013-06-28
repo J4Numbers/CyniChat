@@ -1,0 +1,95 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>uk.co.cynicode</groupId>
+  <artifactId>CyniChat</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>CyniChat</name>
+  <description>The alpha stages of the CyniChat Minecraft plugin. As designed by Cynical.</description>
+  
+  <repositories>
+    <repository>
+          <id>vault-repo</id>
+          <url>http://ci.herocraftonline.com/plugin/repository/everything</url>
+    </repository>
+    <repository>
+          <id>dev-repo</id>
+          <url>http://dev.escapecraft.com/maven</url>
+    </repository>
+        <!-- Bukkit can be found at the following repository -->
+    <repository>
+          <id>bukkit-repo</id>
+          <url>http://repo.bukkit.org/content/groups/public/</url>
+    </repository>
+  </repositories>
+  
+  <pluginRepositories>
+  </pluginRepositories>
+  
+  <dependencies>
+      <!-- Dependency information -->
+      <dependency>
+          <groupId>org.bukkit</groupId>
+          <artifactId>craftbukkit</artifactId>
+          <version>1.5.2-R1.0</version>
+      </dependency>
+      <dependency>
+          <groupId>net.milkbowl.vault</groupId>
+          <artifactId>Vault</artifactId>
+          <version>1.2.23-SNAPSHOT</version>
+          <type>jar</type>
+      </dependency> 
+      <dependency>
+          <groupId>org.bukkit</groupId>
+          <artifactId>bukkit</artifactId>
+          <!-- Bukkit API Version, change if nessesary -->
+          <version>1.5.2-R1.0</version>
+      </dependency>
+  </dependencies>
+    
+  <distributionManagement>
+   <!--<repository>
+     <id>cyn-repo</id>
+     <name>cynicode.co.uk Releases</name>
+     <url>scp://maven.cynicode.co.uk</url>
+   </repository> -->
+   <repository>
+     <id>lin-repo</id>
+     <name>linux machine Releases</name>
+     <url>scp://192.168.137.234/home/m477h3w1012/.m2/repositories/</url>
+   </repository>
+   <snapshotRepository>
+     <id>lin-repo-snap</id>
+     <name>linux machine Snapshots</name>
+     <url>scp://192.168.137.234/home/m477h3w1012/.m2/repositories/</url>
+   </snapshotRepository>
+   <!-- <snapshotRepository>
+     <id>cyn-repo-snap</id>
+     <name>cynicode.co.uk Snapshots</name>
+     <url>scp://maven.cynicode.co.uk</url>
+   </snapshotRepository> -->
+  </distributionManagement>
+  
+  <build>
+    <extensions>
+     <extension>
+       <groupId>org.apache.maven.wagon</groupId>
+       <artifactId>wagon-ssh</artifactId>
+       <version>2.2</version>
+     </extension>
+    </extensions>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-jar-plugin</artifactId>
+          <groupId>org.apache.maven.plugins</groupId>
+          <version>2.4</version>
+        </plugin>
+        <plugin>
+          <artifactId>plexus-archiver</artifactId>
+          <groupId>org.codehaus.plexus</groupId>
+          <version>2.2</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+</project>
