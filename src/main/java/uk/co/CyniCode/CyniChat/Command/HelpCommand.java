@@ -6,6 +6,35 @@ import org.bukkit.command.CommandSender;
 public class HelpCommand {
 	
 	/**
+	 * Check the other augments in the help command. But only focus on the key
+	 * @param player : The player to display this to
+	 * @param key : The keyword we're working off
+	 * @return true when complete
+	 */
+	public static boolean Command( CommandSender player, String key ) {
+		if ( key != null ) {
+			if ( key.equalsIgnoreCase("channels") ) {
+				HelpCommand.channels( player );
+				return true;
+			}
+			if ( key.equalsIgnoreCase("users") ) {
+				HelpCommand.users( player );
+				return true;
+			}
+			if ( key.equalsIgnoreCase("admin") ) {
+				HelpCommand.admin( player );
+				return true;
+			}
+			if ( key.equalsIgnoreCase("mods") ) {
+				HelpCommand.mods( player );
+				return true;
+			}
+		}
+		HelpCommand.info( player );
+		return true;
+	}
+	
+	/**
 	 * Return the general help screen
 	 * @param player : The player we're sending stuff to
 	 * @return true when completed
@@ -82,7 +111,7 @@ public class HelpCommand {
 		player.sendMessage("===============CyniChat===============");
 		player.sendMessage("");
 		player.sendMessage("/cyn who -> List all people in the current channel");
-		player.sendMessage("/cyn ignore "+MasterCommand.necessary("player")+" -> Ignore one player across all channels");
+		player.sendMessage("/cyn mute "+MasterCommand.necessary("player")+" -> Ignore one player across all channels");
 		player.sendMessage("/cyn tell "+MasterCommand.necessary("player")+" "+MasterCommand.necessary("message")+" -> Send a message to one person");
 		return true;
 	}
