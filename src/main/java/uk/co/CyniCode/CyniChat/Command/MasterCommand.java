@@ -39,36 +39,13 @@ public class MasterCommand implements CommandExecutor {
 	 * Iterate through all potential commands to allow a player to execute commands
 	 */
 	public boolean onCommand(CommandSender player, Command comm, String Label, String[] args) {
-		if ( CyniChat.debug == true ) {
-			CyniChat.printDebug(player.getName() + " -> " + comm.getLabel() + " -> " + Label + " -> " + args[0].toString() + " -> " + args[1].toString());
-		}
+		//CyniChat.printDebug(player.getName() + " -> " + comm.getLabel() + " -> " + Label + " -> " + args[0].toString() + " -> " + args[1].toString());
 		if ( args.length == 0 ) {
 			HelpCommand.info( player );
 			return true;
 		}
 		if ( args[0].equalsIgnoreCase("help") ) {
-			if ( args.length == 1 ) {
-				HelpCommand.info( player );
-				return true;
-			}
-			if ( args[1].equalsIgnoreCase("channels") ) {
-				HelpCommand.channels( player );
-				return true;
-			}
-			if ( args[1].equalsIgnoreCase("users") ) {
-				HelpCommand.users( player );
-				return true;
-			}
-			if ( args[1].equalsIgnoreCase("admin") ) {
-				HelpCommand.admin( player );
-				return true;
-			}
-			if ( args[1].equalsIgnoreCase("mods") ) {
-				HelpCommand.mods( player );
-				return true;
-			}
-			HelpCommand.info( player );
-			return true;
+			HelpCommand.Command( player, args[1] );
 		}
 		if ( args[0].equalsIgnoreCase("join") ) {
 			if ( args.length < 2 || args.length > 3 ) {
@@ -91,6 +68,54 @@ public class MasterCommand implements CommandExecutor {
 			} else {
 				LeaveCommand.leave( player, args[1] );
 			}
+		}
+		if ( args[0].equalsIgnoreCase("ban") ) {
+			
+		}
+		if ( args[0].equalsIgnoreCase("unban") ) {
+			
+		}
+		if ( args[0].equalsIgnoreCase("mute") ) {
+			
+		}
+		if ( args[0].equalsIgnoreCase("unmute") ) {
+			
+		}
+		if ( args[0].equalsIgnoreCase("ignore") ) {
+			
+		}
+		if ( args[0].equalsIgnoreCase("hear") ) {
+			
+		}
+		if ( args[0].equalsIgnoreCase("gmute") ) {
+			
+		}
+		if ( args[0].equalsIgnoreCase("gunmute") ) {
+			
+		}
+		if ( args[0].equalsIgnoreCase("create") ) {
+			
+		}
+		if ( args[0].equalsIgnoreCase("remove") ) {
+			
+		}
+		if ( args[0].equalsIgnoreCase("reload") ) {
+			
+		}
+		if ( args[0].equalsIgnoreCase("promote") ) {
+			
+		}
+		if ( args[0].equalsIgnoreCase("demote") ) {
+			
+		}
+		if ( args[0].equalsIgnoreCase("list") ) {
+			
+		}
+		if ( args[0].equalsIgnoreCase("tell") ) {
+			
+		}
+		if ( args[0].equalsIgnoreCase("who") ) {
+			
 		}
 		return true;
 	}

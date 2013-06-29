@@ -16,6 +16,10 @@ import org.bukkit.entity.Player;
 import uk.co.CyniCode.CyniChat.Channel.Channel;
 import uk.co.CyniCode.CyniChat.Chatting.UserDetails;
 
+/**
+ * This is the file handler class. In here are the methods for the creation and loading of files.
+ * @author Matthew Ball
+ */
 public class FileHandling {
 	
 	private static Gson gson = new Gson();
@@ -113,9 +117,11 @@ public class FileHandling {
 		newUser.put("Name", user.getName() );
 		newUser.put("CurrentChannel", user.getCurrentChannel() );
 		newUser.put("Silenced", user.getSilenced().toString() );
+		newUser.put("CanIgnore", user.canIgnore().toString() );
 		newUser.put("JoinedChannels", user.getAllChannels() );
 		newUser.put("BannedChannels", user.getBannedChannels() );
 		newUser.put("MutedChannels", user.getMutedChannels() );
+		newUser.put("MutedPlayers", user.getIgnoring() );
 		return newUser;
 	}
 	

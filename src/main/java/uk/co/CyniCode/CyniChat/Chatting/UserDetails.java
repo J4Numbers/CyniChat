@@ -3,19 +3,151 @@ package uk.co.CyniCode.CyniChat.Chatting;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import uk.co.CyniCode.CyniChat.CyniChat;
 import uk.co.CyniCode.CyniChat.Channel.Channel;
 
+/**
+ * UserDetails class and object which stores all of the relevant information for each and every player
+ * @author Matthew Ball
+ *
+ */
 public class UserDetails {
 	
 	private Player player;
 	private String CurrentChannel;
 	private Boolean Silenced = false;
+	private Boolean CanIgnore = true;
 	private ArrayList<String> JoinedChannels = new ArrayList<String>();
 	private ArrayList<String> BannedFrom = new ArrayList<String>();
 	private ArrayList<String> MutedIn = new ArrayList<String>();
+	private ArrayList<String> Ignoring = new ArrayList<String>();
+	
+	/**
+	 * Adds an ignored player to the list
+	 * @param Ignorer : The player we're going to ignore 
+	 * @return true when complete or false with insufficient perms.
+	 */
+	public boolean addIgnore( Player Ignorer ) {
+		if ( player.hasPermission("cynichat.basic.ignore") ) {
+			if ( CyniChat.user.get( Ignorer.getName() ).canIgnore() ) {
+				if ( !Ignoring.contains( Ignorer.getName() ) ) {
+					Ignoring.add( Ignorer.getName() );
+					player.sendMessage("You have muted the player");
+					return true;
+				} else {
+					player.sendMessage("You are already ignoring this player");
+					return true;
+				}
+			}
+			player.sendMessage("You cannot ignore this player.");
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Remove a player which is being ignored
+	 * @param Ignorer : this is the player we're going to try and listen to again
+	 * @return true when complete or false with insufficient perms
+	 */
+	public boolean remIgnore( Player Ignorer ) {
+		if ( player.hasPermission("cynichat.basic.ignore") ) {
+			if ( Ignoring.contains( Ignorer.getName() ) ) {
+				Ignoring.remove( Ignorer.getName() );
+				player.sendMessage("You have unmuted the player");
+				return true;
+			} else {
+				player.sendMessage("You are not ignoring this player");
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Add a muted channel to a player
+	 * @param muter : This is the person trying to mute the player
+	 * @param channel : This is the channel the player is muted in
+	 * @return true when complete or false if no permission
+	 */
+	public boolean addMute( CommandSender muter, Channel channel ) {
+		if ( muter.hasPermission("cynichat.mod.mute."+channel.getName()) ) {
+			if ( !MutedIn.contains( channel.getName() ) ) {
+				MutedIn.add( channel.getName() );
+				muter.sendMessage("Player has been muted");
+				return true;
+			}
+			muter.sendMessage("Player was already muted");
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Removes a muted channel from a player
+	 * @param unmuter : this is the player that is unmuting someone
+	 * @param channel : This is the channel the player can now talk in again
+	 * @return true when complete or false with lack of perms
+	 */
+	public boolean remMute( CommandSender unmuter, Channel channel ) {
+		if ( unmuter.hasPermission("cynichat.mod.mute."+channel.getName()) ) {
+			if ( MutedIn.contains( channel.getName() ) ) {
+				MutedIn.remove( channel.getName() );
+				unmuter.sendMessage("Player has been unmuted");
+				return true;
+			}
+			unmuter.sendMessage("Player was already unmuted");
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Add a new ban to the player as long as the banner has the correct permission
+	 * @param banner : This is the person trying to enforce the ban
+	 * @param channel : This is the channel the player is being banned from
+	 * @return true when completed or false with insufficient permissions
+	 */
+	public boolean newBan( CommandSender banner, Channel channel ) {
+		if ( banner.hasPermission("cynichat.mod.ban."+channel.getName()) ) {
+			if ( !BannedFrom.contains( channel.getName() ) ) {
+				if ( JoinedChannels.contains( channel.getName() ) ) {
+					JoinedChannels.remove( channel.getName() );
+					if ( CurrentChannel.equals(channel.getName()) ) {
+						CurrentChannel = JoinedChannels.get(0);
+					}
+				}
+				BannedFrom.add( channel.getName() );
+				banner.sendMessage("Player has been banned.");
+				return true;
+			}
+			banner.sendMessage("Player is already banned.");
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Remove a ban from a player
+	 * @param unbanner : This is the player trying to unban someone
+	 * @param channel : This is the channel that they're being unbanned in
+	 * @return true when complete or false when permissions are not granted
+	 */
+	public boolean remBan( CommandSender unbanner, Channel channel ) {
+		if ( unbanner.hasPermission("cynichat.mod.ban."+channel.getName()) ) {
+			if ( BannedFrom.contains(channel.getName()) ) {
+				BannedFrom.remove( channel.getName() );
+				unbanner.sendMessage("The player has been unbanned.");
+			} else {
+				unbanner.sendMessage("This player was not banned.");
+			}
+			return true;
+		}
+		return false;
+	}
 	
 	/**
 	 * Start up a new UserDetails object for any new peeps
@@ -56,9 +188,11 @@ public class UserDetails {
 		this.player = joinPlayer;
 		this.CurrentChannel = details.get("CurrentChannel").toString().toLowerCase();
 		this.Silenced = loadCheck( details.get("Silenced") );
+		this.CanIgnore = loadCheck( details.get("CanIgnore") );
 		this.JoinedChannels = (ArrayList<String>) details.get("JoinedChannels");
 		this.BannedFrom = (ArrayList<String>) details.get("BannedChannels");
 		this.MutedIn = (ArrayList<String>) details.get("MutedChannels");
+		this.Ignoring = (ArrayList<String>) details.get("MutedPlayers");
 		return true;
 	}
 	
@@ -69,10 +203,12 @@ public class UserDetails {
 	public boolean printAll() {
 		CyniChat.printDebug("Name: "+ this.getName() );
 		CyniChat.printDebug("Silenced: "+ this.getSilenced().toString() );
+		CyniChat.printDebug("Can Ignore: "+ this.canIgnore().toString() );
 		CyniChat.printDebug("Current Channel: "+this.getCurrentChannel() );
 		CyniChat.printDebug("All Channels: "+ this.getAllVerboseChannels() );
 		CyniChat.printDebug("Banned Channels: "+ this.getBannedVerboseChannels() );
 		CyniChat.printDebug("Muted Channels: "+ this.getMutedVerboseChannels() );
+		CyniChat.printDebug("Muted Players: "+ this.getVerboseIgnoring() );
 		return true;
 	}
 	
@@ -223,5 +359,34 @@ public class UserDetails {
 			c = ", ";
 		}
 		return MuteChan;
+	}
+	
+	public Boolean canIgnore() {
+		return CanIgnore;
+	}
+	
+	/**
+	 * Return the players that are being ignored
+	 * @return Ignoring
+	 */
+	public ArrayList<String> getIgnoring() {
+		return Ignoring;
+	}
+	
+	/**
+	 * Return the strings of the Ignoring array
+	 * @return Ignoring Verbose
+	 */
+	public String getVerboseIgnoring() {
+		String ignore = "";
+		String c = "";
+		if ( Ignoring.isEmpty() ) {
+			return "-";
+		}
+		for ( int i=0; i<Ignoring.size(); i++ ) {
+			ignore += c + Ignoring.get(i);
+			c = ", ";
+		}
+		return ignore;
 	}
 }

@@ -6,6 +6,11 @@ import org.bukkit.ChatColor;
 
 import uk.co.CyniCode.CyniChat.CyniChat;
 
+/**
+ * The class which defines all the things for any channel created.
+ * @author Matthew Ball
+ *
+ */
 public class Channel {
 	
 	private int ID;
