@@ -26,20 +26,20 @@ import uk.co.CyniCode.CyniChat.Chatting.UserDetails;
 public class DataManager {
 	
 	//Create a gson parser, only look at fields tagged with @Expose
-	private Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+	private static Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
 	//List of loaded channels
-	private Map<String,Channel> channels = null;
+	private static Map<String,Channel> channels = null;
 	
-	private Map<String,UserDetails> loadedUsers = new HashMap<String, UserDetails>();//User data loaded from json 
+	private static Map<String,UserDetails> loadedUsers = new HashMap<String, UserDetails>();//User data loaded from json 
 	
-	private Map<String,UserDetails> onlineUsers = new HashMap<String, UserDetails>();//Users who are online
+	private static Map<String,UserDetails> onlineUsers = new HashMap<String, UserDetails>();//Users who are online
 	
 	/**
 	 * Loads the list of channels from a file 
 	 * @param file channel definition file
 	 */
-	public void loadChannelConfig(File file){
+	public static void loadChannelConfig(File file){
 		try {
 			file.createNewFile();
 			channels = gson.fromJson(new FileReader(file), new TypeToken<Map<String,Channel>>(){}.getType());
@@ -67,7 +67,7 @@ public class DataManager {
 	 * Save channel configuration to file
 	 * @param file
 	 */
-	public void saveChannelConfig(File file){
+	public static void saveChannelConfig(File file){
 		try {
 			gson.toJson(channels,new FileWriter(file));
 		} catch (JsonIOException e) {
@@ -83,7 +83,7 @@ public class DataManager {
 	 * Add a channel
 	 * @param channel
 	 */
-	public void addChannel(Channel channel) {
+	public static void addChannel(Channel channel) {
 		channels.put(channel.getName(), channel);
 	}
 
@@ -92,7 +92,7 @@ public class DataManager {
 	 * @param name
 	 * @return
 	 */
-	public Channel getChannel(String name){
+	public static Channel getChannel(String name){
 		return channels.get(name);
 	}
 	
@@ -101,7 +101,7 @@ public class DataManager {
 	 * Load user details from file
 	 * @param file
 	 */
-	public void loadUserDetails(File file){
+	public static void loadUserDetails(File file){
 		try {
 			file.createNewFile();
 			loadedUsers = gson.fromJson(new FileReader(file), new TypeToken<Map<String,UserDetails>>(){}.getType());
@@ -130,7 +130,7 @@ public class DataManager {
 	 * Save all user details to file 
 	 * @param file
 	 */
-	public void saveUserDetails(File file){
+	public static void saveUserDetails(File file){
 		try {
 			gson.toJson(loadedUsers,new FileWriter(file));
 		} catch (JsonIOException e) {
@@ -148,7 +148,7 @@ public class DataManager {
 	 * @param player
 	 * @return
 	 */
-	public UserDetails getDetails(String player){
+	public static UserDetails getDetails(String player){
 		String uName = player.toLowerCase();
 		UserDetails details = loadedUsers.get(uName);
 		if(details == null){
@@ -162,7 +162,7 @@ public class DataManager {
 	 * Bind the user details of a player to a player object
 	 * @param player
 	 */
-	public void bindPlayer(Player player){
+	public static void bindPlayer(Player player){
 		String playerName = player.getName().toLowerCase();
 		UserDetails details = getDetails(playerName);
 		details.bindPlayer(player);
@@ -173,7 +173,7 @@ public class DataManager {
 	 * Unbind a player from being online
 	 * @param player
 	 */
-	public void unbindPlayer(Player player){
+	public static void unbindPlayer(Player player){
 		onlineUsers.remove(player.getName().toLowerCase()).bindPlayer(null);
 	}
 	
@@ -182,7 +182,7 @@ public class DataManager {
 	 * @param player
 	 * @return
 	 */
-	public UserDetails getOnlineDetails(Player player){
+	public static UserDetails getOnlineDetails(Player player){
 		return onlineUsers.get(player.getName().toLowerCase());
 	}
 }
