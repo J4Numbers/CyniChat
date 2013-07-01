@@ -1,20 +1,16 @@
 package uk.co.CyniCode.CyniChat.Command;
 
-import java.util.Set;
-
 import org.bukkit.command.CommandSender;
 
-import uk.co.CyniCode.CyniChat.CyniChat;
-import uk.co.CyniCode.CyniChat.FileHandling;
-import uk.co.CyniCode.CyniChat.Channel.Channel;
-import uk.co.CyniCode.CyniChat.Chatting.UserDetails;
+import uk.co.CyniCode.CyniChat.DataManager;
 
 public class GeneralCommand {
 
 	public static boolean save( CommandSender player ) {
 		if ( player.hasPermission("cynichat.admin.save") ) {
 			
-			
+			DataManager.saveChannelConfig();
+			DataManager.saveUserDetails();
 			return true;
 		}
 		return false;
