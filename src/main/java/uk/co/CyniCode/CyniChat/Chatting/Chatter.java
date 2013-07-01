@@ -11,7 +11,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import uk.co.CyniCode.CyniChat.CyniChat;
-import uk.co.CyniCode.CyniChat.FileHandling;
+import uk.co.CyniCode.CyniChat.DataManager;
 
 public class Chatter implements Listener {
 	
@@ -25,7 +25,7 @@ public class Chatter implements Listener {
 	public static void joinEvent( PlayerJoinEvent event ) {
 		Player player = event.getPlayer();
 		CyniChat.printDebug("Player joined");
-		DataManager.
+		DataManager.bindPlayer(player);//Load player details into online users.
 	}
 	
 	/**
@@ -35,7 +35,7 @@ public class Chatter implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR)
 	public static void leaveEvent( PlayerQuitEvent event ) {
 		CyniChat.printDebug("Player Left");
-		FileHandling.dumpPlayerDetails( event.getPlayer() );
+		DataManager.unbindPlayer(event.getPlayer());
 	}
 	
 	/**
