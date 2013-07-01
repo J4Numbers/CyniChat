@@ -18,6 +18,8 @@ public class UserDetails {
 	
 	private Player player;
 	private String CurrentChannel;
+	private String LastMessage = null;
+	private Boolean afk = false;
 	private Boolean Silenced = false;
 	private Boolean CanIgnore = true;
 	private ArrayList<String> JoinedChannels = new ArrayList<String>();
@@ -30,11 +32,11 @@ public class UserDetails {
 	 * @param Ignorer : The player we're going to ignore 
 	 * @return true when complete or false with insufficient perms.
 	 */
-	public boolean addIgnore( Player Ignorer ) {
+	public boolean addIgnore( String Ignorer ) {
 		if ( player.hasPermission("cynichat.basic.ignore") ) {
-			if ( CyniChat.user.get( Ignorer.getName() ).canIgnore() ) {
-				if ( !Ignoring.contains( Ignorer.getName() ) ) {
-					Ignoring.add( Ignorer.getName() );
+			if ( CyniChat.user.get( Ignorer.toLowerCase() ).canIgnore() ) {
+				if ( !Ignoring.contains( Ignorer.toLowerCase() ) ) {
+					Ignoring.add( Ignorer.toLowerCase() );
 					player.sendMessage("You have muted the player");
 					return true;
 				} else {
@@ -53,10 +55,10 @@ public class UserDetails {
 	 * @param Ignorer : this is the player we're going to try and listen to again
 	 * @return true when complete or false with insufficient perms
 	 */
-	public boolean remIgnore( Player Ignorer ) {
+	public boolean remIgnore( String Ignorer ) {
 		if ( player.hasPermission("cynichat.basic.ignore") ) {
-			if ( Ignoring.contains( Ignorer.getName() ) ) {
-				Ignoring.remove( Ignorer.getName() );
+			if ( Ignoring.contains( Ignorer.toLowerCase() ) ) {
+				Ignoring.remove( Ignorer.toLowerCase() );
 				player.sendMessage("You have unmuted the player");
 				return true;
 			} else {
@@ -65,6 +67,52 @@ public class UserDetails {
 			}
 		}
 		return false;
+	}
+	
+	/**
+	 * Toggle the afk status
+	 * @return true when complete
+	 */
+	public boolean changeAfk() {
+		if ( afk == true ) {
+			this.afk = false;
+		} else {
+			this.afk = true;
+		} return true;
+	}
+	
+	/**
+	 * Change the latest sender of a msg
+	 * @param newPerson : This is the person who can now be /r'd
+	 * @return true when complete
+	 */
+	public boolean changeLatest( String newPerson ) {
+		this.LastMessage = newPerson;
+		return true;
+	}
+	
+	/**
+	 * Send a new /msg and alter the internals accordingly
+	 * @param receiver : This is the person receiving the message
+	 * @return true when complete
+	 */
+	public boolean newMsg( UserDetails receiver ) {
+		this.LastMessage = receiver.getName().toLowerCase();
+		receiver.changeLatest(this.getName());
+		return true;
+	}
+	
+	/**
+	 * Send a new /r and alter the other players Latest, just in case
+	 * @param receiver : The person to receive the message
+	 * @return true when complete
+	 */
+	public boolean newR( Player receiver ) {
+		if ( this.LastMessage != null ) {
+			LastMessage = receiver.getName().toLowerCase();
+			return true;
+		}
+		return true;
 	}
 	
 	/**
@@ -112,7 +160,7 @@ public class UserDetails {
 	 * @return true when completed or false with insufficient permissions
 	 */
 	public boolean newBan( CommandSender banner, Channel channel ) {
-		if ( banner.hasPermission("cynichat.mod.ban."+channel.getName()) ) {
+		if ( banner.hasPermission("cynichat.mod.ban."+channel.getName().toLowerCase() ) ) {
 			if ( !BannedFrom.contains( channel.getName() ) ) {
 				if ( JoinedChannels.contains( channel.getName() ) ) {
 					JoinedChannels.remove( channel.getName() );
@@ -137,13 +185,71 @@ public class UserDetails {
 	 * @return true when complete or false when permissions are not granted
 	 */
 	public boolean remBan( CommandSender unbanner, Channel channel ) {
-		if ( unbanner.hasPermission("cynichat.mod.ban."+channel.getName()) ) {
-			if ( BannedFrom.contains(channel.getName()) ) {
-				BannedFrom.remove( channel.getName() );
+		if ( unbanner.hasPermission("cynichat.mod.ban."+channel.getName().toLowerCase() ) ) {
+			if ( BannedFrom.contains(channel.getName().toLowerCase() ) ) {
+				BannedFrom.remove( channel.getName().toLowerCase() );
 				unbanner.sendMessage("The player has been unbanned.");
 			} else {
 				unbanner.sendMessage("This player was not banned.");
 			}
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * This kicks the player from the channel
+	 * @param kicker : The kicker of the player
+	 * @param channel : The channel the player is being kicked from
+	 * @return true when complete, false if the person doesn't have perms
+	 */
+	public boolean Kick( CommandSender kicker, Channel channel ) {
+		if ( kicker.hasPermission("cynichat.mod.kick."+channel.getName().toLowerCase() ) ) {
+			if ( JoinedChannels.contains( channel.getName().toLowerCase() ) ) {
+				JoinedChannels.remove( channel.getName().toLowerCase() );
+				if ( CurrentChannel.equals(channel.getName().toLowerCase() ) ) {
+					this.CurrentChannel = JoinedChannels.get(0);
+				}
+				kicker.sendMessage("Player has been kicked");
+				return true;
+			}
+			kicker.sendMessage("Player was not in the channel");
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Globally silences a player
+	 * @param silencer : this is the person silencing the player
+	 * @return true when complete, false with insufficient perms
+	 */
+	public boolean Silence( CommandSender silencer ) {
+		if ( silencer.hasPermission("cynichat.mod.silence") ) {
+			if ( this.Silenced == false ) {
+				this.Silenced = true;
+				silencer.sendMessage("Player has been muted");
+				return true;
+			}
+			silencer.sendMessage("Player is already muted");
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Globally unmutes a player
+	 * @param listener : This is the person who unmuted the player
+	 * @return true when complete, false with insufficient perms
+	 */
+	public boolean Listen( CommandSender listener ) {
+		if ( listener.hasPermission("cynichat.mod.listener") ) {
+			if ( this.Silenced == false ) {
+				this.Silenced = false;
+				listener.sendMessage("Player has been unmuted");
+				return true;
+			}
+			listener.sendMessage("Player is already unmuted");
 			return true;
 		}
 		return false;
@@ -279,11 +385,27 @@ public class UserDetails {
 	}
 	
 	/**
+	 * Return the player object
+	 * @return player
+	 */
+	public Player getPlayer() {
+		return player;
+	}
+	
+	/**
 	 * Return whether they are silenced or not
 	 * @return Silenced
 	 */
 	public Boolean getSilenced() {
 		return Silenced;
+	}
+	
+	/**
+	 * Return whether the player is afk or not
+	 * @return afk
+	 */
+	public Boolean getAfk() {
+		return afk;
 	}
 	
 	/**

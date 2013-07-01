@@ -13,7 +13,7 @@ public class LeaveCommand {
 	 */
 	public static boolean info( CommandSender player ) {
 		if ( player.hasPermission("cynichat.basic.leave.info") ) {
-			player.sendMessage("Type /cyn leave "+MasterCommand.necessary("channel") );
+			player.sendMessage("Type /cyn leave "+ChCommand.necessary("channel") );
 			return true;
 		}
 		return false;
