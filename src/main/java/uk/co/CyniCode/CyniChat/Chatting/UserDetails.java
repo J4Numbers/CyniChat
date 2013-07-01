@@ -1,7 +1,6 @@
 package uk.co.CyniCode.CyniChat.Chatting;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.command.CommandSender;
@@ -9,6 +8,7 @@ import org.bukkit.craftbukkit.libs.com.google.gson.annotations.Expose;
 import org.bukkit.entity.Player;
 
 import uk.co.CyniCode.CyniChat.CyniChat;
+import uk.co.CyniCode.CyniChat.DataManager;
 import uk.co.CyniCode.CyniChat.Channel.Channel;
 
 /**
@@ -43,7 +43,8 @@ public class UserDetails {
 	 */
 	public boolean addIgnore( String Ignorer ) {
 		if ( player.hasPermission("cynichat.basic.ignore") ) {
-			if ( CyniChat.user.get( Ignorer.toLowerCase() ).canIgnore() ) {
+			
+			if ( DataManager.getDetails(Ignorer.toLowerCase()).canIgnore() ) {
 				if ( !Ignoring.contains( Ignorer.toLowerCase() ) ) {
 					Ignoring.add( Ignorer.toLowerCase() );
 					player.sendMessage("You have muted the player");
@@ -293,25 +294,7 @@ public class UserDetails {
 			return false;
 		}
 	}
-	
-	/**
-	 * Load in the details that we've been given from the json player files
-	 * @param details : HashMap of the player config
-	 * @param joinPlayer : The player who has just joined
-	 * @return true for when we've loaded all of these up
-	 */
-	public boolean load( HashMap<String, Object> details, Player joinPlayer ) {
-		this.player = joinPlayer;
-		this.CurrentChannel = details.get("CurrentChannel").toString().toLowerCase();
-		this.Silenced = loadCheck( details.get("Silenced") );
-		this.CanIgnore = loadCheck( details.get("CanIgnore") );
-		this.JoinedChannels = (ArrayList<String>) details.get("JoinedChannels");
-		this.BannedFrom = (ArrayList<String>) details.get("BannedChannels");
-		this.MutedIn = (ArrayList<String>) details.get("MutedChannels");
-		this.Ignoring = (ArrayList<String>) details.get("MutedPlayers");
-		return true;
-	}
-	
+		
 	/**
 	 * Iterate through all the values we store in here and return them as debug
 	 * @return ALL THE DEBUG

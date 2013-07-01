@@ -1,15 +1,13 @@
 package uk.co.CyniCode.CyniChat;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.logging.Logger;
 
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import uk.co.CyniCode.CyniChat.Channel.Channel;
+
 import uk.co.CyniCode.CyniChat.Chatting.Chatter;
-import uk.co.CyniCode.CyniChat.Chatting.UserDetails;
 import uk.co.CyniCode.CyniChat.Command.AfkCommand;
 import uk.co.CyniCode.CyniChat.Command.ChCommand;
 import uk.co.CyniCode.CyniChat.Command.MeCommand;
@@ -76,8 +74,12 @@ public class CyniChat extends JavaPlugin{
         this.getCommand("msg").setExecutor(new MsgCommand() );
         this.getCommand("r").setExecutor(new RCommand() );
         counter = 1;
-        DataManager.loadChannelConfig(new File(getDataFolder(),"channels.json"));
-        DataManager.loadUserDetails(new File(getDataFolder(),"players.json"));
+        
+        DataManager.setChannelFile(new File(getDataFolder(),"channels.json"));
+        DataManager.loadChannelConfig();
+        
+        DataManager.setUserFile(new File(getDataFolder(),"players.json"));
+        DataManager.loadUserDetails();
         
         printInfo("CyniChat has been enabled!");
         
@@ -90,8 +92,8 @@ public class CyniChat extends JavaPlugin{
 	 */
     @Override
     public void onDisable() {
-    	DataManager.saveChannelConfig(new File(getDataFolder(),"channels.json"));
-    	DataManager.saveUserDetails(new File(getDataFolder(),"players.json"));
+    	DataManager.saveChannelConfig();
+    	DataManager.saveUserDetails();
     	printInfo("CyniChat has been disabled!");
     }
     
