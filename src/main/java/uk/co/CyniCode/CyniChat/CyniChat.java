@@ -39,9 +39,7 @@ public class CyniChat extends JavaPlugin{
 	public static String prefix;
 	public static String def_chan;
 	public static boolean debug;
-	
-	public static HashMap<String, UserDetails> user;
-	public static HashMap<String, Channel> channels;
+
 	public static int counter;
 	
 	/**
@@ -77,8 +75,6 @@ public class CyniChat extends JavaPlugin{
         this.getCommand("me").setExecutor(new MeCommand() );
         this.getCommand("msg").setExecutor(new MsgCommand() );
         this.getCommand("r").setExecutor(new RCommand() );
-        user = new HashMap<String, UserDetails>();
-        channels = new HashMap<String, Channel>();
         counter = 1;
         DataManager.loadChannelConfig(new File(getDataFolder(),"channels.json"));
         DataManager.loadUserDetails(new File(getDataFolder(),"players.json"));
