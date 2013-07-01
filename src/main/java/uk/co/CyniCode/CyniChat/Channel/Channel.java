@@ -3,6 +3,7 @@ package uk.co.CyniCode.CyniChat.Channel;
 import java.util.HashMap;
 
 import org.bukkit.ChatColor;
+import org.bukkit.craftbukkit.libs.com.google.gson.annotations.Expose;
 
 import uk.co.CyniCode.CyniChat.CyniChat;
 
@@ -13,12 +14,22 @@ import uk.co.CyniCode.CyniChat.CyniChat;
  */
 public class Channel {
 	
-	private int ID;
+	/**
+	 * Expose all data to json for saving
+	 */
+	@Expose
+	private int ID;//Is this really needed
+	@Expose
 	private String name;
+	@Expose
 	private String nick;
+	@Expose
 	private String desc;
+	@Expose
 	private String pass = null;
+	@Expose
 	private ChatColor colour;
+	@Expose
 	private Boolean protect = false;
 	
 	/**
@@ -35,70 +46,15 @@ public class Channel {
 		CyniChat.printDebug("Protected: " + protect );
 		return true;
 	}
+		
 	
-	/**
-	 * Small hack to check whether the string in the config means that a boolean is true or not.
-	 * @param bool : This is the object that we're running the check off
-	 * @return the boolean value of the object
-	 */
-	private boolean loadCheck( Object bool ) {
-		CyniChat.printDebug((String) bool);
-		if ( bool.equals("true") ) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
-	/**
-	 * Load the details from the json file into the class.
-	 * @param channel : This is the channel data, stored as a HashMap
-	 * @return true for when we have loaded it all in.
-	 */
-	public boolean load( HashMap<String, Object> channel ) {
-		this.ID = CyniChat.counter;
-		this.name = channel.get("Name").toString();
-		this.nick = channel.get("Nickname").toString();
-		this.desc = channel.get("Description").toString();
-		this.pass = channel.get("Password").toString();
-		this.protect = loadCheck( channel.get("Protected") );
-		this.colour = ChatColor.getByChar( channel.get("Colour").toString().charAt(0) );
-		return true;
-	}
-	
-	/**
-	 * This is for when we're starting the whole thing up and there are no channels at all. Create the default channel of 'global'
-	 * @return true for when we've created this channel.
-	 */
-	public boolean init() {
-		this.ID = 1;
-		this.name = "global";
-		this.nick = "g";
-		this.desc = "The global channel for everyone!";
-		this.pass = "";
-		this.protect = false;
-		this.colour = ChatColor.GRAY;
-		return true;
-	}
-	
-	/**
-	 * Unimplemented method for the time being, but the framework is here to add a new channel into the object
-	 * @param newName : This is the new verbose name of the channel
-	 * @param newNick : This is the new shortcut name of the channel
-	 * @param newDesc : This is the description of the new channel
-	 * @param newPass : This is any new password of the channel
-	 * @param newColour : This is the char value of the colour ( 1 - f )
-	 * @param newProtect : Is this channel protected or not? This is applicable for any channel you need a permission node to enter
-	 * @return true for when we've created the new object
-	 */
-	public boolean addChannel( String newName, String newNick, String newDesc, String newPass, String newColour, boolean newProtect ) {
+	public Channel( String newName, String newNick, String newDesc, String newPass, String newColour, boolean newProtect ) {
 		this.name = newName;
 		this.nick = newNick;
 		this.desc = newDesc;
 		this.pass = newPass;
 		this.colour = ChatColor.valueOf(newColour);
 		this.protect = newProtect;
-		return true;
 	}
 	
 	/**
@@ -170,6 +126,20 @@ public class Channel {
 	 */
 	public Boolean isProtected() {
 		return protect;
+	}
+	
+	/**
+	 * Public constructor for gson
+	 * Doubles as default constructor for global channel
+	 */
+	public Channel(){
+		this.ID = 1;
+		this.name = "global";
+		this.nick = "g";
+		this.desc = "The global channel for everyone!";
+		this.pass = "";
+		this.protect = false;
+		this.colour = ChatColor.GRAY;
 	}
 
 }
