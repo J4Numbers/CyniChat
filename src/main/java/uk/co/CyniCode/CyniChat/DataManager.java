@@ -35,19 +35,23 @@ public class DataManager {
 	
 	private static Map<String,UserDetails> onlineUsers = new HashMap<String, UserDetails>();//Users who are online
 	
+	private static File channelFile = null;
+	private static File userFile = null;
+	
+	
 	/**
 	 * Loads the list of channels from a file 
 	 * @param file channel definition file
 	 */
-	public static void loadChannelConfig(File file){
+	public static void loadChannelConfig(){
 		try {
-			file.createNewFile();
-			channels = gson.fromJson(new FileReader(file), new TypeToken<Map<String,Channel>>(){}.getType());
+			channelFile.createNewFile();
+			channels = gson.fromJson(new FileReader(channelFile), new TypeToken<Map<String,Channel>>(){}.getType());
 			if(channels.size() == 0){
 				//Add default channel
 				CyniChat.printInfo("Creating default global channel");
 				addChannel(new Channel());
-				saveChannelConfig(file);
+				saveChannelConfig();
 			}
 		} catch (JsonIOException e) {
 			CyniChat.printSevere("IO error occured reading channel file");
@@ -67,9 +71,9 @@ public class DataManager {
 	 * Save channel configuration to file
 	 * @param file
 	 */
-	public static void saveChannelConfig(File file){
+	public static void saveChannelConfig(){
 		try {
-			gson.toJson(channels,new FileWriter(file));
+			gson.toJson(channels,new FileWriter(channelFile));
 		} catch (JsonIOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -101,16 +105,10 @@ public class DataManager {
 	 * Load user details from file
 	 * @param file
 	 */
-	public static void loadUserDetails(File file){
+	public static void loadUserDetails(){
 		try {
-			file.createNewFile();
-			loadedUsers = gson.fromJson(new FileReader(file), new TypeToken<Map<String,UserDetails>>(){}.getType());
-			if(channels.size() == 0){
-				//Add default channel
-				CyniChat.printInfo("Creating default global channel");
-				addChannel(new Channel());
-				saveChannelConfig(file);
-			}
+			userFile.createNewFile();
+			loadedUsers = gson.fromJson(new FileReader(userFile), new TypeToken<Map<String,UserDetails>>(){}.getType());
 		} catch (JsonIOException e) {
 			CyniChat.printSevere("IO error occured reading channel file");
 			e.printStackTrace();
@@ -130,9 +128,9 @@ public class DataManager {
 	 * Save all user details to file 
 	 * @param file
 	 */
-	public static void saveUserDetails(File file){
+	public static void saveUserDetails(){
 		try {
-			gson.toJson(loadedUsers,new FileWriter(file));
+			gson.toJson(loadedUsers,new FileWriter(userFile));
 		} catch (JsonIOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -184,5 +182,14 @@ public class DataManager {
 	 */
 	public static UserDetails getOnlineDetails(Player player){
 		return onlineUsers.get(player.getName().toLowerCase());
+	}
+
+	public static void setChannelFile(File channelFile) {
+		DataManager.channelFile = channelFile;
+	}
+
+
+	public static void setUserFile(File userFile) {
+		DataManager.userFile = userFile;
 	}
 }
