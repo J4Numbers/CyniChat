@@ -25,7 +25,7 @@ public class Chatter implements Listener {
 	public static void joinEvent( PlayerJoinEvent event ) {
 		Player player = event.getPlayer();
 		CyniChat.printDebug("Player joined");
-		FileHandling.loadPlayerDetails( player );
+		DataManager.
 	}
 	
 	/**
