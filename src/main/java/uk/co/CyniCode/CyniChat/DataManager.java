@@ -31,7 +31,7 @@ public class DataManager {
 	//List of loaded channels
 	private Map<String,Channel> channels = null;
 	
-	private Map<String,UserDetails> loadedUsers = new HashMap<String, UserDetails>();//User data loaded from 
+	private Map<String,UserDetails> loadedUsers = new HashMap<String, UserDetails>();//User data loaded from json 
 	
 	private Map<String,UserDetails> onlineUsers = new HashMap<String, UserDetails>();//Users who are online
 	
@@ -63,6 +63,10 @@ public class DataManager {
 		}
 	}
 	
+	/**
+	 * Save channel configuration to file
+	 * @param file
+	 */
 	public void saveChannelConfig(File file){
 		try {
 			gson.toJson(channels,new FileWriter(file));
@@ -75,15 +79,28 @@ public class DataManager {
 		}
 	}
 	
+	/**
+	 * Add a channel
+	 * @param channel
+	 */
 	public void addChannel(Channel channel) {
 		channels.put(channel.getName(), channel);
 	}
 
+	/**
+	 * Return a channel
+	 * @param name
+	 * @return
+	 */
 	public Channel getChannel(String name){
 		return channels.get(name);
 	}
 	
 	
+	/**
+	 * Load user details from file
+	 * @param file
+	 */
 	public void loadUserDetails(File file){
 		try {
 			file.createNewFile();
@@ -108,6 +125,11 @@ public class DataManager {
 		}
 	}
 	
+	
+	/**
+	 * Save all user details to file 
+	 * @param file
+	 */
 	public void saveUserDetails(File file){
 		try {
 			gson.toJson(loadedUsers,new FileWriter(file));
@@ -120,6 +142,12 @@ public class DataManager {
 		}
 	}
 	
+	/**
+	 * Get a users details
+	 * user may not be online!
+	 * @param player
+	 * @return
+	 */
 	public UserDetails getDetails(String player){
 		String uName = player.toLowerCase();
 		UserDetails details = loadedUsers.get(uName);
@@ -127,18 +155,26 @@ public class DataManager {
 			details = new UserDetails();
 			loadedUsers.put(uName, details);
 		}
-		
 		return details;
 	}
 	
+	/**
+	 * Bind the user details of a player to a player object
+	 * @param player
+	 */
 	public void bindPlayer(Player player){
 		String playerName = player.getName().toLowerCase();
 		UserDetails details = getDetails(playerName);
+		details.bindPlayer(player);
 		onlineUsers.put(playerName,details);
 	}
 	
+	/**
+	 * Unbind a player from being online
+	 * @param player
+	 */
 	public void unbindPlayer(Player player){
-		onlineUsers.remove(player.getName().toLowerCase());
+		onlineUsers.remove(player.getName().toLowerCase()).bindPlayer(null);
 	}
 	
 	/**
