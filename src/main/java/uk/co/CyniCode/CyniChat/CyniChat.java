@@ -1,5 +1,6 @@
 package uk.co.CyniCode.CyniChat;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
@@ -79,7 +80,8 @@ public class CyniChat extends JavaPlugin{
         user = new HashMap<String, UserDetails>();
         channels = new HashMap<String, Channel>();
         counter = 1;
-        FileHandling.loadChannels();
+        DataManager.loadChannelConfig(new File(getDataFolder(),"channels.json"));
+        DataManager.loadUserDetails(new File(getDataFolder(),"players.json"));
         
         printInfo("CyniChat has been enabled!");
         
@@ -92,6 +94,8 @@ public class CyniChat extends JavaPlugin{
 	 */
     @Override
     public void onDisable() {
+    	DataManager.saveChannelConfig(new File(getDataFolder(),"channels.json"));
+    	DataManager.saveUserDetails(new File(getDataFolder(),"players.json"));
     	printInfo("CyniChat has been disabled!");
     }
     
