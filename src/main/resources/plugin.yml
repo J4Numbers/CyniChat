@@ -5,9 +5,21 @@ load: STARTUP
 author: Cynical
 main: uk.co.CyniCode.CyniChat.CyniChat
 commands:
-  cyn:
-    description: This is a demo command.
-    usage: /cyn help
+  ch:
+    description: This is a large.
+    usage: /ch help
+  r:
+    description: Replies to a person.
+    usage: /r <message>
+  me:
+    description: Sends a message in the context of the user.
+    usage: /me <action>
+  afk:
+    description: Sets you as afk.
+    usage: /afk
+  msg:
+    description: Sends a message to someone.
+    usage: /msg <player> <message>
 permissions:
   cynichat.*:
     description: Gives access to all CyniChat commands

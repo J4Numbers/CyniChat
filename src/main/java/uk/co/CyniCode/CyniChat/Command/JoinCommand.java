@@ -32,7 +32,7 @@ public class JoinCommand {
 	 */
 	public static boolean info( CommandSender player ) {
 		if ( player.hasPermission("cynichat.basic.join.info") ) {
-			player.sendMessage("Type /cyn join "+MasterCommand.necessary("channel")+" "+MasterCommand.optional("password") );
+			player.sendMessage("Type /cyn join "+ChCommand.necessary("channel")+" "+ChCommand.optional("password") );
 			return true;
 		}
 		return false;

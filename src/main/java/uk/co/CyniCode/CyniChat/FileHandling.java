@@ -29,10 +29,11 @@ public class FileHandling {
 	 * @param file : This is the path to the file that is being read/loaded
 	 * @return HashMap of the details within the Json file
 	 */
-	private static HashMap<String, Object> loadDetailsFromJSON( File file ) {
+	private static HashMap<String, HashMap< String, Object > > loadDetailsFromJSON( File file ) {
 		
 		try {
-			return gson.fromJson(new FileReader( file ), new TypeToken<HashMap<String, Object>>(){}.getType());
+			CyniChat.printDebug(file.getAbsolutePath());
+			return gson.fromJson(new FileReader( file ), new TypeToken<HashMap< String, HashMap< String, Object > > >(){}.getType());
 		} catch ( JsonIOException e ) {
 			CyniChat.printSevere("An error occured reading " + file.toString());
 			e.printStackTrace();
@@ -50,19 +51,36 @@ public class FileHandling {
 		
 	}
 	
+	public static void dumpChannelDetails( Channel channel ) {
+		try {
+			File file = new File( CyniChat.self.getDataFolder(), "channels.json" );
+			FileWriter fw = new FileWriter( file, true );
+			channel.printAll();
+			HashMap<String, Object> channelArray = constructChannelArray( channel );
+			HashMap<String, HashMap<String, Object> > finalArray = new HashMap<String, HashMap<String, Object> >();
+			finalArray.put( channel.getName().toLowerCase(), channelArray );
+			gson.toJson( finalArray, fw );
+			fw.flush();
+			fw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	/**
 	 * This is for when the player leaves the server. The current UserDetails class for them is dumped into the Json file.
 	 * @param player : This is the player that we're editing.
 	 */
 	public static void dumpPlayerDetails( Player player ) {
-		char initial = player.getName().toLowerCase().charAt(0);
 		try {
-			UserDetails left = CyniChat.user.get( player.getName() );
-			File file = new File( CyniChat.self.getDataFolder(), "/players/"+initial+"/"+player.getName()+".json");
-			FileWriter fw = new FileWriter( file );
+			UserDetails left = CyniChat.user.get( player.getName().toLowerCase() );
+			File file = new File( CyniChat.self.getDataFolder(), "players.json");
+			FileWriter fw = new FileWriter( file, true );
 			left.printAll();
 			HashMap<String, Object> userArray = constructUserArray( left );
-			gson.toJson( userArray, fw );
+			HashMap<String, HashMap<String, Object> > finalArray = new HashMap<String, HashMap<String, Object> >();
+			finalArray.put( player.getName().toLowerCase(), userArray );
+			gson.toJson( finalArray, fw );
 			fw.flush();
 			fw.close();
 		} catch ( IOException e ) {
@@ -76,32 +94,35 @@ public class FileHandling {
 	 */
 	public static void loadPlayerDetails( Player player ) {
 		
-		char initial = player.getName().toLowerCase().charAt(0);
+		//char initial = player.getName().toLowerCase().charAt(0);
 		try {
 			UserDetails joined = new UserDetails();
-			File dir = new File( CyniChat.self.getDataFolder(), "/players/"+initial);
-			CyniChat.printDebug( CyniChat.self.getDataFolder() + "/players/"+initial+"/"+player.getName()+".json");
-			File file = new File( CyniChat.self.getDataFolder(), "/players/"+initial+"/"+player.getName()+".json");
-			if ( !dir.exists() ) {
-				dir.mkdirs();
-			}
+			//File dir = new File( CyniChat.self.getDataFolder(), "/players/"+initial);
+			//CyniChat.printDebug( CyniChat.self.getDataFolder() + "/players/"+initial+"/"+player.getName()+".json");
+			File file = new File( CyniChat.self.getDataFolder(), "players.json");
+			//if ( !dir.exists() ) {
+			//	dir.mkdirs();
+			//}
 			file.createNewFile();
-			HashMap<String, Object> details = loadDetailsFromJSON( file );
-			if ( details != null ) {
-				CyniChat.printDebug( "name ::== " + details.get("name") );
-				joined.load( details, player );
+			HashMap<String, HashMap<String, Object>> details = loadDetailsFromJSON( file );
+			if ( details.isEmpty() ) CyniChat.printDebug("details is empty");
+			if ( details.containsKey( player.getName().toLowerCase() ) ) {
+				CyniChat.printDebug( "name ::== " + details.get( player.getName().toLowerCase() ).get("name") );
+				joined.load( details.get( player.getName().toLowerCase() ), player );
 				joined.printAll();
 			} else {
 				joined.init( player );
-				FileWriter fw = new FileWriter( file );
+				FileWriter fw = new FileWriter( file, true );
 				CyniChat.printDebug( joined.getName() );
 				CyniChat.printDebug(fw.toString() );
 				HashMap<String, Object> userArray = constructUserArray( joined );
-				gson.toJson( userArray, fw );
+				HashMap< String, HashMap<String, Object> > newUser = new HashMap< String, HashMap<String, Object> >();
+				newUser.put( player.getName().toLowerCase(), userArray );
+				gson.toJson( newUser, fw );
 				fw.flush();
 				fw.close();
 			}
-			CyniChat.user.put(player.getName(), joined );
+			CyniChat.user.put(player.getName().toLowerCase(), joined );
 		} catch ( IOException e ) {
 			e.printStackTrace();
 		}
@@ -131,27 +152,27 @@ public class FileHandling {
 	 */
 	public static void loadChannels() {
 		try {
-			File dir = new File( CyniChat.self.getDataFolder(), "/channels/");
-			if ( !dir.exists() ) {
-				dir.mkdirs();
-			}
-			if ( dir.list().length > 0 ) {
+			File file = new File( CyniChat.self.getDataFolder(), "channels.json");
+			if ( file.exists() ) {
 				CyniChat.printDebug("Channels Found!");
-				for ( File chan : dir.listFiles() ) {
-					HashMap<String, Object> channel = loadDetailsFromJSON( chan );
-					Channel iterChan = new Channel();
-					iterChan.load( channel );
+				HashMap<String, HashMap<String, Object> > channel = loadDetailsFromJSON( file );
+				Channel iterChan = new Channel();
+				for ( int i=0; i<channel.keySet().size(); i++ ) {
+					iterChan.load( channel.get( channel.keySet().toArray()[i] ) );
 					CyniChat.counter++;
 					iterChan.printAll();
 					CyniChat.channels.put(iterChan.getName(), iterChan );
 				}
 			} else {
 				CyniChat.printDebug("Channels Not Found!");
+				file.createNewFile();
 				Channel init = new Channel();
 				init.init();
-				FileWriter fw = new FileWriter( dir+"/global.json" );
+				FileWriter fw = new FileWriter( file, true );
 				HashMap<String, Object> ChanArray = constructChannelArray( init );
-				gson.toJson( ChanArray, fw );
+				HashMap<String, HashMap<String, Object>> loadChan = new HashMap<String, HashMap<String, Object>>();
+				loadChan.put("global", ChanArray );
+				gson.toJson( loadChan, fw );
 				fw.flush();
 				fw.close();
 				init.printAll();

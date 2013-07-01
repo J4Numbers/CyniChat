@@ -9,7 +9,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 import uk.co.CyniCode.CyniChat.Channel.Channel;
 import uk.co.CyniCode.CyniChat.Chatting.Chatter;
 import uk.co.CyniCode.CyniChat.Chatting.UserDetails;
-import uk.co.CyniCode.CyniChat.Command.MasterCommand;
+import uk.co.CyniCode.CyniChat.Command.AfkCommand;
+import uk.co.CyniCode.CyniChat.Command.ChCommand;
+import uk.co.CyniCode.CyniChat.Command.MeCommand;
+import uk.co.CyniCode.CyniChat.Command.MsgCommand;
+import uk.co.CyniCode.CyniChat.Command.RCommand;
 
 /**
  * Base class for CyniChat. Main parts are the onEnable(), onDisable(), and the print areas at the moment.
@@ -19,7 +23,7 @@ import uk.co.CyniCode.CyniChat.Command.MasterCommand;
 public class CyniChat extends JavaPlugin{
 	
 	public CyniChat plugin;
-	public Logger log = getLogger();
+	public Logger log = Logger.getLogger("Minecraft");
 	
 	public static String version;
 	public static String name;
@@ -67,7 +71,11 @@ public class CyniChat extends JavaPlugin{
         }
         
         //Start the command
-        this.getCommand("cyn").setExecutor(new MasterCommand(this));
+        this.getCommand("ch").setExecutor(new ChCommand(this));
+        this.getCommand("afk").setExecutor(new AfkCommand() );
+        this.getCommand("me").setExecutor(new MeCommand() );
+        this.getCommand("msg").setExecutor(new MsgCommand() );
+        this.getCommand("r").setExecutor(new RCommand() );
         user = new HashMap<String, UserDetails>();
         channels = new HashMap<String, Channel>();
         counter = 1;
