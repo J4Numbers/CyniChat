@@ -1,14 +1,13 @@
 package uk.co.CyniCode.CyniChat;
 
-import java.util.HashMap;
+import java.io.File;
 import java.util.logging.Logger;
 
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import uk.co.CyniCode.CyniChat.Channel.Channel;
+
 import uk.co.CyniCode.CyniChat.Chatting.Chatter;
-import uk.co.CyniCode.CyniChat.Chatting.UserDetails;
 import uk.co.CyniCode.CyniChat.Command.AfkCommand;
 import uk.co.CyniCode.CyniChat.Command.ChCommand;
 import uk.co.CyniCode.CyniChat.Command.MeCommand;
@@ -38,9 +37,7 @@ public class CyniChat extends JavaPlugin{
 	public static String prefix;
 	public static String def_chan;
 	public static boolean debug;
-	
-	public static HashMap<String, UserDetails> user;
-	public static HashMap<String, Channel> channels;
+
 	public static int counter;
 	
 	/**
@@ -76,10 +73,13 @@ public class CyniChat extends JavaPlugin{
         this.getCommand("me").setExecutor(new MeCommand() );
         this.getCommand("msg").setExecutor(new MsgCommand() );
         this.getCommand("r").setExecutor(new RCommand() );
-        user = new HashMap<String, UserDetails>();
-        channels = new HashMap<String, Channel>();
         counter = 1;
-        FileHandling.loadChannels();
+        
+        DataManager.setChannelFile(new File(getDataFolder(),"channels.json"));
+        DataManager.loadChannelConfig();
+        
+        DataManager.setUserFile(new File(getDataFolder(),"players.json"));
+        DataManager.loadUserDetails();
         
         printInfo("CyniChat has been enabled!");
         
@@ -92,6 +92,8 @@ public class CyniChat extends JavaPlugin{
 	 */
     @Override
     public void onDisable() {
+    	DataManager.saveChannelConfig();
+    	DataManager.saveUserDetails();
     	printInfo("CyniChat has been disabled!");
     }
     

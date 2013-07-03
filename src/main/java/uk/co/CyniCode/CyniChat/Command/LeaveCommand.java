@@ -3,6 +3,7 @@ package uk.co.CyniCode.CyniChat.Command;
 import org.bukkit.command.CommandSender;
 
 import uk.co.CyniCode.CyniChat.CyniChat;
+import uk.co.CyniCode.CyniChat.DataManager;
 
 public class LeaveCommand {
 	
@@ -26,8 +27,8 @@ public class LeaveCommand {
 	 * @return true when complete
 	 */
 	public static boolean leave( CommandSender player, String oldChan ) {
-		if ( CyniChat.channels.get(oldChan) != null ) {
-			CyniChat.user.get(player.getName()).leaveChannel( oldChan );
+		if ( DataManager.getChannel(oldChan) != null ) {
+			DataManager.getDetails(player.getName()).leaveChannel( oldChan );
 			return true;
 		} else {
 			player.sendMessage("This channel does not exist");
