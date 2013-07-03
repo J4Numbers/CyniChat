@@ -1,0 +1,27 @@
+/ch <channel> [password] -> Changes the current channel or joins a new one
+/ch join <channel> [password] -> alias of /ch
+/ch leave [channel] -> Leaves the current channel, or the defined channel
+/ch qm <channel> <message> -> Sends one message to the defined channel
+/ch ignore <player> -> Ignores a named player
+/ch hear <player> -> Unignores a named player
+/msg <player> <message> -> Sends a message to one player
+/r [message] -> Sends a reply to one player if one message has been sent before
+/ch list [page#] -> Lists all the channels
+/ch who [channel] -> Shows all the players inside a channel
+/afk [message] -> Sets a user as afk (cannot receive private messages)
+/me [message] -> Transmits an action in the context of the user
+/ch create <name> [nick] -> Creates a channel with the defined name and optional nickname
+/ch remove <channel> -> Removes a named channel
+/ch info [channel] -> Prints the info about one channel
+/ch gmute <player> -> Globally mutes one player across all channels
+/ch gunmute <player> -> Globally unmutes one player across all channels
+/ch mute <player> [channel] -> Mutes one player in either the current channel, or the defined channel
+/ch unmute <player> [channel] -> Unmutes one player in either the current, or the defined channel
+/ch kick <player> [channel] -> Kicks the player in either the current or the defined channel
+/ch ban <player> [channel] -> Bans the player in the current, or the defined channel
+/ch unban <player> [channel] -> Unbans the player in the current, or the defined channel
+/ch promote <player> [channel] -> Promotes the player to mod in the current, or the defined channel
+/ch demote <player> [channel] -> Demotes the Player from mod in the current, or the defined channel
+/ch save -> Saves the information about all the players and channels
+/ch reload -> Saves the information about all the players and channels, then reloads them
+/ch help [page#] -> Lists help pages [1 - #]
