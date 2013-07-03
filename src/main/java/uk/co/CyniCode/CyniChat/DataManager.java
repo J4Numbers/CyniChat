@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,6 +48,7 @@ public class DataManager {
 		try {
 			channelFile.createNewFile();
 			channels = gson.fromJson(new FileReader(channelFile), new TypeToken<Map<String,Channel>>(){}.getType());
+			if(channels == null){channels = new HashMap<String, Channel>();}
 			if(channels.size() == 0){
 				//Add default channel
 				CyniChat.printInfo("Creating default global channel");
@@ -109,6 +111,7 @@ public class DataManager {
 		try {
 			userFile.createNewFile();
 			loadedUsers = gson.fromJson(new FileReader(userFile), new TypeToken<Map<String,UserDetails>>(){}.getType());
+			if(loadedUsers == null){loadedUsers = new HashMap<String, UserDetails>();
 		} catch (JsonIOException e) {
 			CyniChat.printSevere("IO error occured reading channel file");
 			e.printStackTrace();
