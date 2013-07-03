@@ -1,12 +1,14 @@
 package uk.co.CyniCode.CyniChat.Chatting;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
 
 import org.bukkit.command.CommandSender;
+import org.bukkit.craftbukkit.libs.com.google.gson.annotations.Expose;
 import org.bukkit.entity.Player;
 
 import uk.co.CyniCode.CyniChat.CyniChat;
+import uk.co.CyniCode.CyniChat.DataManager;
 import uk.co.CyniCode.CyniChat.Channel.Channel;
 
 /**
@@ -17,15 +19,22 @@ import uk.co.CyniCode.CyniChat.Channel.Channel;
 public class UserDetails {
 	
 	private Player player;
+	@Expose
 	private String CurrentChannel;
 	private String LastMessage = null;
 	private Boolean afk = false;
+	@Expose
 	private Boolean Silenced = false;
+	@Expose
 	private Boolean CanIgnore = true;
-	private ArrayList<String> JoinedChannels = new ArrayList<String>();
-	private ArrayList<String> BannedFrom = new ArrayList<String>();
-	private ArrayList<String> MutedIn = new ArrayList<String>();
-	private ArrayList<String> Ignoring = new ArrayList<String>();
+	@Expose
+	private List<String> JoinedChannels = new ArrayList<String>();
+	@Expose
+	private List<String> BannedFrom = new ArrayList<String>();
+	@Expose
+	private List<String> MutedIn = new ArrayList<String>();
+	@Expose
+	private List<String> Ignoring = new ArrayList<String>();
 	
 	/**
 	 * Adds an ignored player to the list
@@ -34,7 +43,8 @@ public class UserDetails {
 	 */
 	public boolean addIgnore( String Ignorer ) {
 		if ( player.hasPermission("cynichat.basic.ignore") ) {
-			if ( CyniChat.user.get( Ignorer.toLowerCase() ).canIgnore() ) {
+			
+			if ( DataManager.getDetails(Ignorer.toLowerCase()).canIgnore() ) {
 				if ( !Ignoring.contains( Ignorer.toLowerCase() ) ) {
 					Ignoring.add( Ignorer.toLowerCase() );
 					player.sendMessage("You have muted the player");
@@ -256,18 +266,19 @@ public class UserDetails {
 	}
 	
 	/**
-	 * Start up a new UserDetails object for any new peeps
-	 * @param player : Containing their name and whatnot
-	 * @return true for when we've done all this work.
+	 * bind a player object to the details (used when a player joins)
+	 * @param player
+	 * @return
 	 */
-	public boolean init( Player player ) {
+	public void bindPlayer( Player player ) {
 		this.player = player;
-		CyniChat.printDebug(this.player.getName().toLowerCase());
-		this.CurrentChannel = CyniChat.def_chan;
-		CyniChat.printDebug( this.CurrentChannel.toLowerCase() );
-		this.JoinedChannels.add( CyniChat.def_chan );
-		CyniChat.printDebug( this.JoinedChannels.get(0) );
-		return true;
+	}
+	
+	/**
+	 * Unbinds the player;
+	 */
+	public void unbindPlayer(){
+		this.player = null;
 	}
 	
 	/**
@@ -283,25 +294,7 @@ public class UserDetails {
 			return false;
 		}
 	}
-	
-	/**
-	 * Load in the details that we've been given from the json player files
-	 * @param details : HashMap of the player config
-	 * @param joinPlayer : The player who has just joined
-	 * @return true for when we've loaded all of these up
-	 */
-	public boolean load( HashMap<String, Object> details, Player joinPlayer ) {
-		this.player = joinPlayer;
-		this.CurrentChannel = details.get("CurrentChannel").toString().toLowerCase();
-		this.Silenced = loadCheck( details.get("Silenced") );
-		this.CanIgnore = loadCheck( details.get("CanIgnore") );
-		this.JoinedChannels = (ArrayList<String>) details.get("JoinedChannels");
-		this.BannedFrom = (ArrayList<String>) details.get("BannedChannels");
-		this.MutedIn = (ArrayList<String>) details.get("MutedChannels");
-		this.Ignoring = (ArrayList<String>) details.get("MutedPlayers");
-		return true;
-	}
-	
+		
 	/**
 	 * Iterate through all the values we store in here and return them as debug
 	 * @return ALL THE DEBUG
@@ -412,7 +405,7 @@ public class UserDetails {
 	 * Return all the channels that the player is in
 	 * @return JoinedChannels
 	 */
-	public ArrayList<String> getAllChannels() {
+	public List<String> getAllChannels() {
 		return JoinedChannels;
 	}
 	
@@ -437,7 +430,7 @@ public class UserDetails {
 	 * Return all the channels a player is banned from
 	 * @return BannedFrom
 	 */
-	public ArrayList<String> getBannedChannels() {
+	public List<String> getBannedChannels() {
 		return BannedFrom;
 	}
 	
@@ -462,7 +455,7 @@ public class UserDetails {
 	 * Return the channels that a player is muted in
 	 * @return MutedIn
 	 */
-	public ArrayList<String> getMutedChannels() {
+	public List<String> getMutedChannels() {
 		return MutedIn;
 	}
 	
@@ -491,7 +484,7 @@ public class UserDetails {
 	 * Return the players that are being ignored
 	 * @return Ignoring
 	 */
-	public ArrayList<String> getIgnoring() {
+	public List<String> getIgnoring() {
 		return Ignoring;
 	}
 	

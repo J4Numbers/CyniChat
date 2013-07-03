@@ -3,6 +3,7 @@ package uk.co.CyniCode.CyniChat.Command;
 import org.bukkit.command.CommandSender;
 
 import uk.co.CyniCode.CyniChat.CyniChat;
+import uk.co.CyniCode.CyniChat.DataManager;
 import uk.co.CyniCode.CyniChat.Channel.Channel;
 
 public class JoinCommand {
@@ -15,9 +16,9 @@ public class JoinCommand {
 	 * @return true when complete
 	 */
 	public static boolean join( CommandSender player, String channel, String pass ) {
-		if ( CyniChat.channels.get(channel) != null ) {
-			Channel NewChan = CyniChat.channels.get(channel);
-			CyniChat.user.get(player.getName()).joinChannel(NewChan, pass);
+		if ( DataManager.getChannel(channel) != null ) {
+			Channel NewChan = DataManager.getChannel(channel);
+			DataManager.getDetails(player.getName()).joinChannel(NewChan, pass);
 			return true;
 		} else {
 			player.sendMessage("This channel does not exist");

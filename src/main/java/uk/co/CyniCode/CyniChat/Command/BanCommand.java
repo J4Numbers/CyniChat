@@ -3,17 +3,18 @@ package uk.co.CyniCode.CyniChat.Command;
 import org.bukkit.command.CommandSender;
 
 import uk.co.CyniCode.CyniChat.CyniChat;
+import uk.co.CyniCode.CyniChat.DataManager;
 import uk.co.CyniCode.CyniChat.Channel.Channel;
 
 public class BanCommand {
 
 	public static boolean ban(CommandSender player, Channel channel, String banee) {
-		CyniChat.user.get( banee.toLowerCase() ).newBan(player, channel);
+		DataManager.getDetails( banee.toLowerCase() ).newBan(player, channel);
 		return true;
 	}
 
 	public static boolean unban(CommandSender player, Channel channel, String banee) {
-		CyniChat.user.get( banee.toLowerCase() ).remBan(player, channel);
+		DataManager.getDetails( banee.toLowerCase() ).remBan(player, channel);
 		return true;
 	}
 
@@ -26,7 +27,7 @@ public class BanCommand {
 	}
 
 	public static boolean kick(CommandSender player, Channel channel, String string) {
-		CyniChat.user.get( string.toLowerCase() ).Kick(player, channel);
+		DataManager.getDetails( string.toLowerCase() ).Kick(player, channel);
 		return true;
 		
 	}
