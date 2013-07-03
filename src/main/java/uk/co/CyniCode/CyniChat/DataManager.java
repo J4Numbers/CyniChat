@@ -111,7 +111,7 @@ public class DataManager {
 		try {
 			userFile.createNewFile();
 			loadedUsers = gson.fromJson(new FileReader(userFile), new TypeToken<Map<String,UserDetails>>(){}.getType());
-			if(loadedUsers == null){loadedUsers = new HashMap<String, UserDetails>();
+			if(loadedUsers == null){loadedUsers = new HashMap<String, UserDetails>();}
 		} catch (JsonIOException e) {
 			CyniChat.printSevere("IO error occured reading channel file");
 			e.printStackTrace();
