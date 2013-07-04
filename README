@@ -4,14 +4,14 @@ CyniChat
 Current Progress
 ----------------
 
-At the moment, the plugin is in its' planning stage for the most part. I have added the help documentation as a general reminder for me as to what commands to add at a later point in time, and the help does show up, so hooray for that.
+At the moment, the plugin is in its' planning stage for the most part. I have added the help documentation as a general reminder for me as to what commands to add at a later point in time, and the help does show up, so hooray for that (even if it is outdated).
 
 To Do
 -----
 
 -Flesh out the permission planning
 -Add Methods for the majority of the remaining commands
--Add in intra-player chatting
+-Polish intra-player chatting
 -Allow for channels to be created and destroyed
 
 Note

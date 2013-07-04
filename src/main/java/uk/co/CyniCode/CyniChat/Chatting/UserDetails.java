@@ -343,13 +343,13 @@ public class UserDetails {
 	 */
 	public boolean leaveChannel( String chan ) {
 		if ( this.JoinedChannels.contains( chan )) {
-			if ( player.hasPermission("cynichat.basic.remove."+chan) ) {
+			if ( player.hasPermission("cynichat.basic.leave."+chan) ) {
 				this.JoinedChannels.remove( chan );
+				player.sendMessage("You have left "+ chan);
 				if ( this.CurrentChannel.equals(chan) ) {
 					this.CurrentChannel = JoinedChannels.get(0);
 					player.sendMessage("You are now in " + JoinedChannels.get(0));
 				}
-				player.sendMessage("You have left "+ chan);
 				return true;
 			} else {
 				player.sendMessage("You cannot leave "+ chan);

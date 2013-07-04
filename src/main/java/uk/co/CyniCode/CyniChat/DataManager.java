@@ -75,7 +75,12 @@ public class DataManager {
 	 */
 	public static void saveChannelConfig(){
 		try {
-			gson.toJson(channels,new FileWriter(channelFile));
+			CyniChat.printDebug( channelFile.getAbsolutePath() );
+			channels.get(channels.keySet().toArray()[0]).printAll();
+			FileWriter fw = new FileWriter( channelFile );
+			gson.toJson(channels, fw);
+			fw.flush();
+			fw.close();
 		} catch (JsonIOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -102,6 +107,13 @@ public class DataManager {
 		return channels.get(name);
 	}
 	
+	public static void printAllChannels() {
+		for ( int i=0; i<channels.size(); i++ ) {
+			CyniChat.printDebug( String.valueOf(i) );
+			CyniChat.printDebug( String.valueOf( channels.keySet().toArray()[i] ) );
+			channels.get( channels.keySet().toArray()[i] ).printAll();
+		}
+	}
 	
 	/**
 	 * Load user details from file
@@ -133,7 +145,10 @@ public class DataManager {
 	 */
 	public static void saveUserDetails(){
 		try {
-			gson.toJson(loadedUsers,new FileWriter(userFile));
+			FileWriter fw = new FileWriter( userFile );
+			gson.toJson(loadedUsers, fw);
+			fw.flush();
+			fw.close();
 		} catch (JsonIOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -153,7 +168,8 @@ public class DataManager {
 		String uName = player.toLowerCase();
 		UserDetails details = loadedUsers.get(uName);
 		if(details == null){
-			details = new UserDetails();
+			details = new UserDetails(); 
+			details.joinChannel( channels.get("global"), "");
 			loadedUsers.put(uName, details);
 		}
 		return details;
@@ -168,6 +184,8 @@ public class DataManager {
 		UserDetails details = getDetails(playerName);
 		details.bindPlayer(player);
 		onlineUsers.put(playerName,details);
+		details.printAll();
+		printAllUsers();
 	}
 	
 	/**
@@ -191,6 +209,16 @@ public class DataManager {
 		DataManager.channelFile = channelFile;
 	}
 
+	public static void printAllUsers() {
+		if ( onlineUsers.size() != 0 ) {
+			for ( int i=0; i<onlineUsers.size(); i++ ) {
+				CyniChat.printDebug( String.valueOf(i) );
+				CyniChat.printDebug( String.valueOf( onlineUsers.keySet().toArray()[i] ) );
+				onlineUsers.get( onlineUsers.keySet().toArray()[i] ).printAll();
+			}
+		}
+		CyniChat.printDebug("No online users");
+	}
 
 	public static void setUserFile(File userFile) {
 		DataManager.userFile = userFile;
