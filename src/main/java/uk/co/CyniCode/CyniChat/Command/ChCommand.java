@@ -156,10 +156,10 @@ public class ChCommand implements CommandExecutor {
 		if ( args[0].equalsIgnoreCase("create") ) {
 			if ( args[1] != null ) {
 				if ( args[2] != null ) {
-					AdminCommand.create( player, args[1], args[2] );
+					AdminCommand.create( player, args[1], args[2], false );
 					return true;
 				}
-				AdminCommand.create( player, args[1], String.valueOf( args[1].toLowerCase().charAt(0) ) );
+				AdminCommand.create( player, args[1], String.valueOf( args[1].toLowerCase().charAt(0) ), false );
 				return true;
 			}
 			AdminCommand.createInfo( player );

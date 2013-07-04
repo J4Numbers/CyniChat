@@ -6,6 +6,8 @@ import java.util.logging.Logger;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import de.hydrox.bukkit.DroxPerms.DroxPerms;
+
 
 import uk.co.CyniCode.CyniChat.Chatting.Chatter;
 import uk.co.CyniCode.CyniChat.Command.AfkCommand;
@@ -77,9 +79,13 @@ public class CyniChat extends JavaPlugin{
         
         DataManager.setChannelFile(new File(getDataFolder(),"channels.json"));
         DataManager.loadChannelConfig();
+        DataManager.printAllChannels();
         
         DataManager.setUserFile(new File(getDataFolder(),"players.json"));
         DataManager.loadUserDetails();
+        DataManager.printAllUsers();
+        
+        PermissionManager.start( (DroxPerms) this.getServer().getPluginManager().getPlugin("DroxPerms") );
         
         printInfo("CyniChat has been enabled!");
         
