@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 
 import uk.co.CyniCode.CyniChat.CyniChat;
 import uk.co.CyniCode.CyniChat.DataManager;
+import uk.co.CyniCode.CyniChat.PermissionManager;
 import uk.co.CyniCode.CyniChat.Channel.Channel;
 
 /**
@@ -42,7 +43,7 @@ public class UserDetails {
 	 * @return true when complete or false with insufficient perms.
 	 */
 	public boolean addIgnore( String Ignorer ) {
-		if ( player.hasPermission("cynichat.basic.ignore") ) {
+		if ( PermissionManager.checkPerm( player, "cynichat.basic.ignore") ) {
 			
 			if ( DataManager.getDetails(Ignorer.toLowerCase()).canIgnore() ) {
 				if ( !Ignoring.contains( Ignorer.toLowerCase() ) ) {
@@ -66,7 +67,7 @@ public class UserDetails {
 	 * @return true when complete or false with insufficient perms
 	 */
 	public boolean remIgnore( String Ignorer ) {
-		if ( player.hasPermission("cynichat.basic.ignore") ) {
+		if ( PermissionManager.checkPerm( player, "cynichat.basic.ignore") ) {
 			if ( Ignoring.contains( Ignorer.toLowerCase() ) ) {
 				Ignoring.remove( Ignorer.toLowerCase() );
 				player.sendMessage("You have unmuted the player");
@@ -132,7 +133,7 @@ public class UserDetails {
 	 * @return true when complete or false if no permission
 	 */
 	public boolean addMute( CommandSender muter, Channel channel ) {
-		if ( muter.hasPermission("cynichat.mod.mute."+channel.getName()) ) {
+		if ( PermissionManager.checkPerm( (Player) muter, "cynichat.mod.mute."+channel.getName()) ) {
 			if ( !MutedIn.contains( channel.getName() ) ) {
 				MutedIn.add( channel.getName() );
 				muter.sendMessage("Player has been muted");
@@ -151,7 +152,7 @@ public class UserDetails {
 	 * @return true when complete or false with lack of perms
 	 */
 	public boolean remMute( CommandSender unmuter, Channel channel ) {
-		if ( unmuter.hasPermission("cynichat.mod.mute."+channel.getName()) ) {
+		if ( PermissionManager.checkPerm( (Player) unmuter, "cynichat.mod.mute."+channel.getName()) ) {
 			if ( MutedIn.contains( channel.getName() ) ) {
 				MutedIn.remove( channel.getName() );
 				unmuter.sendMessage("Player has been unmuted");
@@ -170,7 +171,7 @@ public class UserDetails {
 	 * @return true when completed or false with insufficient permissions
 	 */
 	public boolean newBan( CommandSender banner, Channel channel ) {
-		if ( banner.hasPermission("cynichat.mod.ban."+channel.getName().toLowerCase() ) ) {
+		if ( PermissionManager.checkPerm( (Player) banner, "cynichat.mod.ban."+channel.getName().toLowerCase() ) ) {
 			if ( !BannedFrom.contains( channel.getName() ) ) {
 				if ( JoinedChannels.contains( channel.getName() ) ) {
 					JoinedChannels.remove( channel.getName() );
@@ -195,7 +196,7 @@ public class UserDetails {
 	 * @return true when complete or false when permissions are not granted
 	 */
 	public boolean remBan( CommandSender unbanner, Channel channel ) {
-		if ( unbanner.hasPermission("cynichat.mod.ban."+channel.getName().toLowerCase() ) ) {
+		if ( PermissionManager.checkPerm( (Player) unbanner, "cynichat.mod.ban."+channel.getName().toLowerCase() ) ) {
 			if ( BannedFrom.contains(channel.getName().toLowerCase() ) ) {
 				BannedFrom.remove( channel.getName().toLowerCase() );
 				unbanner.sendMessage("The player has been unbanned.");
@@ -214,7 +215,7 @@ public class UserDetails {
 	 * @return true when complete, false if the person doesn't have perms
 	 */
 	public boolean Kick( CommandSender kicker, Channel channel ) {
-		if ( kicker.hasPermission("cynichat.mod.kick."+channel.getName().toLowerCase() ) ) {
+		if ( PermissionManager.checkPerm( (Player) kicker, "cynichat.mod.kick."+channel.getName().toLowerCase() ) ) {
 			if ( JoinedChannels.contains( channel.getName().toLowerCase() ) ) {
 				JoinedChannels.remove( channel.getName().toLowerCase() );
 				if ( CurrentChannel.equals(channel.getName().toLowerCase() ) ) {
@@ -235,7 +236,7 @@ public class UserDetails {
 	 * @return true when complete, false with insufficient perms
 	 */
 	public boolean Silence( CommandSender silencer ) {
-		if ( silencer.hasPermission("cynichat.mod.silence") ) {
+		if ( PermissionManager.checkPerm( (Player) silencer, "cynichat.mod.silence") ) {
 			if ( this.Silenced == false ) {
 				this.Silenced = true;
 				silencer.sendMessage("Player has been muted");
@@ -253,7 +254,7 @@ public class UserDetails {
 	 * @return true when complete, false with insufficient perms
 	 */
 	public boolean Listen( CommandSender listener ) {
-		if ( listener.hasPermission("cynichat.mod.listener") ) {
+		if ( PermissionManager.checkPerm( (Player) listener, "cynichat.mod.listener") ) {
 			if ( this.Silenced == false ) {
 				this.Silenced = false;
 				listener.sendMessage("Player has been unmuted");
@@ -319,7 +320,9 @@ public class UserDetails {
 	 */
 	public boolean joinChannel( Channel newChan, String pass ) {
 		if ( newChan.isProtected() ) {
-			if ( player.hasPermission("cynichat.basic.join.all") || ( player.hasPermission("cynichat.basic.join."+newChan.getName().toLowerCase() ) && newChan.equalsPass( pass ) ) ) {
+			if ( PermissionManager.checkPerm( player, "cynichat.basic.join.all") || 
+					( PermissionManager.checkPerm( player, "cynichat.basic.join."+newChan.getName().toLowerCase() ) 
+							&& newChan.equalsPass( pass ) ) ) {
 				this.JoinedChannels.add( newChan.getName() );
 				this.CurrentChannel = newChan.getName();
 				player.sendMessage("You are now talking in "+ newChan.getName() );
@@ -343,7 +346,7 @@ public class UserDetails {
 	 */
 	public boolean leaveChannel( String chan ) {
 		if ( this.JoinedChannels.contains( chan )) {
-			if ( player.hasPermission("cynichat.basic.leave."+chan) ) {
+			if ( PermissionManager.checkPerm( player, "cynichat.basic.leave."+chan) ) {
 				this.JoinedChannels.remove( chan );
 				player.sendMessage("You have left "+ chan);
 				if ( this.CurrentChannel.equals(chan) ) {

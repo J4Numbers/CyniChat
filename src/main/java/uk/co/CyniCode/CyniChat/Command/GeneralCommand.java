@@ -1,13 +1,15 @@
 package uk.co.CyniCode.CyniChat.Command;
 
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import uk.co.CyniCode.CyniChat.DataManager;
+import uk.co.CyniCode.CyniChat.PermissionManager;
 
 public class GeneralCommand {
 
 	public static boolean save( CommandSender player ) {
-		if ( player.hasPermission("cynichat.admin.save") ) {
+		if ( PermissionManager.checkPerm( (Player) player, "cynichat.admin.save") ) {
 			
 			DataManager.saveChannelConfig();
 			DataManager.saveUserDetails();
@@ -17,7 +19,7 @@ public class GeneralCommand {
 	}
 	
 	public static boolean reload( CommandSender player ) {
-		if ( player.hasPermission("cynichat.admin.reload") ) {
+		if ( PermissionManager.checkPerm( (Player) player, "cynichat.admin.reload") ) {
 			save( player );
 			// TODO - Insert reload block
 		}
@@ -25,7 +27,7 @@ public class GeneralCommand {
 	}
 	
 	public static boolean info( CommandSender player, String channel ) {
-		if ( player.hasPermission("cynichat.basic.info."+channel) ) {
+		if ( PermissionManager.checkPerm( (Player) player, "cynichat.basic.info."+channel) ) {
 			
 		}
 		return false;
@@ -36,14 +38,14 @@ public class GeneralCommand {
 	}
 	
 	public static boolean who( CommandSender player, String channel ) {
-		if ( player.hasPermission("cynichat.basic.who."+channel) ) {
+		if ( PermissionManager.checkPerm( (Player) player, "cynichat.basic.who."+channel) ) {
 			
 		}
 		return false;
 	}
 	
 	public static boolean quickMessage( CommandSender player, String channel, String Message ) {
-		if ( player.hasPermission("cynichat.basic.qm") ) {
+		if ( PermissionManager.checkPerm( (Player) player, "cynichat.basic.qm") ) {
 			
 		}
 		return false;
