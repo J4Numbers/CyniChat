@@ -169,7 +169,6 @@ public class DataManager {
 		UserDetails details = loadedUsers.get(uName);
 		if(details == null){
 			details = new UserDetails(); 
-			details.joinChannel( channels.get("global"), "");
 			loadedUsers.put(uName, details);
 		}
 		return details;

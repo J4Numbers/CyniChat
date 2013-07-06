@@ -4,6 +4,7 @@ description: A new chat system for Minecraft
 load: STARTUP
 author: Cynical
 main: uk.co.CyniCode.CyniChat.CyniChat
+softdepend: [Vault]
 commands:
   ch:
     description: This is a large.

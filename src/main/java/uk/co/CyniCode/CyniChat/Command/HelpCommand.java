@@ -1,7 +1,10 @@
 package uk.co.CyniCode.CyniChat.Command;
 
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 //import org.bukkit.ChatColor;
+
+import uk.co.CyniCode.CyniChat.PermissionManager;
 
 public class HelpCommand {
 	
@@ -45,13 +48,13 @@ public class HelpCommand {
 		player.sendMessage("/cyn help          -> This screen");
 		player.sendMessage("/cyn help channels -> Channel help menu");
 		player.sendMessage("/cyn help users    -> Users help menu");
-		if (player.hasPermission("cynichat.mod.help")) {
+		if ( PermissionManager.checkPerm( (Player) player, "cynichat.mod.help")) {
 			player.sendMessage("/cyn help mods     -> Mod help menu");
 		}
-		if ( player.hasPermission("cynichat.admin.help") ) {
+		if ( PermissionManager.checkPerm( (Player) player, "cynichat.admin.help") ) {
 			player.sendMessage("/cyn help admin    -> Admin help menu");
 		}
-		if (player.hasPermission("cynichat.admin.reload")) {
+		if ( PermissionManager.checkPerm( (Player) player, "cynichat.admin.reload")) {
 			player.sendMessage("/cyn reload        -> Reload the config");
 		}
 		return true;

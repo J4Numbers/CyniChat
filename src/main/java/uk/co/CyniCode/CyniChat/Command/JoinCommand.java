@@ -1,9 +1,11 @@
 package uk.co.CyniCode.CyniChat.Command;
 
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import uk.co.CyniCode.CyniChat.CyniChat;
 import uk.co.CyniCode.CyniChat.DataManager;
+import uk.co.CyniCode.CyniChat.PermissionManager;
 import uk.co.CyniCode.CyniChat.Channel.Channel;
 
 public class JoinCommand {
@@ -32,7 +34,7 @@ public class JoinCommand {
 	 * @return true when complete, or false if the player doesn't have the permissions
 	 */
 	public static boolean info( CommandSender player ) {
-		if ( player.hasPermission("cynichat.basic.join.info") ) {
+		if ( PermissionManager.checkPerm( (Player) player, "cynichat.basic.join.info") ) {
 			player.sendMessage("Type /cyn join "+ChCommand.necessary("channel")+" "+ChCommand.optional("password") );
 			return true;
 		}

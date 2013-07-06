@@ -33,9 +33,9 @@
           <version>1.5.2-R1.0</version>
       </dependency>
       <dependency>
-          <groupId>de.hydrox.bukkit</groupId>
-          <artifactId>DroxPerms</artifactId>
-          <version>0.5.0</version>
+          <groupId>net.milkbowl.vault</groupId>
+          <artifactId>Vault</artifactId>
+          <version>1.2.25-SNAPSHOT</version>
       </dependency>
       <dependency>
           <groupId>org.bukkit</groupId>

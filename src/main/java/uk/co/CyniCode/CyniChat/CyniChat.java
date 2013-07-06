@@ -3,11 +3,11 @@ package uk.co.CyniCode.CyniChat;
 import java.io.File;
 import java.util.logging.Logger;
 
+import net.milkbowl.vault.permission.Permission;
+
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import de.hydrox.bukkit.DroxPerms.DroxPerms;
-
 
 import uk.co.CyniCode.CyniChat.Chatting.Chatter;
 import uk.co.CyniCode.CyniChat.Command.AfkCommand;
@@ -30,6 +30,7 @@ public class CyniChat extends JavaPlugin{
 	public static String name;
 	public static String Server;
 	public static CyniChat self = null;
+	public static Permission perms = null;
 	
 	public static String host;
 	public static String username;
@@ -85,7 +86,7 @@ public class CyniChat extends JavaPlugin{
         DataManager.loadUserDetails();
         DataManager.printAllUsers();
         
-        PermissionManager.start( (DroxPerms) this.getServer().getPluginManager().getPlugin("DroxPerms") );
+        PermissionManager.setupPermissions( this );
         
         printInfo("CyniChat has been enabled!");
         

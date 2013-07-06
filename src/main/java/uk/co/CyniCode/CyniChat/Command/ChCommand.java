@@ -178,10 +178,10 @@ public class ChCommand implements CommandExecutor {
 		if ( args[0].equalsIgnoreCase("promote") ) {
 			if ( args[1] != null ) {
 				if ( args[2] != null ) {
-					ModCommand.promote( player, args[2].toLowerCase(), args[1], plugin );
+					ModCommand.promote( player, args[2].toLowerCase(), args[1] );
 					return true;
 				}
-				ModCommand.promote( player, DataManager.getDetails( player.getName().toLowerCase() ).getCurrentChannel(), args[1], plugin );
+				ModCommand.promote( player, DataManager.getDetails( player.getName().toLowerCase() ).getCurrentChannel(), args[1] );
 				return true;
 			}
 			ModCommand.promoteInfo( player );

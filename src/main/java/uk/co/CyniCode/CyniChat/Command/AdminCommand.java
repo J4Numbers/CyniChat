@@ -1,6 +1,7 @@
 package uk.co.CyniCode.CyniChat.Command;
 
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import uk.co.CyniCode.CyniChat.DataManager;
 import uk.co.CyniCode.CyniChat.PermissionManager;
@@ -9,7 +10,7 @@ import uk.co.CyniCode.CyniChat.Channel.Channel;
 public class AdminCommand {
 
 	public static boolean create( CommandSender player, String name, String nick, Boolean protect ) {
-		if ( player.hasPermission("cynichat.admin.create") ) {
+		if ( PermissionManager.checkPerm( (Player) player, "cynichat.admin.create") ) {
 			Channel newChan = new Channel();
 			newChan.create( name, nick, protect );
 			DataManager.addChannel( newChan );
@@ -19,7 +20,7 @@ public class AdminCommand {
 	}
 
 	public static boolean remove( CommandSender player, String name ) {
-		if ( player.hasPermission("cynichat.admin.remove") ) {
+		if ( PermissionManager.checkPerm( (Player) player, "cynichat.admin.remove") ) {
 			
 		}
 		return false;
