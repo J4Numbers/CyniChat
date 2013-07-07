@@ -323,7 +323,9 @@ public class UserDetails {
 			if ( PermissionManager.checkPerm( player, "cynichat.basic.join.all") || 
 					( PermissionManager.checkPerm( player, "cynichat.basic.join."+newChan.getName().toLowerCase() ) 
 							&& newChan.equalsPass( pass ) ) ) {
-				this.JoinedChannels.add( newChan.getName() );
+				if ( !this.JoinedChannels.contains( newChan.getName() ) ) {
+					this.JoinedChannels.add( newChan.getName() );
+				}
 				this.CurrentChannel = newChan.getName();
 				player.sendMessage("You are now talking in "+ newChan.getName() );
 				return true;
@@ -331,7 +333,9 @@ public class UserDetails {
 			return false;
 		}
 		if ( newChan.equalsPass( pass ) ) {
-			this.JoinedChannels.add( newChan.getName() );
+			if ( !this.JoinedChannels.contains( newChan.getName() ) ) {
+				this.JoinedChannels.add( newChan.getName() );
+			}
 			this.CurrentChannel = newChan.getName();
 			player.sendMessage("You are now talking in "+ newChan.getName() );
 			return true;
