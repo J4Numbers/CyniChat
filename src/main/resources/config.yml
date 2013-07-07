@@ -2,5 +2,6 @@ CyniChat:
   channels:
     default: "global"
   other:
+    data: "MySQL"
     debug: "false"
     log-to-file: "false"
