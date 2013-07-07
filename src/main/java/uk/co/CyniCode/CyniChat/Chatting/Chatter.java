@@ -62,14 +62,22 @@ public class Chatter implements Listener {
 		event.setFormat(format);
 		CyniChat.printDebug( "Format ::== " + event.getFormat() );
 		Iterator<Player> receivers = event.getRecipients().iterator();
+		Player[] all = new Player[ event.getRecipients().size() ];
+		int Count = 0;
 		
 		while ( receivers.hasNext() ) {
 			Player currentPlayer = receivers.next();
 			UserDetails users = DataManager.getOnlineDetails( currentPlayer );
 			CyniChat.printDebug( currentPlayer.getName() + " : " + users.getAllVerboseChannels() );
 			if ( !users.getAllChannels().contains( current.getName() ) ) {
-				CyniChat.printDebug("Removed "+currentPlayer.getDisplayName() );
-				event.getRecipients().remove( currentPlayer );
+				all[Count] = currentPlayer;
+				Count++;
+			}
+		}
+		if ( Count > 0 ) { for ( int i=0; i<Count; i++ ) {
+				CyniChat.printDebug("Iteration = " + i );
+				CyniChat.printDebug("Removed "+all[i].getDisplayName() );
+				event.getRecipients().remove( all[i] );
 			}
 		}
 	}
