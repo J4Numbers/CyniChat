@@ -244,9 +244,20 @@ public class ChCommand implements CommandExecutor {
 		}
 		if ( args[0].equalsIgnoreCase("save") ){
 			GeneralCommand.save( player );
+			return true;
 		}
-		//TODO - Add stuff for ch with channel augments, no keyword
-		return true;
+		if ( args.length < 1 || args.length > 2 ) {
+			JoinCommand.info( player );
+			return true;
+		} else {
+			if ( args.length == 2 ) {
+				JoinCommand.join( player, args[0], args[1] );
+				return true;
+			} else {
+				JoinCommand.join( player, args[0], "");
+				return true;
+			}
+		}
 	}
 
 }

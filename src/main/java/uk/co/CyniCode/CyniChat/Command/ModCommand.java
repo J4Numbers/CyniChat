@@ -1,5 +1,6 @@
 package uk.co.CyniCode.CyniChat.Command;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -25,10 +26,14 @@ public class ModCommand {
 	}
 
 	public static boolean promoteInfo( CommandSender player ) {
+		player.sendMessage(ChatColor.RED+"Invalid Syntax!");
+		player.sendMessage("/ch promote "+ChCommand.necessary("player")+" "+ChCommand.optional("channel"));
 		return true;
 	}
 
 	public static boolean demoteInfo( CommandSender player ) {
+		player.sendMessage(ChatColor.RED+"Invalid Syntax!");
+		player.sendMessage("/ch demote "+ChCommand.necessary("player")+" "+ChCommand.optional("channel"));
 		return true;
 	}
 }

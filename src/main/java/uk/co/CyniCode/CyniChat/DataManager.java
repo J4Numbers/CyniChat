@@ -5,7 +5,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,6 +17,7 @@ import org.bukkit.entity.Player;
 
 import uk.co.CyniCode.CyniChat.Channel.Channel;
 import uk.co.CyniCode.CyniChat.Chatting.UserDetails;
+import uk.co.CyniCode.CyniChat.DatabaseManagers.MySQLManager;
 
 /**
  * A sane way to load channel and user data.
@@ -38,7 +38,25 @@ public class DataManager {
 	
 	private static File channelFile = null;
 	private static File userFile = null;
+	private static MySQLManager Connection;
 	
+	public static void start( CyniChat cynichat) {
+		if ( CyniChat.SQL == true ) {
+			Connection = new MySQLManager();
+			if ( Connection.startConnection( cynichat ) == true ) {
+				loadedUsers = Connection.returnPlayers();
+				channels = Connection.returnChannels();
+				return;
+			}
+		}
+		setChannelFile(new File( cynichat.getDataFolder(),"channels.json"));
+		loadChannelConfig();
+		printAllChannels();
+		
+		setUserFile(new File( cynichat.getDataFolder(),"players.json"));
+		loadUserDetails();
+		printAllUsers();
+	}
 	
 	/**
 	 * Loads the list of channels from a file 
@@ -221,5 +239,23 @@ public class DataManager {
 
 	public static void setUserFile(File userFile) {
 		DataManager.userFile = userFile;
+	}
+
+	public static Map<String, UserDetails> returnAllOnline() {
+		return onlineUsers;
+	}
+
+	public static boolean deleteChannel(String name) {
+		try {
+			channels.remove(name);
+			return true;
+		} catch (NullPointerException e) {
+			return false;
+		}
+		
+	}
+
+	public static Map<String, Channel> returnAllChannels() {
+		return channels;
 	}
 }
