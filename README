@@ -1,20 +1,19 @@
 CyniChat
-========
+=====================
 
 Current Progress
-----------------
+---------------------
 
-At the moment, the plugin is in its' planning stage for the most part. I have added the help documentation as a general reminder for me as to what commands to add at a later point in time, and the help does show up, so hooray for that (even if it is outdated).
+All the commands are now up-to-date and have been given method blocks. Whether or not these method blocks work remains to be seen. Channel chatting has been completed, as has a number of other small details. Colours will need to be added as necessary, along with the introduction of nodes such as prefix and suffix.
 
 To Do
------
+---------------------
 
 -Flesh out the permission planning
--Add Methods for the majority of the remaining commands
--Polish intra-player chatting
--Allow for channels to be created and destroyed
+-Polish dual player chatting (msg and r)
+-Add in MySQL implementation of the storage
 
 Note
-----
+---------------------
 
 Aside from this, no further progress can be made until Bukkit 1.6 is created. This is due to potential changes in the formatting of chat messages and any chat events which may be relied upon.
