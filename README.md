@@ -9,9 +9,9 @@ All the commands are now up-to-date and have been given method blocks. Whether o
 To Do
 ---------------------
 
--Flesh out the permission planning
--Polish dual player chatting (msg and r)
--Add in MySQL implementation of the storage
+- Flesh out the permission planning
+- Polish dual player chatting (msg and r)
+- Add in MySQL implementation of the storage
 
 Note
 ---------------------
