@@ -1,8 +1,8 @@
 package uk.co.CyniCode.CyniChat.Command;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
-import uk.co.CyniCode.CyniChat.CyniChat;
 import uk.co.CyniCode.CyniChat.DataManager;
 import uk.co.CyniCode.CyniChat.Channel.Channel;
 
@@ -19,11 +19,14 @@ public class MuteCommand {
 	}
 
 	public static boolean ignoreInfo(CommandSender player) {
-		// TODO Auto-generated method stub
+		player.sendMessage(ChatColor.RED+"Invalid Syntax!");
+		player.sendMessage("/ch ignore "+ChCommand.necessary("player"));
 		return true;
 	}
 
 	public static boolean hearInfo( CommandSender player ) {
+		player.sendMessage(ChatColor.RED+"Invalid Syntax!");
+		player.sendMessage("/ch hear "+ChCommand.necessary("player"));
 		return true;
 	}
 
@@ -38,10 +41,14 @@ public class MuteCommand {
 	}
 
 	public static boolean gmuteInfo( CommandSender player ) {
+		player.sendMessage(ChatColor.RED+"Invalid Syntax!");
+		player.sendMessage("/ch gmute "+ChCommand.necessary("player"));
 		return true;
 	}
 
 	public static boolean muteInfo( CommandSender player) {
+		player.sendMessage(ChatColor.RED+"Invalid Syntax!");
+		player.sendMessage("/ch mute "+ChCommand.necessary("player")+" "+ChCommand.optional("channel") );
 		return true;
 	}
 
@@ -51,6 +58,8 @@ public class MuteCommand {
 	}
 
 	public static boolean gUnMuteInfo( CommandSender player ) {
+		player.sendMessage(ChatColor.RED+"Invalid Syntax!");
+		player.sendMessage("/ch gunmute "+ChCommand.necessary("player"));
 		return true;
 	}
 
@@ -60,6 +69,8 @@ public class MuteCommand {
 	}
 
 	public static boolean unmuteInfo( CommandSender player ) {
+		player.sendMessage(ChatColor.RED+"Invalid Syntax!");
+		player.sendMessage("/ch unmute "+ChCommand.necessary("player")+" "+ChCommand.optional("channel") );
 		return true;
 	}
 

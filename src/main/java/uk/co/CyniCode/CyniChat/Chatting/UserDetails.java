@@ -281,20 +281,6 @@ public class UserDetails {
 	public void unbindPlayer(){
 		this.player = null;
 	}
-	
-	/**
-	 * Again, use the minor hack to check whether the config files are actually saying 'true'
-	 * @param bool : The Object value of the thing we're checking
-	 * @return the boolean equivalent
-	 */
-	private boolean loadCheck( Object bool ) {
-		CyniChat.printDebug((String) bool);
-		if ( bool.equals("true") ) {
-			return true;
-		} else {
-			return false;
-		}
-	}
 		
 	/**
 	 * Iterate through all the values we store in here and return them as debug
@@ -510,5 +496,9 @@ public class UserDetails {
 			c = ", ";
 		}
 		return ignore;
+	}
+
+	public String getLatest() {
+		return this.LastMessage;
 	}
 }

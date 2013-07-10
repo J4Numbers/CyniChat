@@ -1,0 +1,104 @@
+==CyniChat
+
+CyniChat is chat channel plugin, very similar to HeroChat. It is completely open source and has a number of features that make it useful to any server. However, this plugin will offer a much smoother experience during use. By using alternative storage methods, this plugin will be much faster to load, and much more efficient than the current champion.
+
+===Key Features
+* Chat channel capabilities
+* Customisable channels
+* The ability to kick, ban and mute people in any one channel
+* The ability for individual players to ignore people they choose to (unless otherwise specified)
+* The ability to promote and demote individuals inside a channel
+* A dialogue system (two people chatting)
+
+===Players and Channels
+As I mentioned previously, people in your server will be able to ignore other people whom they might not get along with. But since some people might try to ignore the moderators and the operators on your server, you can set them to unignorable in their config files. This option means that no-one will be able to ignore them when they speak unto the masses.
+
+Additional options in the config file for the players include whether they are globally muted or not, what channel they're currently in, that they're banned in, muted in and who they're ignoring. These should only be altered outside of the game if you know know what you are doing with JSON/SQL.
+
+The channel configuration file, on the other hand, contains a lot of customisable content. On creation, each channel is given a few bits and pieces for their details. These include:
+
+|=Keyword|=  Description|
+|ID | This refers to the order of creation and the order that channels will appear in the list view|
+|Name | This is the full, verbose name that will appear in the list view|
+|Nick | This is the shortcut that you can use to quickly join the channel, as opposed to typing the full channel name|
+|Desc | This is the description that is shown to players in the channel information view|
+|Pass | This is a settable password that you can use to restrict who joins your channel|
+|Colour | This controls the colour of the channel fairly obviously enough. Please use the correct names when editing|
+|Protect | If this is set to true, the channel will require an additional permission to leave, join and talk|
+
+===Commands
+|=Command|=Description|
+|/ch <channel> [password] | Changes the current channel or joins a new one|
+|/ch join <channel> [password] | alias of /ch|
+|/ch leave [channel] | Leaves the current channel, or the defined channel|
+|/ch qm <channel> <message> | Sends one message to the defined channel|
+|/ch ignore <player> | Ignores a named player|
+|/ch hear <player> | Unignores a named player|
+|/msg <player> <message> | Sends a message to one player|
+|/r [message] | Sends a reply to one player if one message has been sent before|
+|/ch list [page#] | Lists all the channels|
+|/ch who [channel] | Shows all the players inside a channel|
+|/afk [message] | Sets a user as afk (cannot receive private messages)|
+|/me [message] | Transmits an action in the context of the user|
+|/ch create <name> [nick] | Creates a channel with the defined name and optional nickname|
+|/ch remove <channel> | Removes a named channel|
+|/ch info [channel] | Prints the info about one channel|
+|/ch gmute <player> | Globally mutes one player across all channels|
+|/ch gunmute <player> | Globally unmutes one player across all channels|
+|/ch mute <player> [channel] | Mutes one player in either the current channel, or the defined channel|
+|/ch unmute <player> [channel] | Unmutes one player in either the current, or the defined channel|
+|/ch kick <player> [channel] | Kicks the player in either the current or the defined channel|
+|/ch ban <player> [channel] | Bans the player in the current, or the defined channel|
+|/ch unban <player> [channel] | Unbans the player in the current, or the defined channel|
+|/ch promote <player> [channel] | Promotes the player to mod in the current, or the defined channel|
+|/ch demote <player> [channel] | Demotes the Player from mod in the current, or the defined channel|
+|/ch save | Saves the information about all the players and channels|
+|/ch reload | Saves the information about all the players and channels, then reloads them|
+|/ch help [page#] | Lists help pages [1 - #]|
+
+===Permissions
+* cynichat.*
+** cynichat.basic.*
+*** cynichat.basic.join.all
+*** cynichat.basic.join.<channel>
+*** cynichat.basic.leave.all
+*** cynichat.basic.leave.<channel>
+*** cynichat.basic.talk.all
+*** cynichat.basic.talk.<channel>
+** cynichat.mod.*
+*** cynichat.mod.kick.all
+*** cynichat.mod.kick.<channel>
+*** cynichat.mod.ban.all
+*** cynichat.mod.ban.<channel>
+*** cynichat.mod.mute.all
+*** cynichat.mod.mute.<channel>
+*** cynichat.mod.promote.all
+*** cynichat.mod.promote.<channel>
+*** cynichat.mod.demote.all
+*** cynichat.mod.demote.<channel>
+** cynichat.admin.*
+*** cynichat.admin.create
+*** cynichat.admin.remove
+*** cynichat.admin.save
+*** cynichat.admin.reload
+
+===Caveats
+* This plugin stores files in either JSON files, or in an SQL database
+* This plugin currently has a partial dependency on Vault
+* Vault will need a permissions plugin for this plugin to run properly
+
+===Future Features
+All of the above are definite guarantees for when the plugin reaches //released// status and make up the basic parts of the plugin. What follows are some features that are likely to be added into the plugin at a later date:
+* IRC integration via Pircbot or Pircbotx
+* An event that other plugins can listen in to
+* A web interface to alter the data in the files/database
+
+(This list is liable to be added to at any point in time)
+
+===Got An Idea?
+Great, share it with me on either the comments or over a message. If I like it, I'll probably add it into the alpha build. The same goes for any concerns, if you have worries that this is going to break catastrophically with all of the things, then please, speak up. I'd like to be able to rid any potential threats from this so that it is as stable as it needs to be.
+
+
+==Note
+
+Since this is still in the alpha phase of creation, details on this page are likely to change in accordance with the necessary alterations in the code.

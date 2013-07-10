@@ -46,12 +46,12 @@
   </dependencies>
     
   <distributionManagement>
-   <!--<repository>
-     <id>cyn-repo</id>
-     <name>cynicode.co.uk Releases</name>
-     <url>scp://maven.cynicode.co.uk</url>
-   </repository> -->
    <repository>
+     <id>dev-repo</id>
+     <name>dev.escapecraft.com Releases</name>
+     <url>scp://dev.escapecraft.com/var/www/maven</url>
+   </repository>
+   <!--<repository>
      <id>lin-repo</id>
      <name>linux machine Releases</name>
      <url>scp://192.168.137.234/home/m477h3w1012/.m2/repositories/</url>
@@ -60,12 +60,12 @@
      <id>lin-repo-snap</id>
      <name>linux machine Snapshots</name>
      <url>scp://192.168.137.234/home/m477h3w1012/.m2/repositories/</url>
+   </snapshotRepository>-->
+   <snapshotRepository>
+     <id>dev-repo-snap</id>
+     <name>dev.escapecraft.com Snapshots</name>
+     <url>scp://dev.escapecraft.com/var/www/maven</url>
    </snapshotRepository>
-   <!-- <snapshotRepository>
-     <id>cyn-repo-snap</id>
-     <name>cynicode.co.uk Snapshots</name>
-     <url>scp://maven.cynicode.co.uk</url>
-   </snapshotRepository> -->
   </distributionManagement>
   
   <build>

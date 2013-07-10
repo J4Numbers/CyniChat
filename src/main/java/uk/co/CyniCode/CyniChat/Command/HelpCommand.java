@@ -45,17 +45,17 @@ public class HelpCommand {
 	public static boolean info( CommandSender player ) {
 		player.sendMessage("===============CyniChat===============");
 		player.sendMessage("");
-		player.sendMessage("/cyn help          -> This screen");
-		player.sendMessage("/cyn help channels -> Channel help menu");
-		player.sendMessage("/cyn help users    -> Users help menu");
+		player.sendMessage("/ch help          -> This screen");
+		player.sendMessage("/ch help channels -> Channel help menu");
+		player.sendMessage("/ch help users    -> Users help menu");
 		if ( PermissionManager.checkPerm( (Player) player, "cynichat.mod.help")) {
-			player.sendMessage("/cyn help mods     -> Mod help menu");
+			player.sendMessage("/ch help mods     -> Mod help menu");
 		}
 		if ( PermissionManager.checkPerm( (Player) player, "cynichat.admin.help") ) {
-			player.sendMessage("/cyn help admin    -> Admin help menu");
+			player.sendMessage("/ch help admin    -> Admin help menu");
 		}
 		if ( PermissionManager.checkPerm( (Player) player, "cynichat.admin.reload")) {
-			player.sendMessage("/cyn reload        -> Reload the config");
+			player.sendMessage("/ch reload        -> Reload the config");
 		}
 		return true;
 	}
@@ -68,9 +68,11 @@ public class HelpCommand {
 	public static boolean admin( CommandSender player ) {
 		player.sendMessage("===============CyniChat===============");
 		player.sendMessage("");
-		player.sendMessage("/cyn create "+ChCommand.necessary("name")+" "+ChCommand.necessary("nickname")+" "+ChCommand.necessary("color")+" "+ChCommand.optional("password")+" -> Create a channel");
-		player.sendMessage("/cyn remove "+ChCommand.necessary("name")+" -> Remove a channel");
-		player.sendMessage("/cyn gmute "+ChCommand.necessary("player")+" -> Silence a player");
+		player.sendMessage("/ch create "+ChCommand.necessary("name")+" "+ChCommand.necessary("nickname")+" -> Create a channel");
+		player.sendMessage("/ch remove "+ChCommand.necessary("name")+" -> Remove a channel");
+		player.sendMessage("/ch save -> Saves all the objects to storage");
+		player.sendMessage("/ch gmute "+ChCommand.necessary("player")+" -> Silence a player");
+		player.sendMessage("/ch gunmute "+ChCommand.necessary("player")+" -> Undoes a silence on a player");
 		return true;
 	}
 	
@@ -82,12 +84,13 @@ public class HelpCommand {
 	public static boolean mods( CommandSender player ) {
 		player.sendMessage("===============CyniChat===============");
 		player.sendMessage("");
-		player.sendMessage("/cyn kick "+ChCommand.necessary("player")+" "+ChCommand.optional("channel")+" "+ChCommand.optional("reason")+" -> Kick a player from the channel");
-		player.sendMessage("/cyn ban "+ChCommand.necessary("player")+" "+ChCommand.optional("channel")+" "+ChCommand.optional("reason")+" -> Ban a player from the channel");
-		player.sendMessage("/cyn mute "+ChCommand.necessary("player")+" "+ChCommand.optional("channel")+" -> Mute the player in this channel");
-		player.sendMessage("/cyn unmute "+ChCommand.necessary("player")+" "+ChCommand.optional("channel")+" -> Unmute the player in this channel");
-		player.sendMessage("/cyn promote "+ChCommand.necessary("player")+" "+ChCommand.optional("channel")+" -> Promote the player to a chat mod");
-		player.sendMessage("/cyn demote "+ChCommand.necessary("player")+" "+ChCommand.optional("channel")+" -> Demote the player from a chat mod");
+		player.sendMessage("/ch kick "+ChCommand.necessary("player")+" "+ChCommand.optional("channel")+" -> Kick a player from the channel");
+		player.sendMessage("/ch ban "+ChCommand.necessary("player")+" "+ChCommand.optional("channel")+" -> Ban a player from the channel");
+		player.sendMessage("/ch unban "+ChCommand.necessary("player")+" "+ChCommand.optional("channel")+" -> Unban a player from the channel");
+		player.sendMessage("/ch mute "+ChCommand.necessary("player")+" "+ChCommand.optional("channel")+" -> Mute the player in this channel");
+		player.sendMessage("/ch unmute "+ChCommand.necessary("player")+" "+ChCommand.optional("channel")+" -> Unmute the player in this channel");
+		player.sendMessage("/ch promote "+ChCommand.necessary("player")+" "+ChCommand.optional("channel")+" -> Promote the player to a chat mod");
+		player.sendMessage("/ch demote "+ChCommand.necessary("player")+" "+ChCommand.optional("channel")+" -> Demote the player from a chat mod");
 		return true;
 	}
 	
@@ -99,9 +102,11 @@ public class HelpCommand {
 	public static boolean channels( CommandSender player ) {
 		player.sendMessage("===============CyniChat===============");
 		player.sendMessage("");
-		player.sendMessage("/cyn join "+ChCommand.necessary("channel")+" -> Changes your current channel");
-		player.sendMessage("/cyn leave "+ChCommand.optional("channel")+" -> Leave the current or defined channel");
-		player.sendMessage("/cyn list "+ChCommand.optional("#page")+" -> List all available channels");
+		player.sendMessage("/ch join "+ChCommand.necessary("channel")+" -> Changes your current channel");
+		player.sendMessage("/ch leave "+ChCommand.optional("channel")+" -> Leave the current or defined channel");
+		player.sendMessage("/ch qm "+ChCommand.necessary("channel")+" "+ChCommand.necessary("message")+" -> Sends one message to the defined channel");
+		player.sendMessage("/ch info "+ChCommand.optional("channel")+" -> Returns information about the current or defined channel");
+		player.sendMessage("/ch list "+ChCommand.optional("#page")+" -> List all available channels");
 		return true;
 	}
 	
@@ -113,9 +118,13 @@ public class HelpCommand {
 	public static boolean users( CommandSender player ) {
 		player.sendMessage("===============CyniChat===============");
 		player.sendMessage("");
-		player.sendMessage("/cyn who -> List all people in the current channel");
-		player.sendMessage("/cyn mute "+ChCommand.necessary("player")+" -> Ignore one player across all channels");
-		player.sendMessage("/cyn tell "+ChCommand.necessary("player")+" "+ChCommand.necessary("message")+" -> Send a message to one person");
+		player.sendMessage("/ch who -> List all people in the current channel");
+		player.sendMessage("/ch ignore "+ChCommand.necessary("player")+" -> Ignore one player across all channels");
+		player.sendMessage("/ch hear "+ChCommand.necessary("player")+" -> Unigores a player across all channels");
+		player.sendMessage("/msg "+ChCommand.necessary("player")+" "+ChCommand.necessary("message")+" -> Send a message to one person");
+		player.sendMessage("/r "+ChCommand.necessary("message")+" -> Reply to a message from one person");
+		player.sendMessage("/afk "+ChCommand.optional("message")+" -> Sets yourself as afk (You can no-longer receive private messages)");
+		player.sendMessage("/me "+ChCommand.necessary("action")+" -> Transmits an action in the context of the player");
 		return true;
 	}
 
