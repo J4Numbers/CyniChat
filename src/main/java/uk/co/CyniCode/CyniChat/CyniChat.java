@@ -1,12 +1,10 @@
 package uk.co.CyniCode.CyniChat;
 
-import java.io.File;
 import java.util.logging.Logger;
 
 import net.milkbowl.vault.permission.Permission;
 
 import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import uk.co.CyniCode.CyniChat.Chatting.Chatter;
@@ -31,6 +29,9 @@ public class CyniChat extends JavaPlugin{
 	public static String Server;
 	public static CyniChat self = null;
 	public static Permission perms = null;
+	
+	public static Boolean JSON = false;
+	public static Boolean SQL = false;
 	
 	public static String host;
 	public static String username;
@@ -69,6 +70,14 @@ public class CyniChat extends JavaPlugin{
         	debug = false;
         	printInfo("Debugging disabled!");
         }
+        if ( getConfig().getString("CyniChat.other.data").equalsIgnoreCase("mysql") ) {
+        	SQL = true;
+        	printInfo("MySQL storage enabled!");
+        } else {
+        	JSON = true;
+        	printInfo("JSON storage enabled!");
+        }
+        DataManager.start( this );
         
         //Start the command
         this.getCommand("ch").setExecutor(new ChCommand(this));
@@ -77,14 +86,6 @@ public class CyniChat extends JavaPlugin{
         this.getCommand("msg").setExecutor(new MsgCommand() );
         this.getCommand("r").setExecutor(new RCommand() );
         counter = 1;
-        
-        DataManager.setChannelFile(new File(getDataFolder(),"channels.json"));
-        DataManager.loadChannelConfig();
-        DataManager.printAllChannels();
-        
-        DataManager.setUserFile(new File(getDataFolder(),"players.json"));
-        DataManager.loadUserDetails();
-        DataManager.printAllUsers();
         
         PermissionManager.setupPermissions( this );
         
@@ -137,5 +138,15 @@ public class CyniChat extends JavaPlugin{
     		self.log.info("[CyniChat DEBUG] " + line);
     	}
     }
+
+	public static void reload() {
+		try {
+			self.onDisable();
+			self.onEnable();
+		} catch (NullPointerException e) {
+			printSevere("Failiure of epic proportions!");
+			e.printStackTrace();
+		}
+	}
     
 }

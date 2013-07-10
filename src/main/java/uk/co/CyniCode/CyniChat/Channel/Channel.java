@@ -1,7 +1,5 @@
 package uk.co.CyniCode.CyniChat.Channel;
 
-import java.util.HashMap;
-
 import org.bukkit.ChatColor;
 import org.bukkit.craftbukkit.libs.com.google.gson.annotations.Expose;
 

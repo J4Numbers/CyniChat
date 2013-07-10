@@ -1,5 +1,6 @@
 package uk.co.CyniCode.CyniChat.Command;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -21,16 +22,25 @@ public class AdminCommand {
 
 	public static boolean remove( CommandSender player, String name ) {
 		if ( PermissionManager.checkPerm( (Player) player, "cynichat.admin.remove") ) {
-			
+			if ( DataManager.deleteChannel( name ) == true ) {
+				player.sendMessage("Channel has been removed");
+				return true;
+			}
+			player.sendMessage("This channel doesn't exist");
+			return true;
 		}
 		return false;
 	}
 
 	public static boolean createInfo( CommandSender player ) {
+		player.sendMessage(ChatColor.RED + "Incorrect Command");
+		player.sendMessage( "/ch create "+ChCommand.necessary("name")+" "+ChCommand.optional("nick") );
 		return true;
 	}
 
 	public static boolean removeInfo( CommandSender player ) {
+		player.sendMessage(ChatColor.RED + "Incorrect Command");
+		player.sendMessage( "/ch remove "+ChCommand.necessary("name") );
 		return true;
 	}
 }

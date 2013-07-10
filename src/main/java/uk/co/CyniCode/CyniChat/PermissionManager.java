@@ -50,7 +50,7 @@ public class PermissionManager {
 		perms.playerRemove( DataManager.getDetails( player ).getPlayer() , "cynichat.mod.kick."+channel.getName().toLowerCase() );
 		return true;
 	}
-	
+
 	public static boolean remChannelPerms( Channel channel ) {
 		return true;
 	}

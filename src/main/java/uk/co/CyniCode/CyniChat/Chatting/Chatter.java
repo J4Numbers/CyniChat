@@ -3,7 +3,6 @@ package uk.co.CyniCode.CyniChat.Chatting;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -14,7 +13,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import uk.co.CyniCode.CyniChat.CyniChat;
 import uk.co.CyniCode.CyniChat.DataManager;
-import uk.co.CyniCode.CyniChat.PermissionManager;
 import uk.co.CyniCode.CyniChat.Channel.Channel;
 
 public class Chatter implements Listener {
