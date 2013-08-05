@@ -46,9 +46,12 @@ public class ChCommand implements CommandExecutor {
 			return true;
 		}
 		if ( args[0].equalsIgnoreCase("help") ) {
-			if ( args[1] != null )
+			if ( args.length == 2 ) {
 				HelpCommand.Command( player, args[1] );
+				return true;
+			}
 			HelpCommand.Command( player, "" );
+			return true;
 		}
 		if ( args[0].equalsIgnoreCase("join") ) {
 			if ( args.length < 2 || args.length > 3 ) {
@@ -74,8 +77,8 @@ public class ChCommand implements CommandExecutor {
 			}
 		}
 		if ( args[0].equalsIgnoreCase("ban") ) {
-			if ( args[1] != null ) {
-				if ( args[2] != null ) {
+			if ( args.length == 2 ) {
+				if ( args.length == 3 ) {
 					BanCommand.ban( player, DataManager.getChannel( args[2].toLowerCase() ), args[1] );
 					return true;
 				}
@@ -86,8 +89,8 @@ public class ChCommand implements CommandExecutor {
 			return true;
 		}
 		if ( args[0].equalsIgnoreCase("unban") ) {
-			if ( args[1] != null ) {
-				if ( args[2] != null ) {
+			if ( args.length == 2 ) {
+				if ( args.length == 3 ) {
 					BanCommand.unban( player, DataManager.getChannel( args[2].toLowerCase() ), args[1] );
 					return true;
 				}
@@ -98,8 +101,8 @@ public class ChCommand implements CommandExecutor {
 			return true;
 		}
 		if ( args[0].equalsIgnoreCase("mute") ) {
-			if ( args[1] != null ) {
-				if ( args[2] != null ) {
+			if ( args.length == 2 ) {
+				if ( args.length == 3 ) {
 					MuteCommand.mute( player, DataManager.getChannel( args[2].toLowerCase() ), args[1] );
 					return true;
 				}
@@ -110,8 +113,8 @@ public class ChCommand implements CommandExecutor {
 			return true;
 		}
 		if ( args[0].equalsIgnoreCase("unmute") ) {
-			if ( args[1] != null ) {
-				if ( args[2] != null ) {
+			if ( args.length == 2 ) {
+				if ( args.length == 3 ) {
 					MuteCommand.unmute( player, DataManager.getChannel( args[2].toLowerCase() ), args[1] );
 					return true;
 				}
@@ -122,7 +125,7 @@ public class ChCommand implements CommandExecutor {
 			return true;
 		}
 		if ( args[0].equalsIgnoreCase("ignore") ) {
-			if ( args[1] != null ) {
+			if ( args.length == 2 ) {
 				MuteCommand.ignore( player, args[1] );
 			} else {
 				MuteCommand.ignoreInfo(player);
@@ -130,7 +133,7 @@ public class ChCommand implements CommandExecutor {
 			}
 		}
 		if ( args[0].equalsIgnoreCase("hear") ) {
-			if ( args[1] != null ) {
+			if ( args.length == 2 ) {
 				MuteCommand.hear( player, args[1] );
 			} else {
 				MuteCommand.hearInfo(player);
@@ -138,7 +141,7 @@ public class ChCommand implements CommandExecutor {
 			}
 		}
 		if ( args[0].equalsIgnoreCase("gmute") ) {
-			if ( args[1] != null ) {
+			if ( args.length == 2 ) {
 				MuteCommand.gmute( player, args[1] );
 				return true;
 			}
@@ -146,7 +149,7 @@ public class ChCommand implements CommandExecutor {
 			return true;
 		}
 		if ( args[0].equalsIgnoreCase("gunmute") ) {
-			if ( args[1] != null ) {
+			if ( args.length == 2 ) {
 				MuteCommand.gUnMute(player, args[1]);
 				return true;
 			}
@@ -154,8 +157,8 @@ public class ChCommand implements CommandExecutor {
 			return true;
 		}
 		if ( args[0].equalsIgnoreCase("create") ) {
-			if ( args[1] != null ) {
-				if ( args[2] != null ) {
+			if ( args.length == 2 ) {
+				if ( args.length == 3 ) {
 					AdminCommand.create( player, args[1], args[2], false );
 					return true;
 				}
@@ -166,7 +169,7 @@ public class ChCommand implements CommandExecutor {
 			return true;
 		}
 		if ( args[0].equalsIgnoreCase("remove") ) {
-			if ( args[1] != null ) {
+			if ( args.length == 2 ) {
 				AdminCommand.remove( player, args[1] );
 			}
 			AdminCommand.removeInfo( player );
@@ -176,8 +179,8 @@ public class ChCommand implements CommandExecutor {
 			GeneralCommand.reload( player );
 		}
 		if ( args[0].equalsIgnoreCase("promote") ) {
-			if ( args[1] != null ) {
-				if ( args[2] != null ) {
+			if ( args.length == 2 ) {
+				if ( args.length == 3 ) {
 					ModCommand.promote( player, args[2].toLowerCase(), args[1] );
 					return true;
 				}
@@ -188,8 +191,8 @@ public class ChCommand implements CommandExecutor {
 			return true;
 		}
 		if ( args[0].equalsIgnoreCase("demote") ) {
-			if ( args[1] != null ) {
-				if ( args[2] != null ) {
+			if ( args.length == 2 ) {
+				if ( args.length == 3 ) {
 					ModCommand.demote( player, args[2].toLowerCase(), args[1] );
 					return true;
 				}
@@ -200,7 +203,7 @@ public class ChCommand implements CommandExecutor {
 			return true;
 		}
 		if ( args[0].equalsIgnoreCase("list") ) {
-			if ( args[1] != null ) {
+			if ( args.length == 2 ) {
 				GeneralCommand.list( player, Integer.parseInt( args[1] ) );
 				return true;
 			}
@@ -208,7 +211,7 @@ public class ChCommand implements CommandExecutor {
 			return true;
 		}
 		if ( args[0].equalsIgnoreCase("who") ) {
-			if ( args[1] != null ) {
+			if ( args.length == 2 ) {
 				GeneralCommand.who( player, args[1] );
 				return true;
 			}
@@ -216,14 +219,14 @@ public class ChCommand implements CommandExecutor {
 			return true;
 		}
 		if ( args[0].equalsIgnoreCase("qm") ){
-			if ( args[2] != null ) {
+			if ( args.length == 3 ) {
 				GeneralCommand.quickMessage( player, args[1], args[2] );
 				return true;
 			}
 			GeneralCommand.qmInfo( player );
 		}
 		if ( args[0].equalsIgnoreCase("info") ){
-			if ( args[1] != null ) {
+			if ( args.length == 2 ) {
 				GeneralCommand.info( player, args[1] );
 				return true;
 			}
@@ -231,8 +234,8 @@ public class ChCommand implements CommandExecutor {
 			return true;
 		}
 		if ( args[0].equalsIgnoreCase("kick") ){
-			if ( args[1] != null ) {
-				if ( args[2] != null ) {
+			if ( args.length == 2 ) {
+				if ( args.length == 3 ) {
 					BanCommand.kick( player, DataManager.getChannel( args[2].toLowerCase() ), args[1] );
 					return true;
 				}
