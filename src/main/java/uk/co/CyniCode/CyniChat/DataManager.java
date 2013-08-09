@@ -92,6 +92,10 @@ public class DataManager {
 	 * @param file
 	 */
 	public static void saveChannelConfig(){
+		if (CyniChat.SQL == true) {
+			Connection.saveChannels(channels);
+			return;
+		}
 		try {
 			CyniChat.printDebug( channelFile.getAbsolutePath() );
 			channels.get(channels.keySet().toArray()[0]).printAll();
@@ -162,6 +166,10 @@ public class DataManager {
 	 * @param file
 	 */
 	public static void saveUserDetails(){
+		if ( CyniChat.SQL == true ) {
+			Connection.saveUsers(loadedUsers);
+			return;
+		}
 		try {
 			FileWriter fw = new FileWriter( userFile );
 			gson.toJson(loadedUsers, fw);

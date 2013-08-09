@@ -16,7 +16,7 @@ public class Channel {
 	 * Expose all data to json for saving
 	 */
 	@Expose
-	private int ID;//Is this really needed
+	private int ID;
 	@Expose
 	private String name;
 	@Expose
@@ -44,15 +44,16 @@ public class Channel {
 		CyniChat.printDebug("Protected: " + protect );
 		return true;
 	}
-		
 	
-	public Channel( String newName, String newNick, String newDesc, String newPass, String newColour, boolean newProtect ) {
+	public Boolean loadChannel( int id, String newName, String newNick, String newDesc, String newPass, String newColour, boolean newProtect ) {
+		this.ID = id;
 		this.name = newName;
 		this.nick = newNick;
 		this.desc = newDesc;
 		this.pass = newPass;
 		this.colour = ChatColor.valueOf(newColour);
 		this.protect = newProtect;
+		return true;
 	}
 	
 	/**
