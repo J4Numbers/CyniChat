@@ -1,6 +1,13 @@
 CyniChat:
   channels:
-    default: "global"
+    default: "Global"
+  database:
+    host: "localhost"
+    port: "3306"
+    username: "root"
+    password: "pass"
+    database: "cynichat"
+    prefix: "chat_"
   other:
     data: "MySQL"
     debug: "false"
