@@ -13,7 +13,7 @@ public class RCommand implements CommandExecutor {
 
 	public boolean onCommand(CommandSender player, Command command, String key, String[] objects) {
 		if ( PermissionManager.checkPerm( (Player) player, "cynichat.basic.msg" ) ) {
-			if ( objects.length == 1 ) {
+			if ( objects[0] != null ) {
 				UserDetails current = DataManager.getOnlineDetails( (Player) player );
 				if ( current.getLatest() != null ) {
 					String message = stacker( objects );
