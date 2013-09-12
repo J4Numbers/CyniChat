@@ -31,8 +31,8 @@ public class MeCommand implements CommandExecutor {
 			CyniChat.printDebug("End of a /me command");
 			return true;
 		}
-		// TODO Auto-generated method stub
-		return false;
+		player.sendMessage("Please provide an action to go with the /me action");
+		return true;
 	}
 	
 	public String stacker( String[] message ) {
