@@ -3,12 +3,14 @@ package uk.co.CyniCode.CyniChat.Command;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
+import uk.co.CyniCode.CyniChat.CyniChat;
 import uk.co.CyniCode.CyniChat.DataManager;
 import uk.co.CyniCode.CyniChat.Channel.Channel;
 
 public class MuteCommand {
 	
 	public static boolean ignore( CommandSender player, String ignorer) {
+		CyniChat.printDebug( player.getName() + " is now attempting to ignore " + ignorer );
 		DataManager.getDetails( player.getName().toLowerCase() ).addIgnore( ignorer );
 		return true;
 	}

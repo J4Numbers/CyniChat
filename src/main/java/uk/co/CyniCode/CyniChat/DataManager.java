@@ -166,10 +166,21 @@ public class DataManager {
 	 * @param file
 	 */
 	public static void saveUserDetails(){
+<<<<<<< HEAD
 		if ( CyniChat.SQL == true ) {
 			Connection.saveUsers(loadedUsers);
 			return;
 		}
+=======
+<<<<<<< Updated upstream
+=======
+		if ( CyniChat.SQL == true ) {
+			printAllUsers();
+			Connection.saveUsers(loadedUsers);
+			return;
+		}
+>>>>>>> Stashed changes
+>>>>>>> develop
 		try {
 			FileWriter fw = new FileWriter( userFile );
 			gson.toJson(loadedUsers, fw);
@@ -241,8 +252,16 @@ public class DataManager {
 				CyniChat.printDebug( String.valueOf( onlineUsers.keySet().toArray()[i] ) );
 				onlineUsers.get( onlineUsers.keySet().toArray()[i] ).printAll();
 			}
-		}
-		CyniChat.printDebug("No online users");
+		} else
+			CyniChat.printDebug("No online users");
+		if ( loadedUsers.size() != 0 ) {
+			for ( int i=0; i<loadedUsers.size(); i++ ) {
+				CyniChat.printDebug( String.valueOf(i) );
+				CyniChat.printDebug( String.valueOf( loadedUsers.keySet().toArray()[i] ) );
+				loadedUsers.get( loadedUsers.keySet().toArray()[i] ).printAll();
+			}
+		} else
+			CyniChat.printDebug( "No loaded users" );
 	}
 
 	public static void setUserFile(File userFile) {
