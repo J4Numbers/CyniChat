@@ -19,6 +19,10 @@ import uk.co.CyniCode.CyniChat.Channel.Channel;
  */
 public class UserDetails {
 	
+<<<<<<< Updated upstream
+=======
+	private int ID = 0;
+>>>>>>> Stashed changes
 	private Player player;
 	@Expose
 	private String CurrentChannel;
@@ -36,6 +40,10 @@ public class UserDetails {
 	private List<String> MutedIn = new ArrayList<String>();
 	@Expose
 	private List<String> Ignoring = new ArrayList<String>();
+	
+	public UserDetails() {
+		this.JoinedChannels.add( CyniChat.def_chan );
+	}
 	
 	/**
 	 * Adds an ignored player to the list
@@ -58,6 +66,7 @@ public class UserDetails {
 			player.sendMessage("You cannot ignore this player.");
 			return true;
 		}
+		player.sendMessage("You lack the permissions necessary to ignore a person. Poor you...");
 		return false;
 	}
 	
@@ -204,8 +213,10 @@ public class UserDetails {
 				unbanner.sendMessage("This player was not banned.");
 			}
 			return true;
+		} else {
+			unbanner.sendMessage("You do not have the sufficient perms for this action.");
+			return true;
 		}
-		return false;
 	}
 	
 	/**
@@ -287,7 +298,7 @@ public class UserDetails {
 	 * @return ALL THE DEBUG
 	 */
 	public boolean printAll() {
-		CyniChat.printDebug("Name: "+ this.getName() );
+		//CyniChat.printDebug("Name: "+ this.getName() );
 		CyniChat.printDebug("Silenced: "+ this.getSilenced().toString() );
 		CyniChat.printDebug("Can Ignore: "+ this.canIgnore().toString() );
 		CyniChat.printDebug("Current Channel: "+this.getCurrentChannel() );
@@ -501,4 +512,29 @@ public class UserDetails {
 	public String getLatest() {
 		return this.LastMessage;
 	}
+<<<<<<< Updated upstream
+=======
+
+	public int getID() {
+		return this.ID;
+	}
+
+	public boolean setId( int newId ) {
+		this.ID = newId;
+		return true;
+	}
+
+	public Boolean loadData( int id, String active, Boolean silence, Boolean canIgnore, List<String> Joined, List<String> Muted, List<String> Banned, List<String> Ignoring ) {
+		this.ID = id;
+		this.player = null;
+		this.CurrentChannel = active;
+		this.Silenced = silence;
+		this.CanIgnore = canIgnore;
+		this.JoinedChannels = Joined;
+		this.MutedIn = Muted;
+		this.BannedFrom = Banned;
+		this.Ignoring = Ignoring;
+		return true;
+	}
+>>>>>>> Stashed changes
 }

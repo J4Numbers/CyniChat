@@ -140,13 +140,18 @@ public class Channel {
 		this.colour = ChatColor.GRAY;
 	}
 
+	public boolean setId( int newID ) {
+		this.ID = newID;
+		return true;
+	}
 
 	public boolean create(String name, String nick, Boolean protect ) {
-		this.ID = CyniChat.counter;
+		this.ID = 0;
 		this.name = name;
 		this.nick = nick;
 		this.protect = protect;
-		CyniChat.counter++;
+		this.desc = "";
+		this.pass = "";
 		
 		return true;
 	}
