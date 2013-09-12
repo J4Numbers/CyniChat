@@ -13,6 +13,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import uk.co.CyniCode.CyniChat.CyniChat;
 import uk.co.CyniCode.CyniChat.DataManager;
+import uk.co.CyniCode.CyniChat.PermissionManager;
 import uk.co.CyniCode.CyniChat.Channel.Channel;
 
 public class Chatter implements Listener {
@@ -51,6 +52,26 @@ public class Chatter implements Listener {
 		Player player = event.getPlayer();
 		UserDetails user = DataManager.getOnlineDetails( player );
 		Channel current = DataManager.getChannel( user.getCurrentChannel() );
+		
+		if ( user.getSilenced() ) {
+			player.sendMessage("You have been globally muted, you cannot talk.");
+			event.setCancelled(true);
+			return;
+		}
+		
+		if ( user.getMutedChannels().contains( current.getName() ) ) {
+			player.sendMessage("You have been muted in this channel, move to another channel to talk.");
+			event.setCancelled(true);
+			return;
+		}
+		
+		if ( current.isProtected() )
+			if ( PermissionManager.checkPerm( player, "cynichat.basic.talk."+current.getName().toLowerCase() ) == false ) {
+				player.sendMessage("You do not have the permission to talk here.");
+				event.setCancelled(true);
+				return;
+			}
+		
 		String format = "<CurrentChannel> <player> : <message>";
 		format = format.replace("<CurrentChannel>", current.getColour()+"["+current.getNick()+"]" );
 		format = format.replace("player", "%1$s");
@@ -68,6 +89,10 @@ public class Chatter implements Listener {
 			UserDetails users = DataManager.getOnlineDetails( currentPlayer );
 			CyniChat.printDebug( currentPlayer.getName() + " : " + users.getAllVerboseChannels() );
 			if ( !users.getAllChannels().contains( current.getName() ) ) {
+				all[Count] = currentPlayer;
+				Count++;
+			}
+			if ( ( users.getIgnoring().contains( user.getName() ) ) && ( users.getAllChannels().contains( current.getName() ) ) ) {
 				all[Count] = currentPlayer;
 				Count++;
 			}

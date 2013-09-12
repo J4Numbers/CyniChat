@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import uk.co.CyniCode.CyniChat.DataManager;
 import uk.co.CyniCode.CyniChat.PermissionManager;
 import uk.co.CyniCode.CyniChat.Channel.Channel;
+import uk.co.CyniCode.CyniChat.Chatting.UserDetails;
 
 public class JoinCommand {
 	
@@ -18,7 +19,12 @@ public class JoinCommand {
 	 */
 	public static boolean join( CommandSender player, String channel, String pass ) {
 		if ( DataManager.getChannel(channel) != null ) {
+			UserDetails user = DataManager.getDetails( player.getName() );
 			Channel NewChan = DataManager.getChannel(channel);
+			if ( user.getBannedChannels().contains( NewChan.getName() ) ) {
+				player.sendMessage("You are banned from this channel. Tch, tch, tch.");
+				return true;
+			}
 			DataManager.getDetails(player.getName()).joinChannel(NewChan, pass);
 			return true;
 		} else {

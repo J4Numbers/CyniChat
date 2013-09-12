@@ -40,7 +40,7 @@ public class ChCommand implements CommandExecutor {
 	 * Iterate through all potential commands to allow a player to execute commands
 	 */
 	public boolean onCommand(CommandSender player, Command comm, String Label, String[] args) {
-		//CyniChat.printDebug(player.getName() + " -> " + comm.getLabel() + " -> " + Label + " -> " + args[0].toString() + " -> " + args[1].toString());
+		//CyniChat.printDebug(player.getName() + " -> " + comm.getLabel() + " -> " + Label );
 		if ( args.length == 0 ) {
 			HelpCommand.info( player );
 			return true;
@@ -125,8 +125,10 @@ public class ChCommand implements CommandExecutor {
 			return true;
 		}
 		if ( args[0].equalsIgnoreCase("ignore") ) {
+			CyniChat.printDebug( "Ignoring..." );
 			if ( args.length == 2 ) {
 				MuteCommand.ignore( player, args[1] );
+				return true;
 			} else {
 				MuteCommand.ignoreInfo(player);
 				return true;
@@ -135,6 +137,7 @@ public class ChCommand implements CommandExecutor {
 		if ( args[0].equalsIgnoreCase("hear") ) {
 			if ( args.length == 2 ) {
 				MuteCommand.hear( player, args[1] );
+				return true;
 			} else {
 				MuteCommand.hearInfo(player);
 				return true;
@@ -171,6 +174,7 @@ public class ChCommand implements CommandExecutor {
 		if ( args[0].equalsIgnoreCase("remove") ) {
 			if ( args.length == 2 ) {
 				AdminCommand.remove( player, args[1] );
+				return true;
 			}
 			AdminCommand.removeInfo( player );
 			return true;
