@@ -139,16 +139,13 @@ public class UserDetails {
 	 * @return true when complete or false if no permission
 	 */
 	public boolean addMute( CommandSender muter, Channel channel ) {
-		if ( PermissionManager.checkPerm( (Player) muter, "cynichat.mod.mute."+channel.getName()) ) {
-			if ( !MutedIn.contains( channel.getName() ) ) {
-				MutedIn.add( channel.getName() );
-				muter.sendMessage("Player has been muted");
-				return true;
-			}
-			muter.sendMessage("Player was already muted");
+		if ( !MutedIn.contains( channel.getName() ) ) {
+			MutedIn.add( channel.getName() );
+			muter.sendMessage("Player has been muted");
 			return true;
 		}
-		return false;
+		muter.sendMessage("Player was already muted");
+		return true;
 	}
 	
 	/**
@@ -158,16 +155,13 @@ public class UserDetails {
 	 * @return true when complete or false with lack of perms
 	 */
 	public boolean remMute( CommandSender unmuter, Channel channel ) {
-		if ( PermissionManager.checkPerm( (Player) unmuter, "cynichat.mod.mute."+channel.getName()) ) {
-			if ( MutedIn.contains( channel.getName() ) ) {
-				MutedIn.remove( channel.getName() );
-				unmuter.sendMessage("Player has been unmuted");
-				return true;
-			}
-			unmuter.sendMessage("Player was already unmuted");
+		if ( MutedIn.contains( channel.getName() ) ) {
+			MutedIn.remove( channel.getName() );
+			unmuter.sendMessage("Player has been unmuted");
 			return true;
 		}
-		return false;
+		unmuter.sendMessage("Player was already unmuted");
+		return true;
 	}
 	
 	/**
@@ -177,22 +171,19 @@ public class UserDetails {
 	 * @return true when completed or false with insufficient permissions
 	 */
 	public boolean newBan( CommandSender banner, Channel channel ) {
-		if ( PermissionManager.checkPerm( (Player) banner, "cynichat.mod.ban."+channel.getName().toLowerCase() ) ) {
-			if ( !BannedFrom.contains( channel.getName() ) ) {
-				if ( JoinedChannels.contains( channel.getName() ) ) {
-					JoinedChannels.remove( channel.getName() );
-					if ( CurrentChannel.equals(channel.getName()) ) {
-						CurrentChannel = JoinedChannels.get(0);
-					}
+		if ( !BannedFrom.contains( channel.getName() ) ) {
+			if ( JoinedChannels.contains( channel.getName() ) ) {
+				JoinedChannels.remove( channel.getName() );
+				if ( CurrentChannel.equals(channel.getName()) ) {
+					CurrentChannel = JoinedChannels.get(0);
 				}
-				BannedFrom.add( channel.getName() );
-				banner.sendMessage("Player has been banned.");
-				return true;
 			}
-			banner.sendMessage("Player is already banned.");
+			BannedFrom.add( channel.getName() );
+			banner.sendMessage("Player has been banned.");
 			return true;
 		}
-		return false;
+		banner.sendMessage("Player is already banned.");
+		return true;
 	}
 	
 	/**
@@ -202,18 +193,13 @@ public class UserDetails {
 	 * @return true when complete or false when permissions are not granted
 	 */
 	public boolean remBan( CommandSender unbanner, Channel channel ) {
-		if ( PermissionManager.checkPerm( (Player) unbanner, "cynichat.mod.ban."+channel.getName().toLowerCase() ) ) {
-			if ( BannedFrom.contains(channel.getName().toLowerCase() ) ) {
-				BannedFrom.remove( channel.getName().toLowerCase() );
-				unbanner.sendMessage("The player has been unbanned.");
-			} else {
-				unbanner.sendMessage("This player was not banned.");
-			}
-			return true;
+		if ( BannedFrom.contains(channel.getName().toLowerCase() ) ) {
+			BannedFrom.remove( channel.getName().toLowerCase() );
+			unbanner.sendMessage("The player has been unbanned.");
 		} else {
-			unbanner.sendMessage("You do not have the sufficient perms for this action.");
-			return true;
+			unbanner.sendMessage("This player was not banned.");
 		}
+		return true;
 	}
 	
 	/**
@@ -223,19 +209,17 @@ public class UserDetails {
 	 * @return true when complete, false if the person doesn't have perms
 	 */
 	public boolean Kick( CommandSender kicker, Channel channel ) {
-		if ( PermissionManager.checkPerm( (Player) kicker, "cynichat.mod.kick."+channel.getName().toLowerCase() ) ) {
-			if ( JoinedChannels.contains( channel.getName().toLowerCase() ) ) {
-				JoinedChannels.remove( channel.getName().toLowerCase() );
-				if ( CurrentChannel.equals(channel.getName().toLowerCase() ) ) {
-					this.CurrentChannel = JoinedChannels.get(0);
-				}
-				kicker.sendMessage("Player has been kicked");
-				return true;
+		CyniChat.printDebug( kicker.getName() +" Attempted to kick "+ this.getName() + " from " + channel.getName() );
+		if ( JoinedChannels.contains( channel.getName().toLowerCase() ) ) {
+			JoinedChannels.remove( channel.getName().toLowerCase() );
+			if ( CurrentChannel.equals(channel.getName().toLowerCase() ) ) {
+				this.CurrentChannel = JoinedChannels.get(0);
 			}
-			kicker.sendMessage("Player was not in the channel");
+			kicker.sendMessage("Player has been kicked");
 			return true;
 		}
-		return false;
+		kicker.sendMessage("Player was not in the channel");
+		return true;
 	}
 	
 	/**
@@ -244,16 +228,13 @@ public class UserDetails {
 	 * @return true when complete, false with insufficient perms
 	 */
 	public boolean Silence( CommandSender silencer ) {
-		if ( PermissionManager.checkPerm( (Player) silencer, "cynichat.mod.silence") ) {
-			if ( this.Silenced == false ) {
-				this.Silenced = true;
-				silencer.sendMessage("Player has been muted");
-				return true;
-			}
-			silencer.sendMessage("Player is already muted");
+		if ( this.Silenced == false ) {
+			this.Silenced = true;
+			silencer.sendMessage("Player has been muted");
 			return true;
 		}
-		return false;
+		silencer.sendMessage("Player is already muted");
+		return true;
 	}
 	
 	/**
@@ -262,6 +243,7 @@ public class UserDetails {
 	 * @return true when complete, false with insufficient perms
 	 */
 	public boolean Listen( CommandSender listener ) {
+<<<<<<< Updated upstream
 		if ( PermissionManager.checkPerm( (Player) listener, "cynichat.mod.listener") ) {
 			if ( this.Silenced != false ) {
 				this.Silenced = false;
@@ -269,9 +251,15 @@ public class UserDetails {
 				return true;
 			}
 			listener.sendMessage("Player is already unmuted");
+=======
+		if ( this.Silenced == true ) {
+			this.Silenced = false;
+			listener.sendMessage("Player has been unmuted");
+>>>>>>> Stashed changes
 			return true;
 		}
-		return false;
+		listener.sendMessage("Player is already unmuted");
+		return true;
 	}
 	
 	/**

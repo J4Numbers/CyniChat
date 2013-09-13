@@ -48,13 +48,13 @@ public class HelpCommand {
 		player.sendMessage("/ch help          -> This screen");
 		player.sendMessage("/ch help channels -> Channel help menu");
 		player.sendMessage("/ch help users    -> Users help menu");
-		if ( PermissionManager.checkPerm( (Player) player, "cynichat.mod.help")) {
+		if ( !( player instanceof Player ) || (PermissionManager.checkPerm( (Player) player, "cynichat.mod.help")) ) {
 			player.sendMessage("/ch help mods     -> Mod help menu");
 		}
-		if ( PermissionManager.checkPerm( (Player) player, "cynichat.admin.help") ) {
+		if ( !( player instanceof Player ) || (PermissionManager.checkPerm( (Player) player, "cynichat.admin.help") ) ) {
 			player.sendMessage("/ch help admin    -> Admin help menu");
 		}
-		if ( PermissionManager.checkPerm( (Player) player, "cynichat.admin.reload")) {
+		if ( !( player instanceof Player ) || (PermissionManager.checkPerm( (Player) player, "cynichat.admin.reload")) ) {
 			player.sendMessage("/ch reload        -> Reload the config");
 		}
 		return true;
