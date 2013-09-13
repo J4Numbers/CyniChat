@@ -14,7 +14,7 @@ public class MsgCommand implements CommandExecutor {
 
 	public boolean onCommand(CommandSender player, Command command, String key, String[] objects) {
 		if ( PermissionManager.checkPerm( (Player) player, "cynichat.basic.msg") ) {
-			if ( objects[1] != null ) {
+			if ( objects.length == 2 ) {
 				try {
 					CyniChat.printDebug(objects[0]);
 					UserDetails person = DataManager.returnAllOnline().get( objects[0].toLowerCase() );
