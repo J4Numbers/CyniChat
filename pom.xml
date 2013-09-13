@@ -8,17 +8,17 @@
   
   <repositories>
     <repository>
-          <id>vault-repo</id>
-          <url>http://ci.herocraftonline.com/plugin/repository/everything</url>
+    <!-- Bukkit can be found at the following repository -->
+          <id>bukkit-repo</id>
+          <url>http://repo.bukkit.org/content/groups/public/</url>
     </repository>
     <repository>
           <id>dev-repo</id>
           <url>http://dev.escapecraft.com/maven</url>
     </repository>
-        <!-- Bukkit can be found at the following repository -->
     <repository>
-          <id>bukkit-repo</id>
-          <url>http://repo.bukkit.org/content/groups/public/</url>
+          <id>vault-repo</id>
+          <url>http://ci.herocraftonline.com/plugin/repository/everything</url>
     </repository>
   </repositories>
   
@@ -30,7 +30,7 @@
       <dependency>
           <groupId>org.bukkit</groupId>
           <artifactId>craftbukkit</artifactId>
-          <version>1.5.2-R1.0</version>
+          <version>1.6.2-R0.1</version>
       </dependency>
       <dependency>
           <groupId>net.milkbowl.vault</groupId>
@@ -41,7 +41,7 @@
           <groupId>org.bukkit</groupId>
           <artifactId>bukkit</artifactId>
           <!-- Bukkit API Version, change if nessesary -->
-          <version>1.5.2-R1.0</version>
+          <version>1.6.2-R0.1</version>
       </dependency>
   </dependencies>
     
