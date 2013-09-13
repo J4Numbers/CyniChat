@@ -41,6 +41,8 @@ public class CyniChat extends JavaPlugin{
 	public static String prefix;
 	public static String def_chan;
 	public static boolean debug;
+	
+	private static PluginManager pm;
 
 	public static int counter;
 	
@@ -57,7 +59,7 @@ public class CyniChat extends JavaPlugin{
         log.info(name + " version " + version + " has started...");
         
         //Start up the managers and the configs and all that
-        PluginManager pm = getServer().getPluginManager();
+        pm = getServer().getPluginManager();
         getConfig().options().copyDefaults(true);
         saveConfig();
         
@@ -147,6 +149,12 @@ public class CyniChat extends JavaPlugin{
 			printSevere("Failiure of epic proportions!");
 			e.printStackTrace();
 		}
+	}
+
+	public static void killPlugin() {
+		printSevere("Fatal error has occured...");
+		printSevere("Killing...");
+		pm.disablePlugin(self);
 	}
     
 }
