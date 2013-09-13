@@ -166,10 +166,6 @@ public class DataManager {
 	 * @param file
 	 */
 	public static void saveUserDetails(){
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> newfix
 		if ( CyniChat.SQL == true ) {
 			Connection.saveUsers(loadedUsers);
 			return;
@@ -179,11 +175,6 @@ public class DataManager {
 			Connection.saveUsers(loadedUsers);
 			return;
 		}
-<<<<<<< HEAD
->>>>>>> Stashed changes
->>>>>>> develop
-=======
->>>>>>> newfix
 		try {
 			FileWriter fw = new FileWriter( userFile );
 			gson.toJson(loadedUsers, fw);
