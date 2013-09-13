@@ -39,13 +39,9 @@ public class MySQLManager {
 	private PreparedStatement AddBan;
 	private PreparedStatement AddMute;
 	private PreparedStatement JoinChannel;
-	private PreparedStatement RemBan;
-	private PreparedStatement RemMute;
-	private PreparedStatement LeaveChannel;
 	private PreparedStatement UpdateChannel;
 	private PreparedStatement UpdatePlayer;
 	private PreparedStatement AddIgnoring;
-	private PreparedStatement RemIgnoring;
 	
 	public boolean startConnection( CyniChat plugin ) {
 		this.hostname = plugin.getConfig().getString("CyniChat.database.host");
@@ -97,40 +93,33 @@ public class MySQLManager {
 	private boolean prepareStatements() {
 		try {
 			InsertPlayer = conn.prepareStatement("INSERT INTO `"+Prefix+"players` "
-					+ "(`player_name`,`player_name_clean`,`active_channel`) "
-					+ "VALUES (?,?,?)", Statement.RETURN_GENERATED_KEYS);
-			InsertChannel = conn.prepareStatement("INSERT INTO `"+Prefix+"players` "
+					+ "(`player_name`,`player_name_clean`,`active_channel`,`can_ignore`) "
+					+ "VALUES (?,?,?,'1')", Statement.RETURN_GENERATED_KEYS);
+			InsertChannel = conn.prepareStatement("INSERT INTO `"+Prefix+"channels` "
 					+ "(`channel_name`,`channel_name_clean`,`channel_nickname`,`channel_pass`) "
 					+ "VALUES (?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
 			AddBan = conn.prepareStatement("INSERT INTO `"+Prefix+"banned` "
-					+ "(`banner_id`,`bannee_id`,`channel_id`,`reason`) "
-					+ "VALUES (?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
-			AddMute = conn.prepareStatement("UPDATE `"+Prefix+"current_channel` "
-					+ "SET `muted`='1' "
-					+ "WHERE `player_id`=?", Statement.RETURN_GENERATED_KEYS);
+					+ "(`bannee_id`,`channel_id`) VALUES (?,?) "
+					+ "ON DUPLICATE KEY UPDATE `bannee_id`=`bannee_id`", Statement.RETURN_GENERATED_KEYS);
+			AddMute = conn.prepareStatement("INSERT INTO `"+Prefix+"muted` "
+					+ "(`mutee_id`,`channel_id`) VALUES (?,?) "
+					+ "ON DUPLICATE KEY UPDATE `mutee_id`=`mutee_id`", Statement.RETURN_GENERATED_KEYS);
 			JoinChannel = conn.prepareStatement("INSERT INTO `"+Prefix+"current_channel` "
 					+ "(`player_id`,`channel_id`) "
 					+ "VALUES (?,?)", Statement.RETURN_GENERATED_KEYS);
-			RemBan = conn.prepareStatement("DELETE FROM `"+Prefix+"banned` "
-					+ "WHERE (`player_id`=?) AND (`channel_id`=?)", Statement.RETURN_GENERATED_KEYS);
-			RemMute = conn.prepareStatement("UPDATE `"+Prefix+"current_channel` "
-					+ "SET `muted`='0'"
-					+ "WHERE `player_id`=?", Statement.RETURN_GENERATED_KEYS);
-			LeaveChannel = conn.prepareStatement("DELETE FROM `"+Prefix+"current_channel` "
-					+ "WHERE (`player_id`=?) AND (`channel_id`=?)", Statement.RETURN_GENERATED_KEYS);
 			UpdateChannel = conn.prepareStatement("UPDATE `"+Prefix+"channels` "
 					+ "SET `channel_desc`=?, "
 					+ "`channel_colour`=?, "
-					+ "`channel_protected`=?", Statement.RETURN_GENERATED_KEYS);
+					+ "`channel_protected`=? "
+					+ "WHERE `channel_id`=?", Statement.RETURN_GENERATED_KEYS);
 			UpdatePlayer = conn.prepareStatement("UPDATE `"+Prefix+"players` "
 					+ "SET `active_channel`=?, "
 					+ "`player_silenced`=?, "
-					+ "`can_ignore`=?", Statement.RETURN_GENERATED_KEYS);
+					+ "`can_ignore`=? "
+					+ "WHERE `player_id`=?", Statement.RETURN_GENERATED_KEYS);
 			AddIgnoring = conn.prepareStatement("INSERT INTO `"+Prefix+"ignoring` "
-					+ "(`ignorer_id`,`ignoree_id`) "
-					+ "VALUES (?,?)", Statement.RETURN_GENERATED_KEYS);
-			RemIgnoring = conn.prepareStatement("DELETE FROM `"+Prefix+"ignoring` "
-					+ "WHERE (`ignorer_id`=?) AND (`ignoree_id`=?)", Statement.RETURN_GENERATED_KEYS);
+					+ "(`ignorer_id`,`ignoree_id`) VALUES (?,?) "
+					+ "ON DUPLICATE KEY UPDATE `ignorer_id`=`ignorer_id`", Statement.RETURN_GENERATED_KEYS);
 		} catch (SQLException e) {
 			CyniChat.printSevere("Statement preparation has failed!");
 			e.printStackTrace();
@@ -150,16 +139,23 @@ public class MySQLManager {
 				current.printAll();
 				while (rs.next())
 					if ( rs.getInt(1) == 0 ) {
-						InsertChannel.setString(0, current.getName());
-						InsertChannel.setString(1, current.getName().toLowerCase());
-						InsertChannel.setString(2, current.getNick());
-						InsertChannel.setString(3, current.getPass());
+						InsertChannel.setString(1, current.getName());
+						InsertChannel.setString(2, current.getName().toLowerCase());
+						InsertChannel.setString(3, current.getNick());
+						InsertChannel.setString(4, current.getPass());
 						InsertChannel.execute();
+						
+						ResultSet generatedKeys = InsertChannel.getGeneratedKeys();
+						if (generatedKeys.next()) {
+							current.setId( generatedKeys.getInt(1) );
+						}
+						
 						InsertChannel.clearParameters();
 					}
-				UpdateChannel.setString(0, current.getDesc());
-				UpdateChannel.setString(1, current.getColour().name());
-				UpdateChannel.setBoolean(2, current.isProtected());
+				UpdateChannel.setString(1, current.getDesc());
+				UpdateChannel.setString(2, current.getColour().name());
+				UpdateChannel.setBoolean(3, current.isProtected());
+				UpdateChannel.setInt( 4, current.getID() );
 				UpdateChannel.execute();
 				UpdateChannel.clearParameters();
 			} catch (SQLException e) {
@@ -172,56 +168,96 @@ public class MySQLManager {
 	
 	public void saveUsers(Map<String, UserDetails> loadedPlayers) {
 		Set<String> keys = loadedPlayers.keySet();
-		Iterator<String> keyIterate = keys.iterator();
-		while (keyIterate.hasNext()) {
-			UserDetails current = loadedPlayers.get(keyIterate.next());
+		Iterator<String> keyIterate1 = keys.iterator();
+		while (keyIterate1.hasNext()) {
+			String username = keyIterate1.next();
+			UserDetails current = loadedPlayers.get( username );
 			try {
-				PreparedStatement ps = conn.prepareStatement("SELECT COUNT(*) FROM `"+Prefix+"players` WHERE `player_name`='"+current.getPlayer().getName()+"'");
+				PreparedStatement ps = conn.prepareStatement("SELECT COUNT(*) FROM `"+Prefix+"players` WHERE `player_id`='"+current.getID()+"'");
 				ResultSet rs = ps.executeQuery();
 				while (rs.next())
 					if (rs.getInt(1) == 0) {
-						InsertPlayer.setString(0, current.getPlayer().getName());
-						InsertPlayer.setString(1, current.getPlayer().getName().toLowerCase());
-						InsertPlayer.setInt(2, DataManager.returnAllChannels().get( current.getCurrentChannel() ).getID());
+						InsertPlayer.setString(1, username );
+						InsertPlayer.setString(2, username.toLowerCase());
+						InsertPlayer.setInt(3, DataManager.returnAllChannels().get( current.getCurrentChannel() ).getID());
 						InsertPlayer.execute();
+						
+						ResultSet generatedKeys = InsertPlayer.getGeneratedKeys();
+						if (generatedKeys.next()) {
+							current.setId( generatedKeys.getInt(1) );
+						}
+						
 						InsertPlayer.clearParameters();
 					} else {
-						UpdatePlayer.setInt(0, DataManager.returnAllChannels().get( current.getCurrentChannel() ).getID());
-						UpdatePlayer.setBoolean(1, current.getSilenced());
-						UpdatePlayer.setBoolean(2, current.canIgnore());
+						UpdatePlayer.setInt(1, DataManager.returnAllChannels().get( current.getCurrentChannel() ).getID());
+						UpdatePlayer.setBoolean(2, current.getSilenced());
+						UpdatePlayer.setBoolean(3, current.canIgnore());
+						UpdatePlayer.setInt(4, current.getID() );
 						UpdatePlayer.execute();
 						UpdatePlayer.clearParameters();
 					}
 				ps.close();
 				rs.close();
-				
-				PreparedStatement ps2 = conn.prepareStatement("DELETE FROM `"+Prefix+"current_channels` WHERE `player_id`='"+current.getID()+"'");
+			} catch (SQLException e) {
+			}
+		}
+		
+		Iterator<String> keyIterate2 = keys.iterator();
+		while (keyIterate2.hasNext()) {
+			String username = keyIterate2.next();
+			UserDetails current = loadedPlayers.get( username );
+			try {
+				PreparedStatement ps2 = conn.prepareStatement("DELETE FROM `"+Prefix+"current_channel` WHERE `player_id`='"+current.getID()+"'");
 				ps2.execute();
 				ps2.close();
 				List<String> Joined = current.getAllChannels();
 				Iterator<String> joinIter = Joined.iterator();
 				while (joinIter.hasNext()) {
 					Channel curChan = DataManager.getChannel(joinIter.next());
-					JoinChannel.setInt(0, current.getID());
-					JoinChannel.setInt(1, curChan.getID());
+					JoinChannel.setInt(1, current.getID());
+					JoinChannel.setInt(2, curChan.getID());
 					JoinChannel.execute();
 					JoinChannel.clearParameters();
 				}
 				
-				PreparedStatement ps4 = conn.prepareStatement("DELETE FROM `"+Prefix+"ignoring` WHERE `player_id`='"+current.getID()+"'");
+				PreparedStatement ps4 = conn.prepareStatement("DELETE FROM `"+Prefix+"ignoring` WHERE `ignorer_id`='"+current.getID()+"'");
 				ps4.execute();
 				ps4.close();
 				List<String> Ignoring = current.getIgnoring();
 				Iterator<String> ignoIter = Ignoring.iterator();
 				while (ignoIter.hasNext()) {
-					AddIgnoring.setInt(0, current.getID());
-					AddIgnoring.setInt(1, DataManager.getDetails(ignoIter.next()).getID());
+					AddIgnoring.setInt(1, current.getID());
+					AddIgnoring.setInt(2, DataManager.getDetails(ignoIter.next()).getID());
 					AddIgnoring.execute();
 					AddIgnoring.clearParameters();
 				}
 				
+				PreparedStatement ps5 = conn.prepareStatement("DELETE FROM `"+Prefix+"muted` WHERE `mutee_id`='"+current.getID()+"'");
+				ps5.execute();
+				ps5.close();
+				List<String> mutedIn = current.getMutedChannels();
+				Iterator<String> muteIter = mutedIn.iterator();
+				while ( muteIter.hasNext() ) {
+					AddMute.setInt( 1, current.getID() );
+					AddMute.setInt( 2, DataManager.getChannel( muteIter.next() ).getID() );
+					AddMute.execute();
+					AddMute.clearParameters();
+				}
+				
+				PreparedStatement ps6 = conn.prepareStatement("DELETE FROM `"+Prefix+"banned` WHERE `bannee_id`='"+current.getID()+"'");
+				ps6.execute();
+				ps6.close();
+				List<String> bannedIn = current.getBannedChannels();
+				Iterator<String> bannIter = bannedIn.iterator();
+				while ( bannIter.hasNext() ) {
+					AddBan.setInt( 1, current.getID() );
+					AddBan.setInt( 2, DataManager.getChannel( bannIter.next() ).getID() );
+					AddBan.execute();
+					AddBan.clearParameters();
+				}
+				
 			} catch (SQLException e) {
-				CyniChat.printSevere("Saving failed on player: "+current.getPlayer().getName());
+				CyniChat.printSevere("Saving failed on player: "+username);
 				e.printStackTrace();
 				return;
 			}
@@ -230,7 +266,9 @@ public class MySQLManager {
 	
 	public Map<String, UserDetails> returnPlayers() {
 		try {
-			PreparedStatement ps = conn.prepareStatement("SELECT * FROM `"+Prefix+"players`");
+			PreparedStatement ps = conn.prepareStatement(
+					  "SELECT `player_id`,`player_name`,`channel_name`,`player_silenced`,`can_ignore` FROM `"+Prefix+"players` "
+					+ "INNER JOIN `"+Prefix+"channels` ON "+Prefix+"channels.`channel_id`="+Prefix+"players.`active_channel`" );
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
 				String name;
@@ -242,39 +280,45 @@ public class MySQLManager {
 				List<String> BannedFrom = new ArrayList<String>();
 				List<String> MutedIn = new ArrayList<String>();
 				name = rs.getString(2);
-				active = rs.getString(4);
-				silenced = rs.getBoolean(5);
-				canIgnore = rs.getBoolean(6);
+				active = rs.getString(3);
+				silenced = rs.getBoolean(4);
+				canIgnore = rs.getBoolean(5);
 				
-				PreparedStatement ps2 = conn.prepareStatement("SELECT * FROM `"+Prefix+"current_channel` "
+				PreparedStatement ps2 = conn.prepareStatement("SELECT `channel_name` FROM `"+Prefix+"current_channel` "
 						+ "INNER JOIN `"+Prefix+"channels` ON "+Prefix+"channels.channel_id="+Prefix+"current_channel.channel_id "
 						+ "WHERE "+Prefix+"current_channel.player_id='"+rs.getInt(1)+"'");
 				ResultSet rs2 = ps2.executeQuery();
 				while (rs2.next()) {
-					JoinedChannels.add( rs2.getString(7) );
-					if ( rs2.getBoolean(4) == true )
-						MutedIn.add( rs2.getString(7) );
+					JoinedChannels.add( rs2.getString(1) );
 				}
 				rs2.close();
 				ps2.close();
 				
-				PreparedStatement ps3 = conn.prepareStatement("SELECT * FROM `"+Prefix+"ignoring` "
-						+ "INNER JOIN `players` ON "+Prefix+"players.player_id="+Prefix+"ignoring.ignoree_id "
+				PreparedStatement ps3 = conn.prepareStatement("SELECT `player_name` FROM `"+Prefix+"ignoring` "
+						+ "INNER JOIN `"+Prefix+"players` ON "+Prefix+"players.player_id="+Prefix+"ignoring.ignoree_id "
 						+ "WHERE "+Prefix+"ignoring.ignorer_id='"+rs.getInt(1)+"'");
 				ResultSet rs3 = ps3.executeQuery();
 				while ( rs3.next() )
-					Ignoring.add( rs3.getString(5) );
+					Ignoring.add( rs3.getString(1) );
 				rs3.close();
 				ps3.close();
 				
-				PreparedStatement ps4 = conn.prepareStatement("SELECT * FROM `"+Prefix+"banned` "
-						+ "INNER JOIN `"+Prefix+"channels` ON "+Prefix+"channels.channel_id="+Prefix+"banned.channel_id"
+				PreparedStatement ps4 = conn.prepareStatement("SELECT `channel_name` FROM `"+Prefix+"banned` "
+						+ "INNER JOIN `"+Prefix+"channels` ON "+Prefix+"channels.`channel_id`="+Prefix+"banned.`channel_id` "
 						+ "WHERE "+Prefix+"banned.bannee_id='"+rs.getInt(1)+"'");
 				ResultSet rs4 = ps4.executeQuery();
 				while ( rs4.next() )
-					BannedFrom.add(rs4.getString(4));
+					BannedFrom.add( rs4.getString(1) );
 				ps4.close();
 				rs4.close();
+				
+				PreparedStatement ps5 = conn.prepareStatement( "SELECT `channel_name` FROM `"+Prefix+"muted` "
+						+ "INNER JOIN `"+Prefix+"channels` ON "+Prefix+"channels.channel_id="+Prefix+"muted.channel_id "
+						+ "WHERE "+Prefix+"muted.`mutee_id`='"+rs.getInt(1)+"'");
+				ResultSet rs5 = ps5.executeQuery();
+				while ( rs5.next() )
+					MutedIn.add( rs5.getString(1) );
+				
 				UserDetails current = new UserDetails();
 				current.loadData( rs.getInt(1), active, silenced, canIgnore, JoinedChannels, MutedIn, BannedFrom, Ignoring);
 				Players.put(name, current);
@@ -383,12 +427,10 @@ public class MySQLManager {
 				CyniChat.printWarning("No 'current_channel' table found, attempting to regenerate...");
 				PreparedStatement ps = conn
 						.prepareStatement("CREATE TABLE IF NOT EXISTS `" + prefix + "current_channel` ( "
-								+ "`rec_id` int not null auto_increment, "
 								+ "`player_id` int not null, "
 								+ "`channel_id` int not null, "
-								+ "`muted` tinyint(1) null, "
 								+ "`mod` tinyint(1) null, "
-								+ "PRIMARY KEY (rec_id), "
+								+ "UNIQUE KEY `current_chan` (`player_id`,`channel_id`), "
 								+ "FOREIGN KEY (player_id) REFERENCES "+prefix+"players(player_id), "
 								+ "FOREIGN KEY (channel_id) REFERENCES "+prefix+"channels(channel_id) "
 								+ ");" );
@@ -407,13 +449,9 @@ public class MySQLManager {
 				CyniChat.printWarning("No 'banned' table found, attempting to regenerate...");
 				PreparedStatement ps = conn
 						.prepareStatement("CREATE TABLE IF NOT EXISTS `" + prefix + "banned` ( "
-								+ "`ban_id` int not null auto_increment, "
-								+ "`banner_id` int not null, "
 								+ "`bannee_id` int not null, "
 								+ "`channel_id` int not null, "
-								+ "`reason` varchar(128), "
-								+ "PRIMARY KEY (ban_id), "
-								+ "FOREIGN KEY (banner_id) REFERENCES "+prefix+"players(player_id), "
+								+ "UNIQUE KEY `banned_chan` (`bannee_id`,`channel_id`), "
 								+ "FOREIGN KEY (bannee_id) REFERENCES "+prefix+"players(player_id), "
 								+ "FOREIGN KEY (channel_id) REFERENCES "+prefix+"channels(channel_id) "
 								+ ");" );
@@ -432,10 +470,9 @@ public class MySQLManager {
 				CyniChat.printWarning("No 'ignoring' table found, attempting to create one...");
 				PreparedStatement ps = conn
 						.prepareStatement("CREATE TABLE IF NOT EXISTS `" + prefix + "ignoring` ( "
-								+ "`ignore_id` int not null auto_increment, "
 								+ "`ignorer_id` int not null, "
 								+ "`ignoree_id` int not null, "
-								+ "PRIMARY KEY (ignore_id), "
+								+ "UNIQUE KEY `ignoring_chan` (`ignorer_id`,`ignoree_id`), "
 								+ "FOREIGN KEY (ignorer_id) REFERENCES "+prefix+"players(player_id), "
 								+ "FOREIGN KEY (ignoree_id) REFERENCES "+prefix+"players(player_id) "
 								+ ");" );
@@ -445,6 +482,27 @@ public class MySQLManager {
 			} else {
 				CyniChat.printInfo("Ignoring table found");
 			}
+			
+			//Muted
+			CyniChat.printInfo("Searching for muted table");
+			rs = conn.getMetaData().getTables(null, null, prefix + "muted", null);
+			if (!rs.next()) {
+				CyniChat.printWarning("No 'muted' table found, attempting to create one...");
+				PreparedStatement ps = conn
+						.prepareStatement("CREATE TABLE IF NOT EXISTS `" + prefix + "muted` ( "
+								+ "`channel_id` int not null, "
+								+ "`mutee_id` int not null, "
+								+ "UNIQUE KEY `muted_chan` (`channel_id`,`mutee_id`), "
+								+ "FOREIGN KEY (channel_id) REFERENCES "+prefix+"channels(channel_id), "
+								+ "FOREIGN KEY (mutee_id) REFERENCES "+prefix+"players(player_id) "
+								+ ");" );
+				ps.executeUpdate();
+				ps.close();
+				CyniChat.printWarning("'muted' table created!");
+			} else {
+				CyniChat.printInfo("Muted table found");
+			}
+			
 			rs.close();
 			
 		} catch (SQLException e) {

@@ -167,20 +167,23 @@ public class DataManager {
 	 */
 	public static void saveUserDetails(){
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> newfix
 		if ( CyniChat.SQL == true ) {
 			Connection.saveUsers(loadedUsers);
 			return;
 		}
-=======
-<<<<<<< Updated upstream
-=======
 		if ( CyniChat.SQL == true ) {
 			printAllUsers();
 			Connection.saveUsers(loadedUsers);
 			return;
 		}
+<<<<<<< HEAD
 >>>>>>> Stashed changes
 >>>>>>> develop
+=======
+>>>>>>> newfix
 		try {
 			FileWriter fw = new FileWriter( userFile );
 			gson.toJson(loadedUsers, fw);

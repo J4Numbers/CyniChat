@@ -12,7 +12,7 @@ public class AdminCommand {
 
 	public static boolean create( CommandSender player, String name, String nick, Boolean protect ) {
 		if ( PermissionManager.checkPerm( (Player) player, "cynichat.admin.create") ) {
-			if ( DataManager.getChannel(name) == null ) {
+			if ( DataManager.getChannel(name) != null ) {
 				player.sendMessage("This channel is already in existance");
 				return true;
 			}
