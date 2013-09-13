@@ -243,19 +243,9 @@ public class UserDetails {
 	 * @return true when complete, false with insufficient perms
 	 */
 	public boolean Listen( CommandSender listener ) {
-<<<<<<< Updated upstream
-		if ( PermissionManager.checkPerm( (Player) listener, "cynichat.mod.listener") ) {
-			if ( this.Silenced != false ) {
-				this.Silenced = false;
-				listener.sendMessage("Player has been unmuted");
-				return true;
-			}
-			listener.sendMessage("Player is already unmuted");
-=======
 		if ( this.Silenced == true ) {
 			this.Silenced = false;
 			listener.sendMessage("Player has been unmuted");
->>>>>>> Stashed changes
 			return true;
 		}
 		listener.sendMessage("Player is already unmuted");
