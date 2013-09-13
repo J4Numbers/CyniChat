@@ -19,14 +19,7 @@ import uk.co.CyniCode.CyniChat.Channel.Channel;
  */
 public class UserDetails {
 	
-<<<<<<< HEAD
-	private int ID;
-=======
-<<<<<<< Updated upstream
-=======
 	private int ID = 0;
->>>>>>> Stashed changes
->>>>>>> localfix2
 	private Player player;
 	@Expose
 	private String CurrentChannel = CyniChat.def_chan;
@@ -516,24 +509,16 @@ public class UserDetails {
 	public String getLatest() {
 		return this.LastMessage;
 	}
-<<<<<<< HEAD
-=======
-<<<<<<< Updated upstream
-=======
->>>>>>> localfix2
 
 	public int getID() {
 		return this.ID;
 	}
 
-<<<<<<< HEAD
-=======
 	public boolean setId( int newId ) {
 		this.ID = newId;
 		return true;
 	}
 
->>>>>>> localfix2
 	public Boolean loadData( int id, String active, Boolean silence, Boolean canIgnore, List<String> Joined, List<String> Muted, List<String> Banned, List<String> Ignoring ) {
 		this.ID = id;
 		this.player = null;
@@ -546,8 +531,4 @@ public class UserDetails {
 		this.Ignoring = Ignoring;
 		return true;
 	}
-<<<<<<< HEAD
-=======
->>>>>>> Stashed changes
->>>>>>> localfix2
 }
