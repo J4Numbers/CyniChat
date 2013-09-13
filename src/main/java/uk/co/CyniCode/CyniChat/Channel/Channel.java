@@ -142,7 +142,7 @@ public class Channel {
 	}
 	
 	public boolean setColor( String newColor ) {
-		this.colour = ChatColor.valueOf( newColor );
+		this.colour = ChatColor.valueOf( newColor.toUpperCase() );
 		return true;
 	}
 

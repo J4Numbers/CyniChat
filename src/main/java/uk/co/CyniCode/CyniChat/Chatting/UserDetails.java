@@ -302,7 +302,8 @@ public class UserDetails {
 				player.sendMessage("You are now talking in "+ newChan.getName() );
 				return true;
 			}
-			return false;
+			player.sendMessage("You could not join this channel for some reason or another... unlucky.");
+			return true;
 		}
 		if ( newChan.equalsPass( pass ) ) {
 			if ( !this.JoinedChannels.contains( newChan.getName() ) ) {
@@ -312,7 +313,8 @@ public class UserDetails {
 			player.sendMessage("You are now talking in "+ newChan.getName() );
 			return true;
 		}
-		return false;
+		player.sendMessage("This channel requires the 'correct' password. Not the wrong one.");
+		return true;
 	}
 	
 	/**
