@@ -11,6 +11,7 @@ import uk.co.CyniCode.CyniChat.Channel.Channel;
 public class AdminCommand {
 
 	public static boolean create( CommandSender player, String name, String nick, Boolean protect ) {
+<<<<<<< Updated upstream
 		if ( PermissionManager.checkPerm( (Player) player, "cynichat.admin.create") ) {
 			if ( DataManager.getChannel(name) == null ) {
 				player.sendMessage("This channel is already in existance");
@@ -21,21 +22,35 @@ public class AdminCommand {
 			DataManager.addChannel( newChan );
 			PermissionManager.addChannelPerms( player, newChan, protect );
 			player.sendMessage( "The channel: " + name + " has now been created" );
+=======
+		if ( player instanceof Player )
+			if ( !PermissionManager.checkPerm( (Player) player, "cynichat.admin.create") )
+				return false;
+		
+		if ( DataManager.getChannel(name) != null ) {
+			player.sendMessage("This channel is already in existance");
+>>>>>>> Stashed changes
 			return true;
 		}
-		return false;
+		Channel newChan = new Channel();
+		newChan.create( name, nick, protect );
+		DataManager.addChannel( newChan );
+		PermissionManager.addChannelPerms( player, newChan, protect );
+		player.sendMessage( "The channel: " + name + " has now been created" );
+		return true;
 	}
 
 	public static boolean remove( CommandSender player, String name ) {
-		if ( PermissionManager.checkPerm( (Player) player, "cynichat.admin.remove") ) {
-			if ( DataManager.deleteChannel( name ) == true ) {
-				player.sendMessage("Channel has been removed");
-				return true;
-			}
-			player.sendMessage("This channel doesn't exist");
+		if ( player instanceof Player )
+			if ( PermissionManager.checkPerm( (Player) player, "cynichat.admin.remove") )
+				return false;
+		
+		if ( DataManager.deleteChannel( name ) == true ) {
+			player.sendMessage("Channel has been removed");
 			return true;
 		}
-		return false;
+		player.sendMessage("This channel doesn't exist");
+		return true;
 	}
 
 	public static boolean createInfo( CommandSender player ) {

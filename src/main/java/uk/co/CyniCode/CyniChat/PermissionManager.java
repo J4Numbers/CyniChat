@@ -20,10 +20,14 @@ public class PermissionManager {
 	}
 	
 	public static boolean checkPerm( Player player, String node ) {
+		if ( !( player instanceof Player ) ) return true;
+		CyniChat.printDebug("Checking node: "+node+" for player: "+player.getDisplayName() );
 		return perms.has( player, node );
 	}
 
 	public static boolean addChannelPerms( CommandSender player, Channel channel, Boolean protect ) {
+		if ( player instanceof Player )
+			return true;
 		CyniChat.printDebug("Player : "+player.getName());
 		CyniChat.printDebug("Node : cynichat.mod.kick."+channel.getName().toLowerCase() );
 		perms.playerAdd( (Player) player, "cynichat.mod.kick."+channel.getName().toLowerCase() );

@@ -13,32 +13,32 @@ import uk.co.CyniCode.CyniChat.Chatting.UserDetails;
 public class MsgCommand implements CommandExecutor {
 
 	public boolean onCommand(CommandSender player, Command command, String key, String[] objects) {
-		if ( PermissionManager.checkPerm( (Player) player, "cynichat.basic.msg") ) {
-			if ( objects.length == 2 ) {
-				try {
-					CyniChat.printDebug(objects[0]);
-					UserDetails person = DataManager.returnAllOnline().get( objects[0].toLowerCase() );
-					person.printAll();
-					String Message = stacker( objects );
-					CyniChat.printDebug( Message );
-					player.sendMessage("To "+person.getPlayer().getName()+" :"+Message);
-					person.getPlayer().sendMessage( "From "+player.getName()+" :"+Message );
-					person.changeLatest( player.getName().toLowerCase() );
-					CyniChat.printDebug( person.getLatest() );
-					UserDetails user = DataManager.getOnlineDetails( (Player) player );
-					user.changeLatest( person.getName() );
-					CyniChat.printDebug( user.getLatest() );
-					return true;
-				} catch ( NullPointerException e ) {
-					player.sendMessage("This player is not online");
-					e.printStackTrace();
-					return true;
-				}
+		if ( player instanceof Player )
+			if ( !PermissionManager.checkPerm( (Player) player, "cynichat.basic.msg") )
+				return false;
+		if ( objects.length == 2 ) {
+			try {
+				CyniChat.printDebug(objects[0]);
+				UserDetails person = DataManager.returnAllOnline().get( objects[0].toLowerCase() );
+				person.printAll();
+				String Message = stacker( objects );
+				CyniChat.printDebug( Message );
+				player.sendMessage("To "+person.getPlayer().getName()+" :"+Message);
+				person.getPlayer().sendMessage( "From "+player.getName()+" :"+Message );
+				person.changeLatest( player.getName().toLowerCase() );
+				CyniChat.printDebug( person.getLatest() );
+				UserDetails user = DataManager.getOnlineDetails( (Player) player );
+				user.changeLatest( person.getName() );
+				CyniChat.printDebug( user.getLatest() );
+				return true;
+			} catch ( NullPointerException e ) {
+				player.sendMessage("This player is not online");
+				e.printStackTrace();
+				return true;
 			}
-			player.sendMessage("Please enter a message to send");
-			return true;
 		}
-		return false;
+		player.sendMessage("Please enter a message to send");
+		return true;
 	}
 	
 	public String stacker( String[] stacking ) {

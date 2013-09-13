@@ -3,6 +3,7 @@ package uk.co.CyniCode.CyniChat.Command;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.ChatColor;
 
 import uk.co.CyniCode.CyniChat.CyniChat;
@@ -54,6 +55,7 @@ public class ChCommand implements CommandExecutor {
 			return true;
 		}
 		if ( args[0].equalsIgnoreCase("join") ) {
+			if ( !( player instanceof Player ) ) return true;
 			if ( args.length < 2 || args.length > 3 ) {
 				JoinCommand.info( player );
 				return true;
@@ -68,6 +70,7 @@ public class ChCommand implements CommandExecutor {
 			}
 		}
 		if ( args[0].equalsIgnoreCase("leave") ) {
+			if ( !( player instanceof Player ) ) return true;
 			if ( args.length != 2 ) {
 				LeaveCommand.info( player );
 				return true;
@@ -77,7 +80,7 @@ public class ChCommand implements CommandExecutor {
 			}
 		}
 		if ( args[0].equalsIgnoreCase("ban") ) {
-			if ( args.length == 2 ) {
+			if ( ( args.length == 2 ) || ( args.length == 3 ) ) {
 				if ( args.length == 3 ) {
 					BanCommand.ban( player, DataManager.getChannel( args[2].toLowerCase() ), args[1] );
 					return true;
@@ -89,7 +92,7 @@ public class ChCommand implements CommandExecutor {
 			return true;
 		}
 		if ( args[0].equalsIgnoreCase("unban") ) {
-			if ( args.length == 2 ) {
+			if ( ( args.length == 2 ) || ( args.length == 3 ) ) {
 				if ( args.length == 3 ) {
 					BanCommand.unban( player, DataManager.getChannel( args[2].toLowerCase() ), args[1] );
 					return true;
@@ -101,7 +104,7 @@ public class ChCommand implements CommandExecutor {
 			return true;
 		}
 		if ( args[0].equalsIgnoreCase("mute") ) {
-			if ( args.length == 2 ) {
+			if ( ( args.length == 2 ) || ( args.length == 3 ) ) {
 				if ( args.length == 3 ) {
 					MuteCommand.mute( player, DataManager.getChannel( args[2].toLowerCase() ), args[1] );
 					return true;
@@ -113,7 +116,7 @@ public class ChCommand implements CommandExecutor {
 			return true;
 		}
 		if ( args[0].equalsIgnoreCase("unmute") ) {
-			if ( args.length == 2 ) {
+			if ( ( args.length == 2 ) || ( args.length == 3 ) ) {
 				if ( args.length == 3 ) {
 					MuteCommand.unmute( player, DataManager.getChannel( args[2].toLowerCase() ), args[1] );
 					return true;
@@ -125,7 +128,7 @@ public class ChCommand implements CommandExecutor {
 			return true;
 		}
 		if ( args[0].equalsIgnoreCase("ignore") ) {
-			CyniChat.printDebug( "Ignoring..." );
+			if ( !( player instanceof Player ) ) return true;
 			if ( args.length == 2 ) {
 				MuteCommand.ignore( player, args[1] );
 				return true;
@@ -135,6 +138,7 @@ public class ChCommand implements CommandExecutor {
 			}
 		}
 		if ( args[0].equalsIgnoreCase("hear") ) {
+			if ( !( player instanceof Player ) ) return true;
 			if ( args.length == 2 ) {
 				MuteCommand.hear( player, args[1] );
 				return true;
@@ -160,7 +164,7 @@ public class ChCommand implements CommandExecutor {
 			return true;
 		}
 		if ( args[0].equalsIgnoreCase("create") ) {
-			if ( args.length == 2 ) {
+			if ( ( args.length == 2 ) || ( args.length == 3 ) ) {
 				if ( args.length == 3 ) {
 					AdminCommand.create( player, args[1], args[2], false );
 					return true;
@@ -183,7 +187,7 @@ public class ChCommand implements CommandExecutor {
 			GeneralCommand.reload( player );
 		}
 		if ( args[0].equalsIgnoreCase("promote") ) {
-			if ( args.length == 2 ) {
+			if ( ( args.length == 2 ) || ( args.length == 3 ) ) {
 				if ( args.length == 3 ) {
 					ModCommand.promote( player, args[2].toLowerCase(), args[1] );
 					return true;
@@ -195,7 +199,7 @@ public class ChCommand implements CommandExecutor {
 			return true;
 		}
 		if ( args[0].equalsIgnoreCase("demote") ) {
-			if ( args.length == 2 ) {
+			if ( ( args.length == 2 ) || ( args.length == 3 ) ) {
 				if ( args.length == 3 ) {
 					ModCommand.demote( player, args[2].toLowerCase(), args[1] );
 					return true;
@@ -238,7 +242,7 @@ public class ChCommand implements CommandExecutor {
 			return true;
 		}
 		if ( args[0].equalsIgnoreCase("kick") ){
-			if ( args.length == 2 ) {
+			if ( ( args.length == 2 ) || ( args.length == 3 ) ) {
 				if ( args.length == 3 ) {
 					BanCommand.kick( player, DataManager.getChannel( args[2].toLowerCase() ), args[1] );
 					return true;

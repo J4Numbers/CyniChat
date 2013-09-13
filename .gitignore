@@ -1,4 +1,6 @@
+startup.sql
 .classpath
 .project
 .settings
+bin
 target
