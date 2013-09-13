@@ -22,6 +22,7 @@ public class RCommand implements CommandExecutor {
 						player.sendMessage("To "+other.getPlayer().getName()+" :"+message);
 						other.getPlayer().sendMessage("from "+player.getName()+" :"+message);
 						other.changeLatest( player.getName() );
+						return true;
 					} catch ( NullPointerException e ) {
 						player.sendMessage("This player is no-longer online");
 						return true;
