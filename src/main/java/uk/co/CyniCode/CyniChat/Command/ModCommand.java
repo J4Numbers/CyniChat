@@ -45,7 +45,7 @@ public class ModCommand {
 			if ( ( DataManager.getChannel( args[1] ) != null ) ) {
 				Channel current = DataManager.getChannel( args[1] );
 				if ( player instanceof Player )
-					if ( !PermissionManager.checkPerm( (Player) player, "cynichat.mod.set."+args[1] ) )
+					if ( !PermissionManager.checkPerm( (Player) player, "cynichat.mod.set."+current.getName().toLowerCase() ) )
 						return false;
 				
 				if ( args.length >= 4 ) {
