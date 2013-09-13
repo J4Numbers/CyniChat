@@ -19,9 +19,10 @@ import uk.co.CyniCode.CyniChat.Channel.Channel;
  */
 public class UserDetails {
 	
+	private int ID;
 	private Player player;
 	@Expose
-	private String CurrentChannel;
+	private String CurrentChannel = CyniChat.def_chan;
 	private String LastMessage = null;
 	private Boolean afk = false;
 	@Expose
@@ -500,5 +501,22 @@ public class UserDetails {
 
 	public String getLatest() {
 		return this.LastMessage;
+	}
+
+	public int getID() {
+		return this.ID;
+	}
+
+	public Boolean loadData( int id, String active, Boolean silence, Boolean canIgnore, List<String> Joined, List<String> Muted, List<String> Banned, List<String> Ignoring ) {
+		this.ID = id;
+		this.player = null;
+		this.CurrentChannel = active;
+		this.Silenced = silence;
+		this.CanIgnore = canIgnore;
+		this.JoinedChannels = Joined;
+		this.MutedIn = Muted;
+		this.BannedFrom = Banned;
+		this.Ignoring = Ignoring;
+		return true;
 	}
 }
