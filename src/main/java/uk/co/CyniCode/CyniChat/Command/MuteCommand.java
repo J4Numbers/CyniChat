@@ -43,14 +43,6 @@ public class MuteCommand {
 	}
 
 	public static boolean mute( CommandSender player, Channel channel, String mutee ) {
-<<<<<<< HEAD
-		if ( DataManager.getDetails( mutee ) == null ) {
-			player.sendMessage("This player does not exist");
-			return true;
-		}
-=======
-<<<<<<< Updated upstream
-=======
 		if ( player instanceof Player )
 			if ( !PermissionManager.checkPerm( (Player) player, "cynichat.mod.mute."+channel) )
 				return false;
@@ -59,21 +51,11 @@ public class MuteCommand {
 			player.sendMessage("This player does not exist");
 			return true;
 		}
->>>>>>> Stashed changes
->>>>>>> develop
 		DataManager.getDetails(mutee.toLowerCase()).addMute(player, channel);
 		return true;
 	}
 
 	public static boolean gmute( CommandSender player, String mutee ) {
-<<<<<<< HEAD
-		if ( DataManager.getDetails( mutee ) == null ) {
-			player.sendMessage("This player does not exist");
-			return true;
-		}
-=======
-<<<<<<< Updated upstream
-=======
 		if ( player instanceof Player )
 			if ( !PermissionManager.checkPerm( (Player) player, "cynichat.admin.silence" ) )
 				return false;
@@ -82,8 +64,6 @@ public class MuteCommand {
 			player.sendMessage("This player does not exist");
 			return true;
 		}
->>>>>>> Stashed changes
->>>>>>> develop
 		DataManager.getDetails(mutee.toLowerCase()).Silence( player );
 		return true;
 	}
@@ -101,14 +81,6 @@ public class MuteCommand {
 	}
 
 	public static boolean gUnMute( CommandSender player, String mutee) {
-<<<<<<< HEAD
-		if ( DataManager.getDetails( mutee ) == null ) {
-			player.sendMessage("This player does not exist");
-			return true;
-		}
-=======
-<<<<<<< Updated upstream
-=======
 		if ( player instanceof Player )
 			if ( !PermissionManager.checkPerm( (Player) player, "cynichat.admin.silence") )
 				return false;
@@ -117,8 +89,6 @@ public class MuteCommand {
 			player.sendMessage("This player does not exist");
 			return true;
 		}
->>>>>>> Stashed changes
->>>>>>> develop
 		DataManager.getDetails(mutee.toLowerCase()).Listen(player);
 		return true;
 	}
@@ -130,14 +100,6 @@ public class MuteCommand {
 	}
 
 	public static boolean unmute( CommandSender player, Channel channel, String mutee ) {
-<<<<<<< HEAD
-		if ( DataManager.getDetails( mutee ) == null ) {
-			player.sendMessage("This player does not exist");
-			return true;
-		}
-=======
-<<<<<<< Updated upstream
-=======
 		if ( player instanceof Player )
 			if ( !PermissionManager.checkPerm( (Player) player, "cynichat.mod.mute."+channel) )
 				return false;
@@ -146,8 +108,6 @@ public class MuteCommand {
 			player.sendMessage("This player does not exist");
 			return true;
 		}
->>>>>>> Stashed changes
->>>>>>> develop
 		DataManager.getDetails( mutee.toLowerCase() ).remMute(player, channel);
 		return true;
 	}
