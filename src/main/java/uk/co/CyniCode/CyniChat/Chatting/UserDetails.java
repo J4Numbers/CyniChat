@@ -263,7 +263,7 @@ public class UserDetails {
 	 */
 	public boolean Listen( CommandSender listener ) {
 		if ( PermissionManager.checkPerm( (Player) listener, "cynichat.mod.listener") ) {
-			if ( this.Silenced == false ) {
+			if ( this.Silenced != false ) {
 				this.Silenced = false;
 				listener.sendMessage("Player has been unmuted");
 				return true;
