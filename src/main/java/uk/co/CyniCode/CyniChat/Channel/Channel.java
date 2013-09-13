@@ -140,9 +140,24 @@ public class Channel {
 		this.protect = false;
 		this.colour = ChatColor.GRAY;
 	}
+	
+	public boolean setColor( String newColor ) {
+		this.colour = ChatColor.valueOf( newColor );
+		return true;
+	}
 
 	public boolean setId( int newID ) {
 		this.ID = newID;
+		return true;
+	}
+
+	public boolean setPassword( String newPass ) {
+		this.pass = newPass;
+		return true;
+	}
+
+	public boolean setDesc( String newDesc ) {
+		this.desc = newDesc;
 		return true;
 	}
 
