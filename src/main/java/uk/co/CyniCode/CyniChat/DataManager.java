@@ -163,7 +163,10 @@ public class DataManager {
 	 */
 	public static void saveUserDetails(){
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
+=======
+>>>>>>> Stashed changes
 		if ( CyniChat.SQL == true ) {
 			printAllUsers();
 			Connection.saveUsers(loadedUsers);

@@ -10,19 +10,21 @@ import uk.co.CyniCode.CyniChat.PermissionManager;
 public class ModCommand {
 
 	public static boolean promote( CommandSender player, String channel, String newMod ) {
-		if ( PermissionManager.checkPerm( (Player) player, "cynichat.mod.promote."+channel ) ) {
-			PermissionManager.promotePlayer( newMod, DataManager.getChannel( channel ) );
-			return true;
-		}
-		return false;
+		if ( player instanceof Player )
+			if ( !PermissionManager.checkPerm( (Player) player, "cynichat.mod.promote."+channel ) )
+				return false;
+		
+		PermissionManager.promotePlayer( newMod, DataManager.getChannel( channel ) );
+		return true;
 	}
 
 	public static boolean demote( CommandSender player, String channel, String oldMod ) {
-		if (PermissionManager.checkPerm( (Player) player, "cynichat.mod.demote."+channel )) {
-			PermissionManager.demotePlayer( oldMod, DataManager.getChannel( channel ) );
-			return true;
-		}
-		return false;
+		if ( player instanceof Player )
+			if (PermissionManager.checkPerm( (Player) player, "cynichat.mod.demote."+channel ))
+				return false;
+		
+		PermissionManager.demotePlayer( oldMod, DataManager.getChannel( channel ) );
+		return true;
 	}
 
 	public static boolean promoteInfo( CommandSender player ) {

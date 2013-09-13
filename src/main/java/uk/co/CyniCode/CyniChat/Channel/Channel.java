@@ -132,7 +132,7 @@ public class Channel {
 	 */
 	public Channel(){
 		this.ID = 1;
-		this.name = "global";
+		this.name = "Global";
 		this.nick = "g";
 		this.desc = "The global channel for everyone!";
 		this.pass = "";

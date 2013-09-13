@@ -54,6 +54,7 @@ public class Chatter implements Listener {
 		Channel current = DataManager.getChannel( user.getCurrentChannel() );
 		
 		if ( user.getSilenced() ) {
+			user.printAll();
 			player.sendMessage("You have been globally muted, you cannot talk.");
 			event.setCancelled(true);
 			return;

@@ -12,29 +12,29 @@ import uk.co.CyniCode.CyniChat.Chatting.UserDetails;
 public class RCommand implements CommandExecutor {
 
 	public boolean onCommand(CommandSender player, Command command, String key, String[] objects) {
-		if ( PermissionManager.checkPerm( (Player) player, "cynichat.basic.msg" ) ) {
-			if ( objects.length == 1 ) {
-				UserDetails current = DataManager.getOnlineDetails( (Player) player );
-				if ( current.getLatest() != null ) {
-					String message = stacker( objects );
-					try {
-						UserDetails other = DataManager.returnAllOnline().get( current.getLatest() );
-						player.sendMessage("To "+other.getPlayer().getName()+" :"+message);
-						other.getPlayer().sendMessage("from "+player.getName()+" :"+message);
-						other.changeLatest( player.getName() );
-						return true;
-					} catch ( NullPointerException e ) {
-						player.sendMessage("This player is no-longer online");
-						return true;
-					}
+		if ( player instanceof Player )
+			if ( !PermissionManager.checkPerm( (Player) player, "cynichat.basic.msg" ) )
+				return false;
+		if ( objects.length == 1 ) {
+			UserDetails current = DataManager.getOnlineDetails( (Player) player );
+			if ( current.getLatest() != null ) {
+				String message = stacker( objects );
+				try {
+					UserDetails other = DataManager.returnAllOnline().get( current.getLatest() );
+					player.sendMessage("To "+other.getPlayer().getName()+" :"+message);
+					other.getPlayer().sendMessage("from "+player.getName()+" :"+message);
+					other.changeLatest( player.getName() );
+					return true;
+				} catch ( NullPointerException e ) {
+					player.sendMessage("This player is no-longer online");
+					return true;
 				}
-				player.sendMessage("You have no-one to reply to");
-				return true;
 			}
-			player.sendMessage("Please send a message");
+			player.sendMessage("You have no-one to reply to");
 			return true;
 		}
-		return false;
+		player.sendMessage("Please send a message");
+		return true;
 	}
 
 	private String stacker(String[] objects) {
