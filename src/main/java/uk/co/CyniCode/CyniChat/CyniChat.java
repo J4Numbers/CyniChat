@@ -80,6 +80,7 @@ public class CyniChat extends JavaPlugin{
         	printInfo("JSON storage enabled!");
         }
         DataManager.start( this );
+        DataManager.channelTable();
         
         //Start the command
         this.getCommand("ch").setExecutor(new ChCommand(this));

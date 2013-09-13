@@ -6,7 +6,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import org.bukkit.craftbukkit.libs.com.google.gson.Gson;
 import org.bukkit.craftbukkit.libs.com.google.gson.GsonBuilder;
@@ -31,6 +33,7 @@ public class DataManager {
 
 	//List of loaded channels
 	private static Map<String,Channel> channels = null;
+	private static Map<String, String> matching = new HashMap<String, String>();
 	
 	private static Map<String,UserDetails> loadedUsers = new HashMap<String, UserDetails>();//User data loaded from sources 
 	
@@ -58,6 +61,17 @@ public class DataManager {
 		setUserFile(new File( cynichat.getDataFolder(),"players.json"));
 		loadUserDetails();
 		printAllUsers();
+	}
+	
+	public static void channelTable() {
+		Set<String> channelKeys = channels.keySet();
+		Iterator<String> chanIter = channelKeys.iterator();
+		
+		while ( chanIter.hasNext() ) {
+			String curName = chanIter.next();
+			matching.put( channels.get(curName).getNick(), curName);
+		}
+		return;
 	}
 	
 	/**
@@ -128,7 +142,11 @@ public class DataManager {
 	 * @return
 	 */
 	public static Channel getChannel(String name){
-		return channels.get(name);
+		Channel cn = channels.get(name);
+		if ( cn == null ) {
+			cn = channels.get( matching.get(name) );
+		}
+		return cn;
 	}
 	
 	public static void printAllChannels() {
