@@ -166,18 +166,6 @@ public class DataManager {
 	 * @param file
 	 */
 	public static void saveUserDetails(){
-<<<<<<< HEAD
-		if ( CyniChat.SQL == true ) {
-			Connection.saveUsers(loadedUsers);
-			return;
-		}
-=======
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-=======
-=======
->>>>>>> Stashed changes
->>>>>>> develop
 		if ( CyniChat.SQL == true ) {
 			printAllUsers();
 			Connection.saveUsers(loadedUsers);
