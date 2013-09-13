@@ -91,6 +91,10 @@ public class ChCommand implements CommandExecutor {
 			BanCommand.banInfo( player );
 			return true;
 		}
+		if ( args[0].equalsIgnoreCase("set") ) {
+			ModCommand.set( player, args );
+			return true;
+		}
 		if ( args[0].equalsIgnoreCase("unban") ) {
 			if ( ( args.length == 2 ) || ( args.length == 3 ) ) {
 				if ( args.length == 3 ) {
