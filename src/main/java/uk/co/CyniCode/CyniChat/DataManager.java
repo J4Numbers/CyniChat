@@ -32,9 +32,11 @@ public class DataManager {
 	//List of loaded channels
 	private static Map<String,Channel> channels = null;
 	
-	private static Map<String,UserDetails> loadedUsers = new HashMap<String, UserDetails>();//User data loaded from json 
+	private static Map<String,UserDetails> loadedUsers = new HashMap<String, UserDetails>();//User data loaded from sources 
 	
 	private static Map<String,UserDetails> onlineUsers = new HashMap<String, UserDetails>();//Users who are online
+	
+	private static Map<String,UserDetails> activeUsers = new HashMap<String, UserDetails>();//Users that were online
 	
 	private static File channelFile = null;
 	private static File userFile = null;
@@ -168,7 +170,8 @@ public class DataManager {
 	public static void saveUserDetails(){
 		if ( CyniChat.SQL == true ) {
 			printAllUsers();
-			Connection.saveUsers(loadedUsers);
+			Connection.saveUsers(activeUsers);
+			activeUsers.clear();
 			return;
 		}
 		try {
@@ -210,6 +213,7 @@ public class DataManager {
 		UserDetails details = getDetails(playerName);
 		details.bindPlayer(player);
 		onlineUsers.put(playerName,details);
+		activeUsers.put(playerName, details);
 		details.printAll();
 		printAllUsers();
 	}
