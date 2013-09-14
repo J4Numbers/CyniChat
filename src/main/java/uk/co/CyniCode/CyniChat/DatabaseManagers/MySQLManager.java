@@ -347,7 +347,7 @@ public class MySQLManager {
 				current.loadChannel(ID, name, nick, desc, pass, colour, protect);
 				current.printAll();
 				try {
-					channels.put(rs.getString(2),current);
+					channels.put(rs.getString(2).toLowerCase(),current);
 				} catch (NullPointerException e) {
 					CyniChat.printSevere("Null Pointer found!");
 					e.printStackTrace();

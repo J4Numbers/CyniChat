@@ -64,7 +64,7 @@ public class CyniChat extends JavaPlugin{
         saveConfig();
         
         //Collect config data
-        def_chan = getConfig().getString("CyniChat.channels.default");
+        def_chan = getConfig().getString("CyniChat.channels.default").toLowerCase();
         if ( getConfig().getString("CyniChat.other.debug").equalsIgnoreCase("true") ) {
         	debug = true;
         	printInfo("Debugging enabled!");

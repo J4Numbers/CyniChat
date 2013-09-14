@@ -54,7 +54,7 @@ public class Chatter implements Listener {
 		//CyniChat.printDebug( "Recipients ::== " + looper( event.getRecipients() ) );
 		Player player = event.getPlayer();
 		UserDetails user = DataManager.getOnlineDetails( player );
-		Channel current = DataManager.getChannel( user.getCurrentChannel() );
+		Channel current = DataManager.getChannel( user.getCurrentChannel().toLowerCase() );
 		
 		if ( user.getSilenced() ) {
 			user.printAll();
@@ -63,7 +63,7 @@ public class Chatter implements Listener {
 			return;
 		}
 		
-		if ( user.getMutedChannels().contains( current.getName() ) ) {
+		if ( user.getMutedChannels().contains( current.getName().toLowerCase() ) ) {
 			player.sendMessage("You have been muted in this channel, move to another channel to talk.");
 			event.setCancelled(true);
 			return;
@@ -76,12 +76,9 @@ public class Chatter implements Listener {
 				return;
 			}
 		
-		String format = "<CurrentChannel> <player> : <message>";
+		String format = "<CurrentChannel> <Player> : "+current.getColour()+"%2$s";
 		format = format.replace("<CurrentChannel>", current.getColour()+"["+current.getNick()+"]" );
-		format = format.replace("player", "%1$s");
-		//format = format.replace("<prefix>", PermissionManager.getPrefix( player ) );
-		//format = format.replace("<suffix>", PermissionManager.getSuffix( player ) );
-		format = format.replace("<message>", current.getColour()+"%2$s");
+		format = format.replace("<Player>", PermissionManager.getPlayerFull( player) );
 		event.setFormat(format);
 		CyniChat.printDebug( "Format ::== " + event.getFormat() );
 		Iterator<Player> receivers = event.getRecipients().iterator();
@@ -92,11 +89,10 @@ public class Chatter implements Listener {
 			Player currentPlayer = receivers.next();
 			UserDetails users = DataManager.getOnlineDetails( currentPlayer );
 			CyniChat.printDebug( currentPlayer.getName() + " : " + users.getAllVerboseChannels() );
-			if ( !users.getAllChannels().contains( current.getName() ) ) {
+			if ( !users.getAllChannels().contains( current.getName().toLowerCase() ) ) {
 				all[Count] = currentPlayer;
 				Count++;
-			}
-			if ( ( users.getIgnoring().contains( user.getName() ) ) && ( users.getAllChannels().contains( current.getName() ) ) ) {
+			} else if ( ( users.getIgnoring().contains( user.getName() ) ) && ( users.getAllChannels().contains( current.getName().toLowerCase() ) ) ) {
 				all[Count] = currentPlayer;
 				Count++;
 			}
@@ -108,13 +104,14 @@ public class Chatter implements Listener {
 			}
 		}
 		
-		ChannelChatEvent newChatter = new ChannelChatEvent( player.getDisplayName(), current, event.getMessage() );
+		ChannelChatEvent newChatter = new ChannelChatEvent( player.getDisplayName(), current, event.getMessage(), event.getRecipients() );
 		Bukkit.getServer().getPluginManager().callEvent(newChatter);
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR)
 	public static void testingRegister( ChannelChatEvent event ) {
-		//CyniChat.printDebug( event.getSenderName() + " said " + event.getMessage() + " in " + event.getChannel().getName() );
+		CyniChat.printDebug( event.getSenderName() + " said " + event.getMessage() + " in " + event.getChannel().getName() );
+		CyniChat.printDebug( event.printVerboseRecip() );
 	}
 	
 	/**

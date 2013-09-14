@@ -18,9 +18,9 @@ public class JoinCommand {
 	 * @return true when complete
 	 */
 	public static boolean join( CommandSender player, String channel, String pass ) {
-		if ( DataManager.getChannel(channel) != null ) {
+		if ( DataManager.getChannel( channel.toLowerCase() ) != null ) {
 			UserDetails user = DataManager.getDetails( player.getName() );
-			Channel NewChan = DataManager.getChannel(channel);
+			Channel NewChan = DataManager.getChannel(channel.toLowerCase());
 			if ( user.getBannedChannels().contains( NewChan.getName() ) ) {
 				player.sendMessage("You are banned from this channel. Tch, tch, tch.");
 				return true;

@@ -1,5 +1,6 @@
 package uk.co.CyniCode.CyniChat;
 
+import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.permission.Permission;
 
 import org.bukkit.command.CommandSender;
@@ -11,6 +12,7 @@ import uk.co.CyniCode.CyniChat.objects.Channel;
 public class PermissionManager {
 	
 	private static Permission perms;
+	private static Chat chat;
 	
 	public static boolean setupPermissions(CyniChat cyniChat) {
 		CyniChat.printInfo("Starting up the permissions manager...");
@@ -18,7 +20,11 @@ public class PermissionManager {
 			Class.forName( "net.milkbowl.vault.permission.Permission" );
 			RegisteredServiceProvider<Permission> rsp = cyniChat.getServer().getServicesManager().getRegistration(Permission.class);
 			perms = rsp.getProvider();
-			return perms != null;
+			
+			RegisteredServiceProvider<Chat> rsp2 = cyniChat.getServer().getServicesManager().getRegistration(Chat.class);
+			chat = rsp2.getProvider();
+			
+			return true;
 		} catch (ClassNotFoundException e) {
 			CyniChat.printSevere("ERROR: Could not find Vault. Shutting down...");
 			e.printStackTrace();
@@ -64,5 +70,24 @@ public class PermissionManager {
 
 	public static boolean remChannelPerms( Channel channel ) {
 		return true;
+	}
+
+	public static String getPlayerFull(Player player) {
+		String prefix;
+		String suffix;
+		
+		if ( chat.getPlayerPrefix(player) == null )
+			prefix = "";
+		else
+			prefix = chat.getPlayerPrefix(player);
+		
+		if ( chat.getPlayerSuffix(player) == null )
+			suffix = "";
+		else
+			suffix = chat.getPlayerSuffix(player);
+		
+		String message = prefix + player.getDisplayName() + suffix;
+		
+		return message.replaceAll("(?i)&([a-f0-9])", "\u00A7$1");
 	}
 }

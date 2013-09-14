@@ -25,7 +25,7 @@ public class MsgCommand implements CommandExecutor {
 				CyniChat.printDebug( Message );
 				player.sendMessage("To "+person.getPlayer().getName()+" :"+Message);
 				person.getPlayer().sendMessage( "From "+player.getName()+" :"+Message );
-				person.changeLatest( player.getName().toLowerCase() );
+				person.changeLatest( player.getName() );
 				CyniChat.printDebug( person.getLatest() );
 				if ( player instanceof Player ) {
 					UserDetails user = DataManager.getOnlineDetails( (Player) player );

@@ -91,6 +91,8 @@ public class HelpCommand {
 		player.sendMessage("/ch unmute "+ChCommand.necessary("player")+" "+ChCommand.optional("channel")+" -> Unmute the player in this channel");
 		player.sendMessage("/ch promote "+ChCommand.necessary("player")+" "+ChCommand.optional("channel")+" -> Promote the player to a chat mod");
 		player.sendMessage("/ch demote "+ChCommand.necessary("player")+" "+ChCommand.optional("channel")+" -> Demote the player from a chat mod");
+		player.sendMessage("/ch set "+ChCommand.necessary("channel")+" "+ChCommand.necessary("option")+" "+ChCommand.necessary("new value") );
+		player.sendMessage("  --> Change the color, password or description of a channel");
 		return true;
 	}
 	

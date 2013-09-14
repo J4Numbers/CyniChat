@@ -189,6 +189,7 @@ public class ChCommand implements CommandExecutor {
 		}
 		if ( args[0].equalsIgnoreCase("reload") ) {
 			GeneralCommand.reload( player );
+			return true;
 		}
 		if ( args[0].equalsIgnoreCase("promote") ) {
 			if ( ( args.length == 2 ) || ( args.length == 3 ) ) {
@@ -239,7 +240,7 @@ public class ChCommand implements CommandExecutor {
 		}
 		if ( args[0].equalsIgnoreCase("info") ){
 			if ( args.length == 2 ) {
-				GeneralCommand.info( player, args[1] );
+				GeneralCommand.info( player, args[1].toLowerCase() );
 				return true;
 			}
 			GeneralCommand.info( player, DataManager.getDetails( player.getName().toLowerCase() ).getCurrentChannel() );
@@ -251,7 +252,7 @@ public class ChCommand implements CommandExecutor {
 					BanCommand.kick( player, DataManager.getChannel( args[2].toLowerCase() ), args[1] );
 					return true;
 				}
-				BanCommand.kick( player, DataManager.getChannel( DataManager.getDetails( player.getName().toLowerCase() ).getCurrentChannel() ), args[1] );
+				BanCommand.kick( player, DataManager.getChannel( DataManager.getDetails( player.getName().toLowerCase() ).getCurrentChannel().toLowerCase() ), args[1] );
 				return true;
 			}
 			BanCommand.kickInfo( player );

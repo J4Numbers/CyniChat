@@ -34,7 +34,7 @@ Installation
 
 To install CyniChat, download the jar and unzip the file (oh look, you've already done that :) ). Copy the file into your bukkit plugins folder.
 
-**Please Note:** You will also need Vault for this plugin to run correctly, along with a permissions plugin of your choice.
+**Please Note:** You will also need Vault for this plugin to run correctly along with a permissions plugin of your choice.
 
 Start up the server. A lot of errors will initially flash up on your screen, telling you that an SQL connection could not be made. Shut down the server and open up the bukkit plugins folder. Look inside the CyniChat folder and open up the config where you can edit everything to your specification. The data option currently has two options, MySQL or JSON.
 
@@ -69,6 +69,7 @@ Commands
 - /ch unban <player> [channel] -> Unbans the player in the current, or the defined channel
 - /ch promote <player> [channel] -> Promotes the player to mod in the current, or the defined channel
 - /ch demote <player> [channel] -> Demotes the Player from mod in the current, or the defined channel
+- /ch set <channel> <node> <value> -> Changes a node (color, password or description) to a value you specify.
 - /ch save -> Saves the information about all the players and channels
 - /ch reload -> Saves the information about all the players and channels, then reloads them
 - /ch help [page#] -> Lists help pages [1 - #]
