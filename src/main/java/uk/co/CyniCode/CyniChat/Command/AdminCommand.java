@@ -20,7 +20,11 @@ public class AdminCommand {
 			return true;
 		}
 		Channel newChan = new Channel();
-		newChan.create( name, nick, protect );
+		
+		if ( DataManager.hasNick( nick ) == true )
+			nick = name.substring(0, 2);
+		
+		newChan.create( name.toLowerCase(), nick, protect );
 		DataManager.addChannel( newChan );
 		PermissionManager.addChannelPerms( player, newChan, protect );
 		player.sendMessage( "The channel: " + name + " has now been created" );

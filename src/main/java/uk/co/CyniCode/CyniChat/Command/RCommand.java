@@ -19,15 +19,15 @@ public class RCommand implements CommandExecutor {
 			player.sendMessage("Console cannot reply to people");
 			return true;
 		}
-		if ( objects.length == 1 ) {
+		if ( objects.length >= 1 ) {
 			UserDetails current = DataManager.getOnlineDetails( (Player) player );
 			if ( current.getLatest() != null ) {
 				String message = stacker( objects );
 				try {
 					UserDetails other = DataManager.returnAllOnline().get( current.getLatest() );
 					player.sendMessage("To "+other.getPlayer().getName()+" :"+message);
-					other.getPlayer().sendMessage("from "+player.getName()+" :"+message);
-					other.changeLatest( player.getName() );
+					other.getPlayer().sendMessage("From "+player.getName()+" :"+message);
+					other.changeLatest( player.getName().toLowerCase() );
 					return true;
 				} catch ( NullPointerException e ) {
 					player.sendMessage("This player is no-longer online");

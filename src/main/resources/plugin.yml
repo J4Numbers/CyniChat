@@ -40,15 +40,34 @@ permissions:
       cynichat.basic.list: true
       cynichat.basic.who: true
       cynichat.basic.qm: true
+      cynichat.basic.msg: true
     default: true
   cynichat.basic.chat:
     description: Allows a player to chat
+    default: true
+  cynichat.basic.msg:
+    description: Allows you to send private messages
     default: true
   cynichat.basic.join:
     description: Allows a player to switch channels
     default: true
   cynichat.basic.leave:
     description: Allows a player to leave the channel
+    default: true
+  cynichat.basic.ignore:
+    description: Allows a player to ignore another
+    default: true
+  cynichat.basic.info:
+    description: Shows you the information about a specific channel
+    default: true
+  cynichat.basic.list:
+    description: Lists all the available channels
+    default: true
+  cynichat.basic.who:
+    description: Lists all the players in a channel
+    default: true
+  cynichat.basic.qm:
+    description: Sends one message to the specified channel
     default: true
   cynichat.mod.*:
     description: Allows for all mod actions to be carried out

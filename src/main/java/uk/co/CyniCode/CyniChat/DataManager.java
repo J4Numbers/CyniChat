@@ -133,7 +133,8 @@ public class DataManager {
 	 * @param channel
 	 */
 	public static void addChannel(Channel channel) {
-		channels.put(channel.getName(), channel);
+		channels.put(channel.getName().toLowerCase(), channel);
+		matching.put( channel.getNick(), channel.getName() );
 	}
 
 	/**
@@ -286,7 +287,8 @@ public class DataManager {
 
 	public static boolean deleteChannel(String name) {
 		try {
-			channels.remove(name);
+			matching.remove( getChannel( name.toLowerCase() ).getNick() );
+			channels.remove( name.toLowerCase() );
 			return true;
 		} catch (NullPointerException e) {
 			return false;
@@ -296,5 +298,11 @@ public class DataManager {
 
 	public static Map<String, Channel> returnAllChannels() {
 		return channels;
+	}
+
+	public static boolean hasNick(String nick) {
+		if ( matching.containsKey(nick) )
+			return true;
+		return false;
 	}
 }

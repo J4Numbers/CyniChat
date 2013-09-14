@@ -38,7 +38,7 @@ public class UserDetails {
 	private List<String> Ignoring = new ArrayList<String>();
 	
 	public UserDetails() {
-		this.JoinedChannels.add( CyniChat.def_chan );
+		this.JoinedChannels.add( CyniChat.def_chan.toLowerCase() );
 	}
 	
 	/**
@@ -138,8 +138,8 @@ public class UserDetails {
 	 * @return true when complete or false if no permission
 	 */
 	public boolean addMute( CommandSender muter, Channel channel ) {
-		if ( !MutedIn.contains( channel.getName() ) ) {
-			MutedIn.add( channel.getName() );
+		if ( !MutedIn.contains( channel.getName().toLowerCase() ) ) {
+			MutedIn.add( channel.getName().toLowerCase() );
 			muter.sendMessage("Player has been muted");
 			return true;
 		}
@@ -154,8 +154,8 @@ public class UserDetails {
 	 * @return true when complete or false with lack of perms
 	 */
 	public boolean remMute( CommandSender unmuter, Channel channel ) {
-		if ( MutedIn.contains( channel.getName() ) ) {
-			MutedIn.remove( channel.getName() );
+		if ( MutedIn.contains( channel.getName().toLowerCase() ) ) {
+			MutedIn.remove( channel.getName().toLowerCase() );
 			unmuter.sendMessage("Player has been unmuted");
 			return true;
 		}
@@ -170,14 +170,14 @@ public class UserDetails {
 	 * @return true when completed or false with insufficient permissions
 	 */
 	public boolean newBan( CommandSender banner, Channel channel ) {
-		if ( !BannedFrom.contains( channel.getName() ) ) {
-			if ( JoinedChannels.contains( channel.getName() ) ) {
-				JoinedChannels.remove( channel.getName() );
-				if ( CurrentChannel.equals(channel.getName()) ) {
+		if ( !BannedFrom.contains( channel.getName().toLowerCase() ) ) {
+			if ( JoinedChannels.contains( channel.getName().toLowerCase() ) ) {
+				JoinedChannels.remove( channel.getName().toLowerCase() );
+				if ( CurrentChannel.equals(channel.getName().toLowerCase() ) ) {
 					CurrentChannel = JoinedChannels.get(0);
 				}
 			}
-			BannedFrom.add( channel.getName() );
+			BannedFrom.add( channel.getName().toLowerCase() );
 			banner.sendMessage("Player has been banned.");
 			return true;
 		}
@@ -294,10 +294,10 @@ public class UserDetails {
 			if ( PermissionManager.checkPerm( player, "cynichat.basic.join.all") || 
 					( PermissionManager.checkPerm( player, "cynichat.basic.join."+newChan.getName().toLowerCase() ) 
 							&& newChan.equalsPass( pass ) ) ) {
-				if ( !this.JoinedChannels.contains( newChan.getName() ) ) {
-					this.JoinedChannels.add( newChan.getName() );
+				if ( !this.JoinedChannels.contains( newChan.getName().toLowerCase() ) ) {
+					this.JoinedChannels.add( newChan.getName().toLowerCase() );
 				}
-				this.CurrentChannel = newChan.getName();
+				this.CurrentChannel = newChan.getName().toLowerCase();
 				player.sendMessage("You are now talking in "+ newChan.getName() );
 				return true;
 			}
@@ -305,10 +305,10 @@ public class UserDetails {
 			return true;
 		}
 		if ( newChan.equalsPass( pass ) ) {
-			if ( !this.JoinedChannels.contains( newChan.getName() ) ) {
-				this.JoinedChannels.add( newChan.getName() );
+			if ( !this.JoinedChannels.contains( newChan.getName().toLowerCase() ) ) {
+				this.JoinedChannels.add( newChan.getName().toLowerCase() );
 			}
-			this.CurrentChannel = newChan.getName();
+			this.CurrentChannel = newChan.getName().toLowerCase();
 			player.sendMessage("You are now talking in "+ newChan.getName() );
 			return true;
 		}
@@ -322,11 +322,11 @@ public class UserDetails {
 	 * @return true for when all the actions have been carried out.
 	 */
 	public boolean leaveChannel( String chan ) {
-		if ( this.JoinedChannels.contains( chan )) {
-			if ( PermissionManager.checkPerm( player, "cynichat.basic.leave."+chan) ) {
-				this.JoinedChannels.remove( chan );
+		if ( this.JoinedChannels.contains( chan.toLowerCase() )) {
+			if ( PermissionManager.checkPerm( player, "cynichat.basic.leave."+chan.toLowerCase()) ) {
+				this.JoinedChannels.remove( chan.toLowerCase() );
 				player.sendMessage("You have left "+ chan);
-				if ( this.CurrentChannel.equals(chan) ) {
+				if ( this.CurrentChannel.equals(chan.toLowerCase()) ) {
 					this.CurrentChannel = JoinedChannels.get(0);
 					player.sendMessage("You are now in " + JoinedChannels.get(0));
 				}
@@ -501,7 +501,7 @@ public class UserDetails {
 	public Boolean loadData( int id, String active, Boolean silence, Boolean canIgnore, List<String> Joined, List<String> Muted, List<String> Banned, List<String> Ignoring ) {
 		this.ID = id;
 		this.player = null;
-		this.CurrentChannel = active;
+		this.CurrentChannel = active.toLowerCase();
 		this.Silenced = silence;
 		this.CanIgnore = canIgnore;
 		this.JoinedChannels = Joined;
