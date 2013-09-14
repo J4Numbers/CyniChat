@@ -18,8 +18,8 @@ import org.bukkit.ChatColor;
 
 import uk.co.CyniCode.CyniChat.CyniChat;
 import uk.co.CyniCode.CyniChat.DataManager;
-import uk.co.CyniCode.CyniChat.Channel.Channel;
-import uk.co.CyniCode.CyniChat.Chatting.UserDetails;
+import uk.co.CyniCode.CyniChat.objects.Channel;
+import uk.co.CyniCode.CyniChat.objects.UserDetails;
 
 public class MySQLManager {
 

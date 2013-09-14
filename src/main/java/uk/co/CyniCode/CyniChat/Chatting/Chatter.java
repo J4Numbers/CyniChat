@@ -3,6 +3,7 @@ package uk.co.CyniCode.CyniChat.Chatting;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -14,7 +15,9 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import uk.co.CyniCode.CyniChat.CyniChat;
 import uk.co.CyniCode.CyniChat.DataManager;
 import uk.co.CyniCode.CyniChat.PermissionManager;
-import uk.co.CyniCode.CyniChat.Channel.Channel;
+import uk.co.CyniCode.CyniChat.events.ChannelChatEvent;
+import uk.co.CyniCode.CyniChat.objects.Channel;
+import uk.co.CyniCode.CyniChat.objects.UserDetails;
 
 public class Chatter implements Listener {
 	
@@ -104,6 +107,14 @@ public class Chatter implements Listener {
 				event.getRecipients().remove( all[i] );
 			}
 		}
+		
+		ChannelChatEvent newChatter = new ChannelChatEvent( player.getDisplayName(), current, event.getMessage() );
+		Bukkit.getServer().getPluginManager().callEvent(newChatter);
+	}
+	
+	@EventHandler(priority = EventPriority.MONITOR)
+	public static void testingRegister( ChannelChatEvent event ) {
+		//CyniChat.printDebug( event.getSenderName() + " said " + event.getMessage() + " in " + event.getChannel().getName() );
 	}
 	
 	/**

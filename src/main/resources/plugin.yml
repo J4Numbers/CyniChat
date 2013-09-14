@@ -35,6 +35,11 @@ permissions:
       cynichat.basic.chat: true
       cynichat.basic.join: true
       cynichat.basic.leave: true
+      cynichat.basic.ignore: true
+      cynichat.basic.info: true
+      cynichat.basic.list: true
+      cynichat.basic.who: true
+      cynichat.basic.qm: true
     default: true
   cynichat.basic.chat:
     description: Allows a player to chat

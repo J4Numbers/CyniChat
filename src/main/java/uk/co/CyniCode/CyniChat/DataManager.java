@@ -17,9 +17,9 @@ import org.bukkit.craftbukkit.libs.com.google.gson.JsonSyntaxException;
 import org.bukkit.craftbukkit.libs.com.google.gson.reflect.TypeToken;
 import org.bukkit.entity.Player;
 
-import uk.co.CyniCode.CyniChat.Channel.Channel;
-import uk.co.CyniCode.CyniChat.Chatting.UserDetails;
 import uk.co.CyniCode.CyniChat.DatabaseManagers.MySQLManager;
+import uk.co.CyniCode.CyniChat.objects.Channel;
+import uk.co.CyniCode.CyniChat.objects.UserDetails;
 
 /**
  * A sane way to load channel and user data.

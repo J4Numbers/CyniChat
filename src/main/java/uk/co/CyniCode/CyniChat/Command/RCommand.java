@@ -7,14 +7,18 @@ import org.bukkit.entity.Player;
 
 import uk.co.CyniCode.CyniChat.DataManager;
 import uk.co.CyniCode.CyniChat.PermissionManager;
-import uk.co.CyniCode.CyniChat.Chatting.UserDetails;
+import uk.co.CyniCode.CyniChat.objects.UserDetails;
 
 public class RCommand implements CommandExecutor {
 
 	public boolean onCommand(CommandSender player, Command command, String key, String[] objects) {
-		if ( player instanceof Player )
+		if ( player instanceof Player ) {
 			if ( !PermissionManager.checkPerm( (Player) player, "cynichat.basic.msg" ) )
 				return false;
+		} else {
+			player.sendMessage("Console cannot reply to people");
+			return true;
+		}
 		if ( objects.length == 1 ) {
 			UserDetails current = DataManager.getOnlineDetails( (Player) player );
 			if ( current.getLatest() != null ) {
