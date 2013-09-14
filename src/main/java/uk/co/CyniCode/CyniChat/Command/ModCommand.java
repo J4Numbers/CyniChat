@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 
 import uk.co.CyniCode.CyniChat.DataManager;
 import uk.co.CyniCode.CyniChat.PermissionManager;
-import uk.co.CyniCode.CyniChat.Channel.Channel;
+import uk.co.CyniCode.CyniChat.objects.Channel;
 
 public class ModCommand {
 
@@ -51,12 +51,15 @@ public class ModCommand {
 				if ( args.length >= 4 ) {
 					if ( args[2].equalsIgnoreCase("color") ) {
 						current.setColor( args[3] );
+						player.sendMessage("Color change successful!");
 						return true;
 					} else if ( args[2].equalsIgnoreCase("password") ) {
 						current.setPassword( args[3] );
+						player.sendMessage("Password change successful!");
 						return true;
 					} else if ( args[2].equalsIgnoreCase("description") ) {
 						current.setDesc( stacker( args ) );
+						player.sendMessage("Description change successful!");
 						return true;
 					}
 				}

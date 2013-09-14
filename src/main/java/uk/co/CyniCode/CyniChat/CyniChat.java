@@ -90,12 +90,16 @@ public class CyniChat extends JavaPlugin{
         this.getCommand("r").setExecutor(new RCommand() );
         counter = 1;
         
-        PermissionManager.setupPermissions( this );
-        
-        printInfo("CyniChat has been enabled!");
+        if ( PermissionManager.setupPermissions( this ) == false ) {
+        	killPlugin();
+        	return;
+        }
         
         //Register the listeners.
         pm.registerEvents(new Chatter(), this);
+        
+        printInfo("CyniChat has been enabled!");
+        
     }
  
 	/**
@@ -155,7 +159,7 @@ public class CyniChat extends JavaPlugin{
 	public static void killPlugin() {
 		printSevere("Fatal error has occured...");
 		printSevere("Killing...");
-		pm.disablePlugin(self);
+		pm.disablePlugin( self );
 	}
     
 }

@@ -1,4 +1,4 @@
-package uk.co.CyniCode.CyniChat.Chatting;
+package uk.co.CyniCode.CyniChat.objects;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +10,6 @@ import org.bukkit.entity.Player;
 import uk.co.CyniCode.CyniChat.CyniChat;
 import uk.co.CyniCode.CyniChat.DataManager;
 import uk.co.CyniCode.CyniChat.PermissionManager;
-import uk.co.CyniCode.CyniChat.Channel.Channel;
 
 /**
  * UserDetails class and object which stores all of the relevant information for each and every player

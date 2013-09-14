@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 
 import uk.co.CyniCode.CyniChat.CyniChat;
 import uk.co.CyniCode.CyniChat.DataManager;
-import uk.co.CyniCode.CyniChat.Chatting.UserDetails;
+import uk.co.CyniCode.CyniChat.objects.UserDetails;
 
 public class MeCommand implements CommandExecutor {
 

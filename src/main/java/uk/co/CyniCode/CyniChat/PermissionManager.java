@@ -6,7 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
-import uk.co.CyniCode.CyniChat.Channel.Channel;
+import uk.co.CyniCode.CyniChat.objects.Channel;
 
 public class PermissionManager {
 	
@@ -14,9 +14,16 @@ public class PermissionManager {
 	
 	public static boolean setupPermissions(CyniChat cyniChat) {
 		CyniChat.printInfo("Starting up the permissions manager...");
-		RegisteredServiceProvider<Permission> rsp = cyniChat.getServer().getServicesManager().getRegistration(Permission.class);
-		perms = rsp.getProvider();
-		return perms != null;
+		try {
+			Class.forName( "net.milkbowl.vault.permission.Permission" );
+			RegisteredServiceProvider<Permission> rsp = cyniChat.getServer().getServicesManager().getRegistration(Permission.class);
+			perms = rsp.getProvider();
+			return perms != null;
+		} catch (ClassNotFoundException e) {
+			CyniChat.printSevere("ERROR: Could not find Vault. Shutting down...");
+			e.printStackTrace();
+			return false;
+		}
 	}
 	
 	public static boolean checkPerm( Player player, String node ) {

@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 import uk.co.CyniCode.CyniChat.CyniChat;
 import uk.co.CyniCode.CyniChat.DataManager;
 import uk.co.CyniCode.CyniChat.PermissionManager;
-import uk.co.CyniCode.CyniChat.Chatting.UserDetails;
+import uk.co.CyniCode.CyniChat.objects.UserDetails;
 
 public class MsgCommand implements CommandExecutor {
 
@@ -16,7 +16,7 @@ public class MsgCommand implements CommandExecutor {
 		if ( player instanceof Player )
 			if ( !PermissionManager.checkPerm( (Player) player, "cynichat.basic.msg") )
 				return false;
-		if ( objects.length == 2 ) {
+		if ( objects.length >= 2 ) {
 			try {
 				CyniChat.printDebug(objects[0]);
 				UserDetails person = DataManager.returnAllOnline().get( objects[0].toLowerCase() );
@@ -27,9 +27,11 @@ public class MsgCommand implements CommandExecutor {
 				person.getPlayer().sendMessage( "From "+player.getName()+" :"+Message );
 				person.changeLatest( player.getName().toLowerCase() );
 				CyniChat.printDebug( person.getLatest() );
-				UserDetails user = DataManager.getOnlineDetails( (Player) player );
-				user.changeLatest( person.getName() );
-				CyniChat.printDebug( user.getLatest() );
+				if ( player instanceof Player ) {
+					UserDetails user = DataManager.getOnlineDetails( (Player) player );
+					user.changeLatest( person.getName() );
+					CyniChat.printDebug( user.getLatest() );
+				}
 				return true;
 			} catch ( NullPointerException e ) {
 				player.sendMessage("This player is not online");

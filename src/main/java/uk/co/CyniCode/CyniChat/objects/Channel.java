@@ -1,4 +1,4 @@
-package uk.co.CyniCode.CyniChat.Channel;
+package uk.co.CyniCode.CyniChat.objects;
 
 import org.bukkit.ChatColor;
 import org.bukkit.craftbukkit.libs.com.google.gson.annotations.Expose;
