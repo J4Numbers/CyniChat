@@ -10,6 +10,12 @@ import uk.co.CyniCode.CyniChat.CyniChat;
 import uk.co.CyniCode.CyniChat.DataManager;
 import uk.co.CyniCode.CyniChat.Command.HelpCommand;
 
+/**
+ * Class for most of the commands
+ * (Everything beginning with /ch)
+ * @author J4Numbers
+ *
+ */
 public class ChCommand implements CommandExecutor {
 
 	public CyniChat plugin;
