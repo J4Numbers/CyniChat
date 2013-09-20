@@ -168,8 +168,20 @@ public class ChCommand implements CommandExecutor {
 			return true;
 		}
 		if ( args[0].equalsIgnoreCase("create") ) {
-			if ( ( args.length == 2 ) || ( args.length == 3 ) ) {
+			if ( ( args.length == 2 ) || ( args.length == 3 ) || args.length == 4 ) {
+				if ( args.length == 4 ) {
+					if ( args[3].equalsIgnoreCase("true") ) {
+						AdminCommand.create(player, args[1], args[2], true);
+						return true;
+					}
+					AdminCommand.createInfo(player);
+					return true;
+				}
 				if ( args.length == 3 ) {
+					if ( args[2].equalsIgnoreCase("true") ) {
+						AdminCommand.create(player, args[1], String.valueOf( args[1].toLowerCase().charAt(0) ), true );
+						return true;
+					}
 					AdminCommand.create( player, args[1], args[2], false );
 					return true;
 				}

@@ -93,18 +93,24 @@ public class GeneralCommand {
 				return false;
 		
 		if ( DataManager.getChannel(channel) != null ) {
-			Channel curChan = DataManager.getChannel(channel);
-			Map<String, UserDetails> online = DataManager.returnAllOnline();
-			Object[] keys = online.keySet().toArray();
-			for ( int i=0; i<keys.length; i++ ) {
-				UserDetails current = online.get(keys[i]);
-				if ( current.getAllChannels().contains(channel) ) {
-					current.getPlayer().sendMessage(curChan.getColour()
-							+"["+curChan.getNick()+"] <"
-							+current.getPlayer().getDisplayName()+"> "
-							+ Message );
+			UserDetails sender = DataManager.getOnlineDetails( (Player) player );
+			
+			if ( sender.getAllChannels().contains(channel) ) {
+				Channel curChan = DataManager.getChannel(channel);
+				Map<String, UserDetails> online = DataManager.returnAllOnline();
+				Object[] keys = online.keySet().toArray();
+				for ( int i=0; i<keys.length; i++ ) {
+					UserDetails current = online.get(keys[i]);
+					if ( current.getAllChannels().contains(channel) ) {
+						current.getPlayer().sendMessage(curChan.getColour()
+								+"["+curChan.getNick()+"] <"
+								+current.getPlayer().getDisplayName()+"> "
+								+ Message );
+					}
 				}
+				return true;
 			}
+			player.sendMessage("You are not in this channel");
 			return true;
 		}
 		player.sendMessage("There is no such channel");
