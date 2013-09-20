@@ -12,8 +12,18 @@ import uk.co.CyniCode.CyniChat.PermissionManager;
 import uk.co.CyniCode.CyniChat.objects.Channel;
 import uk.co.CyniCode.CyniChat.objects.UserDetails;
 
+/**
+ * Class for most of the basic commands and some not-so-basic commands
+ * @author Matthew Ball
+ *
+ */
 public class GeneralCommand {
 
+	/**
+	 * Save all the current details in circulation
+	 * @param player : The player executing the save
+	 * @return true when complete
+	 */
 	public static boolean save( CommandSender player ) {
 		if ( player instanceof Player )
 			if ( PermissionManager.checkPerm( (Player) player, "cynichat.admin.save") )
@@ -24,6 +34,11 @@ public class GeneralCommand {
 		return true;
 	}
 	
+	/**
+	 * Reload the plugin completely
+	 * @param player : The player trying to reload the plugin
+	 * @return true when complete
+	 */
 	public static boolean reload( CommandSender player ) {
 		if ( player instanceof Player )
 			if ( !PermissionManager.checkPerm( (Player) player, "cynichat.admin.reload") )
@@ -33,6 +48,12 @@ public class GeneralCommand {
 		return true;
 	}
 	
+	/**
+	 * Return the information about a channel
+	 * @param player : The player asking
+	 * @param channel : The channel they're asking about
+	 * @return true when complete
+	 */
 	public static boolean info( CommandSender player, String channel ) {
 		if ( player instanceof Player )
 			if ( !PermissionManager.checkPerm( (Player) player, "cynichat.basic.info."+channel) )
@@ -50,6 +71,12 @@ public class GeneralCommand {
 		return true;
 	}
 	
+	/**
+	 * Return a complete list of all channels
+	 * @param player : The player asking
+	 * @param page   : The page they're currently asking about --Currently Unused--
+	 * @return true when complete
+	 */
 	public static boolean list( CommandSender player, int page ) {
 		if ( player instanceof Player )
 			if ( !PermissionManager.checkPerm( (Player) player, "cynichat.basic.list" ) )
@@ -64,6 +91,12 @@ public class GeneralCommand {
 		return true;
 	}
 	
+	/**
+	 * Get information about all those inside a channel
+	 * @param player : The player who's asking
+	 * @param channel : The channel they're asking about
+	 * @return true when complete
+	 */
 	public static boolean who( CommandSender player, String channel ) {
 		if ( player instanceof Player )
 			if ( !PermissionManager.checkPerm( (Player) player, "cynichat.basic.who."+channel) )
@@ -87,6 +120,13 @@ public class GeneralCommand {
 		return true;
 	}
 	
+	/**
+	 * Send a quick one-line-message to another channel
+	 * @param player : The player who's sending
+	 * @param channel : The channel that's receiving
+	 * @param Message : The message that's being passed along
+	 * @return true when complete
+	 */
 	public static boolean quickMessage( CommandSender player, String channel, String Message ) {
 		if ( player instanceof Player )
 			if ( !PermissionManager.checkPerm( (Player) player, "cynichat.basic.qm") )
@@ -117,6 +157,11 @@ public class GeneralCommand {
 		return true;
 	}
 	
+	/**
+	 * Get the information about the quick message
+	 * @param player : The player we're giving the info to
+	 * @return true when complete
+	 */
 	public static boolean qmInfo( CommandSender player ) {
 		player.sendMessage(ChatColor.RED+"Invalid Syntax!");
 		player.sendMessage("/qm "+ChCommand.necessary("channel")+" "+ChCommand.necessary("message"));

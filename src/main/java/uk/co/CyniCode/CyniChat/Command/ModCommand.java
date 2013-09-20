@@ -8,8 +8,21 @@ import uk.co.CyniCode.CyniChat.DataManager;
 import uk.co.CyniCode.CyniChat.PermissionManager;
 import uk.co.CyniCode.CyniChat.objects.Channel;
 
+/**
+ * Class for all things mod
+ * So... promote, demote and set
+ * @author Matthew Ball
+ *
+ */
 public class ModCommand {
 
+	/**
+	 * Promote a player in the channel to a mod
+	 * @param player : The player doing the promoting
+	 * @param channel : The channel that has a new mod
+	 * @param newMod : The new guy to the ranks of the exhaulted
+	 * @return true when complete
+	 */
 	public static boolean promote( CommandSender player, String channel, String newMod ) {
 		if ( player instanceof Player )
 			if ( !PermissionManager.checkPerm( (Player) player, "cynichat.mod.promote."+channel ) )
@@ -19,6 +32,13 @@ public class ModCommand {
 		return true;
 	}
 
+	/**
+	 * Demote a mod in the channel to a player
+	 * @param player : The player doing the demoting
+	 * @param channel : The channel that mourns
+	 * @param oldMod : The ashamed exile
+	 * @return true when complete
+	 */
 	public static boolean demote( CommandSender player, String channel, String oldMod ) {
 		if ( player instanceof Player )
 			if ( !PermissionManager.checkPerm( (Player) player, "cynichat.mod.demote."+channel ))
@@ -28,18 +48,34 @@ public class ModCommand {
 		return true;
 	}
 
+	/**
+	 * Show the player information about promoting another
+	 * @param player : The player we're giving the info to
+	 * @return true when complete
+	 */
 	public static boolean promoteInfo( CommandSender player ) {
 		player.sendMessage(ChatColor.RED+"Invalid Syntax!");
 		player.sendMessage("/ch promote "+ChCommand.necessary("player")+" "+ChCommand.optional("channel"));
 		return true;
 	}
 
+	/**
+	 * Show the player information about demoting another
+	 * @param player : The learned scholar
+	 * @return true when complete
+	 */
 	public static boolean demoteInfo( CommandSender player ) {
 		player.sendMessage(ChatColor.RED+"Invalid Syntax!");
 		player.sendMessage("/ch demote "+ChCommand.necessary("player")+" "+ChCommand.optional("channel"));
 		return true;
 	}
 
+	/**
+	 * Set a particular aspect of a channel
+	 * @param player : The player doing the setting
+	 * @param args : The arguments that define what is being set and what to
+	 * @return true when complete
+	 */
 	public static boolean set( CommandSender player, String[] args ) {
 		if ( args.length != 1 ) {
 			if ( ( DataManager.getChannel( args[1] ) != null ) ) {
@@ -69,6 +105,11 @@ public class ModCommand {
 		return true;
 	}
 
+	/**
+	 * Stack a string together
+	 * @param stacking : The array we're turning into a sentence
+	 * @return the sentence
+	 */
 	public static String stacker( String[] stacking ) {
 		try {
 			String finalStack = "";
@@ -81,6 +122,11 @@ public class ModCommand {
 		}
 	}
 
+	/**
+	 * Return the information on setting a channel aspect
+	 * @param player : The player who wants to know
+	 * @return true when complete
+	 */
 	public static boolean setInfo( CommandSender player ) {
 		player.sendMessage(ChatColor.RED+"Invalid Syntax!");
 		player.sendMessage("/ch set "+ChCommand.necessary("channel")+" "+ChCommand.necessary("option")+" "+ChCommand.necessary("new value") );

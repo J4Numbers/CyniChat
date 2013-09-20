@@ -8,6 +8,11 @@ import uk.co.CyniCode.CyniChat.PermissionManager;
 import uk.co.CyniCode.CyniChat.objects.Channel;
 import uk.co.CyniCode.CyniChat.objects.UserDetails;
 
+/**
+ * The class for joining a channel
+ * @author Matthew Ball
+ *
+ */
 public class JoinCommand {
 	
 	/**

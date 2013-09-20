@@ -21,6 +21,11 @@ import uk.co.CyniCode.CyniChat.DataManager;
 import uk.co.CyniCode.CyniChat.objects.Channel;
 import uk.co.CyniCode.CyniChat.objects.UserDetails;
 
+/**
+ * Deal with all things MySQL'y
+ * @author Matthew Ball
+ *
+ */
 public class MySQLManager {
 
 	private String hostname;
@@ -43,6 +48,13 @@ public class MySQLManager {
 	private PreparedStatement UpdatePlayer;
 	private PreparedStatement AddIgnoring;
 	
+	/**
+	 * Boot up the plugin and do all the connecting bullshit.
+	 * Basically... connect, generate tables, make statements
+	 * if @throws error then we connect to JSON instead 
+	 * @param plugin : The thing we use to get the config options
+	 * @return true when complete
+	 */
 	public boolean startConnection( CyniChat plugin ) {
 		this.hostname = plugin.getConfig().getString("CyniChat.database.host");
 		this.port = 3306; //plugin.getConfig().getInt("CyniChat.database.port");
@@ -72,6 +84,10 @@ public class MySQLManager {
 		return true;
 	}
 	
+	/**
+	 * Actually connect to the database with the information we've been given
+	 * @return true upon completion
+	 */
 	private boolean connect() {
 		String sqlUrl = String.format("jdbc:mysql://%s:%s/%s", hostname, port, Database);
 		
@@ -90,6 +106,10 @@ public class MySQLManager {
 		return true;
 	}
 	
+	/**
+	 * Make the statements that we're going to use a fuckton of times
+	 * @return true when complete
+	 */
 	private boolean prepareStatements() {
 		try {
 			InsertPlayer = conn.prepareStatement("INSERT INTO `"+Prefix+"players` "
@@ -128,6 +148,13 @@ public class MySQLManager {
 		return true;
 	}
 	
+	/**
+	 * Save the channel data
+	 * @param channels : Everything we're going to save
+	 * 
+	 * @WARNING This is an inefficient and shitty method of updating no-matter-what. Even if nothing has changed.
+	 * Forgive me...
+	 */
 	public void saveChannels(Map<String, Channel> channels) {
 		Set<String> keys = channels.keySet();
 		Iterator<String> keyIterate = keys.iterator();
@@ -166,6 +193,12 @@ public class MySQLManager {
 		}
 	}
 	
+	/**
+	 * Save users that have been online at some point since the last save
+	 * @param loadedPlayers : The active players that we're saving
+	 * 
+	 * @WARNING : See last @WARNING.
+	 */
 	public void saveUsers(Map<String, UserDetails> loadedPlayers) {
 		Set<String> keys = loadedPlayers.keySet();
 		Iterator<String> keyIterate1 = keys.iterator();
@@ -264,6 +297,10 @@ public class MySQLManager {
 		}
 	}
 	
+	/**
+	 * Get all the players and their information from the database
+	 * @return a Map of all the players and their details
+	 */
 	public Map<String, UserDetails> returnPlayers() {
 		try {
 			PreparedStatement ps = conn.prepareStatement(
@@ -331,6 +368,10 @@ public class MySQLManager {
 		return Players;
 	}
 	
+	/**
+	 * Generate a map of all the channels in the various tables
+	 * @return the map of all the channels along with their information
+	 */
 	public Map<String, Channel> returnChannels() {
 		try {
 			PreparedStatement ps = conn.prepareStatement("SELECT * FROM `"+Prefix+"channels`");
@@ -361,6 +402,11 @@ public class MySQLManager {
 		return channels;
 	}
 	
+	/**
+	 * Check and make all the tables required for this plugin
+	 * @param prefix : The prefix of the tables that you want
+	 * @return true when complete
+	 */
 	private boolean generateTables( String prefix ) {
 		ResultSet rs;
 		try {

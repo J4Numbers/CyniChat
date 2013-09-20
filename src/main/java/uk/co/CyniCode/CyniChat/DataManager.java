@@ -24,7 +24,8 @@ import uk.co.CyniCode.CyniChat.objects.UserDetails;
 /**
  * A sane way to load channel and user data.
  * @author Tehbeard
- *
+ * @author Matthew Ball
+ * 
  */
 public class DataManager {
 	
@@ -45,6 +46,11 @@ public class DataManager {
 	private static File userFile = null;
 	private static MySQLManager Connection;
 	
+	/**
+	 * Let's start grabbing all the data we can. Check which method of storage we're using
+	 * Then get the relevant details from that medium.
+	 * @param cynichat : This is an instance of the plugin
+	 */
 	public static void start( CyniChat cynichat) {
 		if ( CyniChat.SQL == true ) {
 			Connection = new MySQLManager();
@@ -63,6 +69,9 @@ public class DataManager {
 		printAllUsers();
 	}
 	
+	/**
+	 * Generate a map of nicknames to channel names to make nick-name joining possible
+	 */
 	public static void channelTable() {
 		Set<String> channelKeys = channels.keySet();
 		Iterator<String> chanIter = channelKeys.iterator();
@@ -150,6 +159,10 @@ public class DataManager {
 		return cn;
 	}
 	
+	/**
+	 * Print all the details about every channel
+	 * (Only visible if you have debug on)
+	 */
 	public static void printAllChannels() {
 		for ( int i=0; i<channels.size(); i++ ) {
 			CyniChat.printDebug( String.valueOf(i) );
@@ -180,7 +193,6 @@ public class DataManager {
 			e.printStackTrace();
 		}
 	}
-	
 	
 	/**
 	 * Save all user details to file 
@@ -254,10 +266,18 @@ public class DataManager {
 		return onlineUsers.get(player.getName().toLowerCase());
 	}
 
+	/**
+	 * Set the channel file as defined
+	 * @param channelFile : Absolute path to the channel file
+	 */
 	public static void setChannelFile(File channelFile) {
 		DataManager.channelFile = channelFile;
 	}
 
+	/**
+	 * Print all the users that are loaded and all the users that are online
+	 * (Only visible if you have debug on)
+	 */
 	public static void printAllUsers() {
 		if ( onlineUsers.size() != 0 ) {
 			for ( int i=0; i<onlineUsers.size(); i++ ) {
@@ -277,14 +297,27 @@ public class DataManager {
 			CyniChat.printDebug( "No loaded users" );
 	}
 
+	/**
+	 * Set a new file for the user details
+	 * @param userFile : The absolute path of a new users file
+	 */
 	public static void setUserFile(File userFile) {
 		DataManager.userFile = userFile;
 	}
 
+	/**
+	 * Get the map of those online.
+	 * @return onlineUsers : Everyone who is currently online
+	 */
 	public static Map<String, UserDetails> returnAllOnline() {
 		return onlineUsers;
 	}
 
+	/**
+	 * Delete an existing channel
+	 * @param name : The name of the channel we're trying to delete
+	 * @return : True when complete, false otherwise
+	 */
 	public static boolean deleteChannel(String name) {
 		try {
 			Iterator<String> userIter = loadedUsers.keySet().iterator();
@@ -303,10 +336,19 @@ public class DataManager {
 		
 	}
 
+	/**
+	 * Get all the channels
+	 * @return channels : Every channel
+	 */
 	public static Map<String, Channel> returnAllChannels() {
 		return channels;
 	}
 
+	/**
+	 * If there is a nickname in the matching table which matches the input, say so
+	 * @param nick : The nickname we're checking.
+	 * @return true if it exists, false if not.
+	 */
 	public static boolean hasNick(String nick) {
 		if ( matching.containsKey(nick) )
 			return true;

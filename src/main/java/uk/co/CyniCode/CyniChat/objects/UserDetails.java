@@ -201,6 +201,11 @@ public class UserDetails {
 		return true;
 	}
 	
+	/**
+	 * Completely remove all instances of the channel from the player
+	 * @param name : The channel we're wiping out
+	 * @return true if any instances were cleared
+	 */
 	public boolean clearChannel( String name ) {
 		boolean ending = false;
 		if ( this.getAllChannels().contains(name) ) {
@@ -271,7 +276,6 @@ public class UserDetails {
 	/**
 	 * bind a player object to the details (used when a player joins)
 	 * @param player
-	 * @return
 	 */
 	public void bindPlayer( Player player ) {
 		this.player = player;
@@ -502,19 +506,45 @@ public class UserDetails {
 		return ignore;
 	}
 
+	/**
+	 * Get the last person we sent a message to
+	 * @return the last person we did a /msg or /r to
+	 */
 	public String getLatest() {
 		return this.LastMessage;
 	}
 
+	/**
+	 * Get the ID of the player
+	 * @return the ID of the player
+	 * What else did you think I was going to give?
+	 */
 	public int getID() {
 		return this.ID;
 	}
 
+	/**
+	 * Set the new ID of the player
+	 * @param newId : The ID that will replace the old one
+	 * @return true when complete
+	 */
 	public boolean setId( int newId ) {
 		this.ID = newId;
 		return true;
 	}
 
+	/**
+	 * Load in a player to the class and all their details
+	 * @param id : The ID of this player
+	 * @param active : The active channel of this player
+	 * @param silence : Whether or not this player is globally muted
+	 * @param canIgnore : Can we ignore this player or not?
+	 * @param Joined : All the channels that this player has joined
+	 * @param Muted : All the channels this player has been muted in
+	 * @param Banned : All the channels this player has been banned in
+	 * @param Ignoring : All the players this player is ignoring
+	 * @return true when complete
+	 */
 	public Boolean loadData( int id, String active, Boolean silence, Boolean canIgnore, List<String> Joined, List<String> Muted, List<String> Banned, List<String> Ignoring ) {
 		this.ID = id;
 		this.player = null;

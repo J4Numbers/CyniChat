@@ -6,6 +6,11 @@ import org.bukkit.entity.Player;
 import uk.co.CyniCode.CyniChat.DataManager;
 import uk.co.CyniCode.CyniChat.PermissionManager;
 
+/**
+ * The class for leaving a channel
+ * @author Matthew Ball
+ *
+ */
 public class LeaveCommand {
 	
 	/**

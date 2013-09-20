@@ -19,6 +19,12 @@ import uk.co.CyniCode.CyniChat.events.ChannelChatEvent;
 import uk.co.CyniCode.CyniChat.objects.Channel;
 import uk.co.CyniCode.CyniChat.objects.UserDetails;
 
+/**
+ * A listener class for everything
+ * Three parts: Log in, Log out, and speak
+ * @author Matthew Ball
+ *
+ */
 public class Chatter implements Listener {
 	
 	public static CyniChat plugin;
@@ -108,6 +114,11 @@ public class Chatter implements Listener {
 		Bukkit.getServer().getPluginManager().callEvent(newChatter);
 	}
 	
+	/**
+	 * Currently used as a testing thing for the event that is registered here
+	 * @param event : The event we're listening to
+	 * (Only visible if debug is on)
+	 */
 	@EventHandler(priority = EventPriority.MONITOR)
 	public static void testingRegister( ChannelChatEvent event ) {
 		CyniChat.printDebug( event.getSenderName() + " said " + event.getMessage() + " in " + event.getChannel().getName() );
@@ -122,8 +133,8 @@ public class Chatter implements Listener {
 	public static String looper( Set<Player> item ) {
 		String recip = null;
 		int j = item.size();
-		String[] arrItem = null;
-		item.toArray(arrItem);
+		Object[] arrItem = null;
+		arrItem = item.toArray();
 		for ( int i=0; i<j; i++ ) {
 			recip += arrItem[i]+", ";
 		}

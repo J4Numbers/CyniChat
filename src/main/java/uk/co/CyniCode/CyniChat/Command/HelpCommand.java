@@ -6,6 +6,11 @@ import org.bukkit.entity.Player;
 
 import uk.co.CyniCode.CyniChat.PermissionManager;
 
+/**
+ * Class on help topics
+ * @author Matthew Ball
+ *
+ */
 public class HelpCommand {
 	
 	/**

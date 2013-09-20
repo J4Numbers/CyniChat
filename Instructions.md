@@ -24,7 +24,7 @@ Such flaws include:
 - A lack of storage choices
 - The plugin itself being closed source
 
-Admittedly the last point contributes to the others. Since it is closed source, it doesn't allow for any changes to be made for any prospective server owners. This is where CyniChat is differnt. Not only does it give everything that HeroChat does, along with the points detailed above, it allows for people to customise it as they see fit.
+Admittedly the last point contributes to the others. Since it is closed source, it doesn't allow for any changes to be made for any prospective server owners. This is where CyniChat is different. Not only does it give everything that HeroChat does, along with the points detailed above, it allows for people to customise it as they see fit.
 
 But you won't believe me, why not try it and see what you think.
 ~Cynical

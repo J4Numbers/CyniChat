@@ -11,6 +11,13 @@ import uk.co.CyniCode.CyniChat.CyniChat;
 import uk.co.CyniCode.CyniChat.DataManager;
 import uk.co.CyniCode.CyniChat.objects.UserDetails;
 
+/**
+ * As much as this is playing with fire... this is for the /me command
+ * so a player can write in the context of themselves
+ * i.e. [g] Steve does this rather than [g] Steve : does that
+ * @author Matthew Ball
+ *
+ */
 public class MeCommand implements CommandExecutor {
 
 	public boolean onCommand(CommandSender player, Command command, String key, String[] objects) {

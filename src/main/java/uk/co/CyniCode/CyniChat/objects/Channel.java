@@ -45,6 +45,17 @@ public class Channel {
 		return true;
 	}
 	
+	/**
+	 * Load a channel into the system
+	 * @param id : The ID of the channel
+	 * @param newName : The name of the channel
+	 * @param newNick : The nickname of the channel
+	 * @param newDesc : The description of the channel
+	 * @param newPass : The password of the channel
+	 * @param newColour : The channel's colour
+	 * @param newProtect : Whether or not the channel is protected
+	 * @return true when complete
+	 */
 	public Boolean loadChannel( int id, String newName, String newNick, String newDesc, String newPass, String newColour, boolean newProtect ) {
 		this.ID = id;
 		this.name = newName;
@@ -141,26 +152,53 @@ public class Channel {
 		this.colour = ChatColor.GRAY;
 	}
 	
+	/**
+	 * Set the colour of the channel to something else
+	 * @param newColor : This must be in the list of bukkit colours (RED, DARK_RED etc.)
+	 * @return true when complete
+	 */
 	public boolean setColor( String newColor ) {
 		this.colour = ChatColor.valueOf( newColor.toUpperCase() );
 		return true;
 	}
 
+	/**
+	 * Set the ID of the channel
+	 * @param newID : The ID we're changing to
+	 * @return true when complete
+	 */
 	public boolean setId( int newID ) {
 		this.ID = newID;
 		return true;
 	}
 
+	/**
+	 * Set the password of the channel to something else
+	 * @param newPass : The password which is being set
+	 * @return true when complete
+	 */
 	public boolean setPassword( String newPass ) {
 		this.pass = newPass;
 		return true;
 	}
 
+	/**
+	 * Set the description of the channel to something else
+	 * @param newDesc : What we're changing it to
+	 * @return true when complete
+	 */
 	public boolean setDesc( String newDesc ) {
 		this.desc = newDesc;
 		return true;
 	}
 
+	/**
+	 * Create a completely new channel with an impossible ID
+	 * @param name : The namme of the new channel
+	 * @param nick : The nickname of the new channel
+	 * @param protect : Whether or not this channel is protected
+	 * @return true when complete
+	 */
 	public boolean create(String name, String nick, Boolean protect ) {
 		this.ID = 0;
 		this.name = name;

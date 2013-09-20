@@ -10,8 +10,17 @@ import uk.co.CyniCode.CyniChat.DataManager;
 import uk.co.CyniCode.CyniChat.PermissionManager;
 import uk.co.CyniCode.CyniChat.objects.UserDetails;
 
+/**
+ * The class for privately messaging another player
+ * @author Matthew Ball
+ *
+ */
 public class MsgCommand implements CommandExecutor {
 
+	/**
+	 * Shh... we're sending a message between 2 people
+	 * No, you can't see what it is, it's private!
+	 */
 	public boolean onCommand(CommandSender player, Command command, String key, String[] objects) {
 		if ( player instanceof Player )
 			if ( !PermissionManager.checkPerm( (Player) player, "cynichat.basic.msg") )
@@ -43,6 +52,11 @@ public class MsgCommand implements CommandExecutor {
 		return true;
 	}
 	
+	/**
+	 * Yada, yada, string array to sentence, yada, yada
+	 * @param stacking : The string array
+	 * @return the sentence
+	 */
 	public String stacker( String[] stacking ) {
 		try {
 			String finalStack = "";
