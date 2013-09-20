@@ -47,6 +47,7 @@ public class PermissionManager {
 		perms.playerAdd( (Player) player, "cynichat.mod.ban."+channel.getName().toLowerCase() );
 		perms.playerAdd( (Player) player, "cynichat.mod.mute."+channel.getName().toLowerCase() );
 		if ( protect == true ) {
+			CyniChat.printDebug("Node : cynichat.basic.join."+channel.getName().toLowerCase() );
 			perms.playerAdd( (Player) player, "cynichat.basic.join."+channel.getName().toLowerCase() );
 			perms.playerAdd( (Player) player, "cynichat.basic.talk."+channel.getName().toLowerCase() );
 			perms.playerAdd( (Player) player, "cynichat.basic.leave."+channel.getName().toLowerCase() );

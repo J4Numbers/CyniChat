@@ -201,6 +201,23 @@ public class UserDetails {
 		return true;
 	}
 	
+	public boolean clearChannel( String name ) {
+		boolean ending = false;
+		if ( this.getAllChannels().contains(name) ) {
+			this.leaveChannel(name);
+			ending = true;
+		}
+		if ( this.getBannedChannels().contains(name) ) {
+			this.BannedFrom.remove(name);
+			ending = true;
+		}
+		if ( this.getMutedChannels().contains(name) ) {
+			this.MutedIn.remove(name);
+			ending = true;
+		}
+		return ending;
+	}
+	
 	/**
 	 * This kicks the player from the channel
 	 * @param kicker : The kicker of the player

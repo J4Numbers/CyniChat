@@ -287,6 +287,13 @@ public class DataManager {
 
 	public static boolean deleteChannel(String name) {
 		try {
+			Iterator<String> userIter = loadedUsers.keySet().iterator();
+			while ( userIter.hasNext() ) {
+				String username = userIter.next();
+				UserDetails current = loadedUsers.get( username );
+				if ( current.clearChannel(name) == true )
+					activeUsers.put(username, current);
+			}
 			matching.remove( getChannel( name.toLowerCase() ).getNick() );
 			channels.remove( name.toLowerCase() );
 			return true;
