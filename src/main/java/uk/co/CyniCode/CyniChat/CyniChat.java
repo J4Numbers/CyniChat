@@ -23,6 +23,7 @@ public class CyniChat extends JavaPlugin{
 	
 	public CyniChat plugin;
 	public Logger log = Logger.getLogger("Minecraft");
+	public static IRCManager PBot;
 	
 	public static String version;
 	public static String name;
@@ -32,6 +33,7 @@ public class CyniChat extends JavaPlugin{
 	
 	public static Boolean JSON = false;
 	public static Boolean SQL = false;
+	public static Boolean IRC = false;
 	
 	public static String host;
 	public static String username;
@@ -85,8 +87,12 @@ public class CyniChat extends JavaPlugin{
 		if ( getConfig().getString("CyniChat.other.irc").equalsIgnoreCase("true") ) {
 			printInfo( "Starting IRC..." );
 			try {
-				IRCManager.start( this );
+				PBot = new IRCManager( this );
+				PBot.loadChannels( DataManager.returnAllChannels() );
+				IRC = true;
+				printInfo( "IRC has started." );
 			} catch ( Exception e ) {
+				printSevere( "IRC has failed. Switching off..." );
 				e.printStackTrace();
 			}
 		}

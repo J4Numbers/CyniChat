@@ -110,6 +110,8 @@ public class Chatter implements Listener {
 			}
 		}
 		
+		CyniChat.PBot.sendMessage( current.getIRC(), player.getDisplayName(), event.getMessage() );
+		
 		ChannelChatEvent newChatter = new ChannelChatEvent( player.getDisplayName(), current, event.getMessage(), event.getRecipients() );
 		Bukkit.getServer().getPluginManager().callEvent(newChatter);
 	}

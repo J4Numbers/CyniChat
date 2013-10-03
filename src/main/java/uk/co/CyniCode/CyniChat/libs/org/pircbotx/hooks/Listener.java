@@ -26,4 +26,5 @@ import uk.co.CyniCode.CyniChat.libs.org.pircbotx.PircBotX;
  */
 public interface Listener<T extends PircBotX> {
 	public void onEvent(Event<T> event) throws Exception;
+
 }
