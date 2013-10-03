@@ -9,5 +9,11 @@ CyniChat:
     database: "cynichat"
     prefix: "chat_"
   other:
-    data: "MySQL"
+    data: "json"
     debug: "false"
+    irc: "true"
+  irc:
+    hostname: "127.0.0.1"
+    port: 54127
+    nickname: "CyniBot"
+    channel: "#m4test"

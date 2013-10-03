@@ -82,6 +82,15 @@ public class CyniChat extends JavaPlugin{
 		DataManager.start( this );
 		DataManager.channelTable();
 		
+		if ( getConfig().getString("CyniChat.other.irc").equalsIgnoreCase("true") ) {
+			printInfo( "Starting IRC..." );
+			try {
+				IRCManager.start( this );
+			} catch ( Exception e ) {
+				e.printStackTrace();
+			}
+		}
+		
 		//Start the command
 		this.getCommand("ch").setExecutor(new ChCommand(this));
 		this.getCommand("afk").setExecutor(new AfkCommand() );
