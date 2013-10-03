@@ -7,6 +7,10 @@
   <description>The alpha stages of the CyniChat Minecraft plugin. As designed by Cynical.</description>
   
   <repositories>
+    <!--<repository>
+        <id>bungee-repo</id>
+        <url>http://ci.md-5.net/</url>
+    </repository>-->
     <repository>
     <!-- Bukkit can be found at the following repository -->
           <id>bukkit-repo</id>
@@ -34,6 +38,12 @@
           <version>0.12.0</version>
           <scope>provided</scope>
       </dependency>
+      <!--<dependency>
+        <groupId>net.md-5</groupId>
+        <artifactId>bungeecord-parent</artifactId>
+        <version>1.6.4-SNAPSHOT</version>
+        <scope>provided</scope>
+      </dependency>-->
       <dependency>
         <groupId>com.google.code.findbugs</groupId>
         <artifactId>jsr305</artifactId>
@@ -100,6 +110,11 @@
         <artifactId>bukkit</artifactId>
         <!-- Bukkit API Version, change if nessesary -->
         <version>1.6.2-R1.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.pircbotx</groupId>
+        <artifactId>pircbotx</artifactId>
+        <version>1.9</version>
       </dependency>
   </dependencies>
     
