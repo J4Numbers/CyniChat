@@ -124,6 +124,7 @@ public class CyniChat extends JavaPlugin{
 	public void onDisable() {
 		DataManager.saveChannelConfig();
 		DataManager.saveUserDetails();
+		if ( IRC == true ) PBot.stop();
 		printInfo("CyniChat has been disabled!");
 	}
 
@@ -180,6 +181,7 @@ public class CyniChat extends JavaPlugin{
 	public static void killPlugin() {
 		printSevere("Fatal error has occured...");
 		printSevere("Killing...");
+		if ( IRC == true ) PBot.stop();
 		pm.disablePlugin( self );
 	}
 }

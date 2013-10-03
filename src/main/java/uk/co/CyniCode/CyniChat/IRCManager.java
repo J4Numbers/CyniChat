@@ -65,4 +65,9 @@ private PircBotX bot;
 		}
 	}
 
+	public void stop() {
+		CyniChat.printInfo( "Shutting down IRC..." );
+		this.bot.shutdown( true );
+		CyniChat.printInfo( "IRC has been killed." );
+	}
 }
