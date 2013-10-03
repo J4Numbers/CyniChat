@@ -35,6 +35,7 @@ public class DataManager {
 	//List of loaded channels
 	private static Map<String,Channel> channels = null;
 	private static Map<String, String> matching = new HashMap<String, String>();
+	private static Map<String, String> linkedChans = null;
 	
 	private static Map<String,UserDetails> loadedUsers = new HashMap<String, UserDetails>();//User data loaded from sources 
 	
@@ -169,6 +170,26 @@ public class DataManager {
 			CyniChat.printDebug( String.valueOf( channels.keySet().toArray()[i] ) );
 			channels.get( channels.keySet().toArray()[i] ).printAll();
 		}
+	}
+	
+	/**
+	 * Set all those channels which are linked in IRC
+	 * @param chans
+	 */
+	public static void setIRCChans( Map<String, String> chans ) {
+		Set<String> setter = chans.keySet();
+		Iterator<String> iter = setter.iterator();
+		while ( iter.hasNext() ) {
+			String thisOne = iter.next();
+			CyniChat.printDebug( "IRC name : "+thisOne );
+			CyniChat.printDebug( "CC name : "+chans.get(thisOne) );
+		}
+		
+		linkedChans = chans;
+	}
+	
+	public static Map<String, String> getLinkedChannels() {
+		return linkedChans;
 	}
 	
 	/**
