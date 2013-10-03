@@ -33,7 +33,7 @@ public class Chatting extends ListenerAdapter {
 				
 				if ( curPl.getAllChannels().contains( thisChannel ) ) {
 					CyniChat.printDebug("Sending message to "+ online[i].getDisplayName() );
-					String outing = thisChan.getColour() + "["+thisChan.getNick()+"] ";
+					String outing = thisChan.getColour() + "[IRC] ["+thisChan.getNick()+"] ";
 					outing += event.getUser().getNick() + " : " + event.getMessage();
 					
 					online[i].sendMessage( outing );
