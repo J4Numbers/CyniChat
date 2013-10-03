@@ -2,7 +2,7 @@ name: CyniChat
 version: 0.0.1
 description: A new chat system for Minecraft
 load: STARTUP
-author: Cynical
+author: Cynicode
 main: uk.co.CyniCode.CyniChat.CyniChat
 softdepend: [Vault]
 commands:
