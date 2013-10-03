@@ -8,6 +8,7 @@ import java.util.Set;
 import uk.co.CyniCode.CyniChat.irc.Chatting;
 import uk.co.CyniCode.CyniChat.libs.org.pircbotx.Channel;
 import uk.co.CyniCode.CyniChat.libs.org.pircbotx.PircBotX;
+import uk.co.CyniCode.CyniChat.objects.UserDetails;
 
 public class IRCManager {
 
@@ -37,6 +38,13 @@ private PircBotX bot;
 		}
 	}
 
+	public void sendAction( String chan, UserDetails sender, String message ) {
+		if ( CyniChat.IRC == true && chan != "" ) {
+			Channel sendChan = this.bot.getChannel( chan );
+			this.bot.sendMessage( sendChan, message );
+		}
+	}
+	
 	public void loadChannels(
 			Map<String, uk.co.CyniCode.CyniChat.objects.Channel> allChans) {
 		
