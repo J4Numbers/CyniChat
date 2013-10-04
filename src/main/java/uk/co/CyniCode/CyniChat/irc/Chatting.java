@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 
 import uk.co.CyniCode.CyniChat.CyniChat;
 import uk.co.CyniCode.CyniChat.DataManager;
+import uk.co.CyniCode.CyniChat.IRCManager;
 import uk.co.CyniCode.CyniChat.libs.org.pircbotx.hooks.ListenerAdapter;
 import uk.co.CyniCode.CyniChat.libs.org.pircbotx.hooks.events.MessageEvent;
 import uk.co.CyniCode.CyniChat.objects.Channel;
@@ -13,8 +14,104 @@ import uk.co.CyniCode.CyniChat.objects.UserDetails;
 public class Chatting extends ListenerAdapter {
 
 	public void onMessage( MessageEvent event ) throws Exception {
-		if ( event.getMessage().startsWith("?help") )
-			event.respond("You wanted help?");
+		if ( event.getMessage().startsWith(":?") ) {
+			String[] argments = event.getMessage().split( " " );
+			uk.co.CyniCode.CyniChat.libs.org.pircbotx.Channel thisChan = event.getChannel();
+			
+			if ( argments.length == 1 ) {
+				CyniChat.printDebug( "Default used..." );
+				ircResponses.helpOutput( event.getBot(), event.getUser() );
+				return;
+			}
+			
+			if ( argments[1].equalsIgnoreCase("help") ) {
+				CyniChat.printDebug( "Help selected..." );
+				ircResponses.helpOutput( event.getBot(), event.getUser() );
+				return;
+			}
+			
+			if ( argments[1].equalsIgnoreCase( "list" ) ) {
+				CyniChat.printDebug( "Listing chosen..." );
+				if ( argments.length > 2 ) {
+					if ( argments[2].equalsIgnoreCase( "all" ) ) {
+						CyniChat.printDebug( "You've either got 'all' as parameter..." );
+						CyniChat.printDebug( event.getUser().getNick()+" : "+thisChan.getName() );
+						ircResponses.listOutput( event.getUser(), event.getBot(), thisChan.getName(), true );
+						return;
+					}
+				} else {
+					CyniChat.printDebug( "Or you don't...." );
+					CyniChat.printDebug( event.getUser().getNick()+" : "+thisChan.getName() );
+					ircResponses.listOutput( event.getUser(), event.getBot(), thisChan.getName(), false );
+					return;
+				}
+				return;
+			}
+			
+			if ( argments[1].equalsIgnoreCase("kick") 
+					&& thisChan.isOp( event.getUser() ) ) {
+				CyniChat.printDebug( "Kicking..." );
+				if ( argments[2] != null ) {
+					ircResponses.kickOutput( event.getUser(), event.getBot(), argments[2], thisChan.getName() );
+					return;
+				}
+				event.respond( "I'm sorry, you must include a person to be kicked" );
+				return;
+			}
+			
+			if ( ( argments[1].equalsIgnoreCase("ban") 
+						|| argments[1].equalsIgnoreCase("unban") ) 
+					&& thisChan.isOp( event.getUser() ) ) {
+				CyniChat.printDebug( "Banning..." );
+				if ( argments[2] != null ) {
+					
+					if ( argments[1].equalsIgnoreCase("ban") ){
+						ircResponses.banOutput( event.getUser(), event.getBot(), argments[2], event.getChannel().getName(), false );
+					} else {
+						ircResponses.banOutput( event.getUser(), event.getBot(), argments[2], event.getChannel().getName(), true );
+					}
+					return;
+				}
+				event.respond( "I'm sorry, you must include a person to be un/banned" );
+				return;
+			}
+			
+			if ( ( argments[1].equalsIgnoreCase("mute")
+						|| argments[1].equalsIgnoreCase("unmute") )
+					&& thisChan.isOp( event.getUser() ) ) {
+				CyniChat.printDebug( "Muting..." );
+				if ( argments[2] != null ) {
+					
+					if ( argments[1].equalsIgnoreCase("mute") ) {
+						ircResponses.muteOutput( event.getUser(), event.getBot(), argments[2], thisChan.getName(), false );
+					} else {
+						ircResponses.muteOutput( event.getUser(), event.getBot(), argments[2], thisChan.getName(), true );
+					}
+					return;
+					
+				}
+				event.respond( "I'm sorry, you must include a person to be un/muted" );
+				return;
+			}
+			
+			if ( argments[1].equalsIgnoreCase("restart") 
+					&& thisChan.isOp( event.getUser() ) ) {
+				CyniChat.printDebug( "Restarting..." );
+				CyniChat.PBot.restart();
+				return;
+			}
+			
+			if ( argments[1].equalsIgnoreCase("kill")
+					&& thisChan.isOp( event.getUser() ) ) {
+				CyniChat.printDebug( "Murdering..." );
+				CyniChat.PBot.stop();
+				return;
+			}
+			
+			CyniChat.printDebug( "\""+argments[1]+"\"" );
+			
+			return;
+		}
 		
 		CyniChat.printDebug( "Sender: " + event.getUser().getNick() );
 		CyniChat.printDebug( "Channel: " + event.getChannel().getName().toLowerCase() );

@@ -137,14 +137,12 @@ public class UserDetails {
 	 * @param channel : This is the channel the player is muted in
 	 * @return true when complete or false if no permission
 	 */
-	public boolean addMute( CommandSender muter, Channel channel ) {
+	public boolean addMute( String muter, Channel channel ) {
 		if ( !MutedIn.contains( channel.getName().toLowerCase() ) ) {
 			MutedIn.add( channel.getName().toLowerCase() );
-			muter.sendMessage("Player has been muted");
 			return true;
 		}
-		muter.sendMessage("Player was already muted");
-		return true;
+		return false;
 	}
 	
 	/**
@@ -153,14 +151,12 @@ public class UserDetails {
 	 * @param channel : This is the channel the player can now talk in again
 	 * @return true when complete or false with lack of perms
 	 */
-	public boolean remMute( CommandSender unmuter, Channel channel ) {
+	public boolean remMute( String unmuter, Channel channel ) {
 		if ( MutedIn.contains( channel.getName().toLowerCase() ) ) {
 			MutedIn.remove( channel.getName().toLowerCase() );
-			unmuter.sendMessage("Player has been unmuted");
 			return true;
 		}
-		unmuter.sendMessage("Player was already unmuted");
-		return true;
+		return false;
 	}
 	
 	/**
@@ -169,7 +165,7 @@ public class UserDetails {
 	 * @param channel : This is the channel the player is being banned from
 	 * @return true when completed or false with insufficient permissions
 	 */
-	public boolean newBan( CommandSender banner, Channel channel ) {
+	public boolean newBan( String banner, Channel channel ) {
 		if ( !BannedFrom.contains( channel.getName().toLowerCase() ) ) {
 			if ( JoinedChannels.contains( channel.getName().toLowerCase() ) ) {
 				JoinedChannels.remove( channel.getName().toLowerCase() );
@@ -178,11 +174,9 @@ public class UserDetails {
 				}
 			}
 			BannedFrom.add( channel.getName().toLowerCase() );
-			banner.sendMessage("Player has been banned.");
 			return true;
 		}
-		banner.sendMessage("Player is already banned.");
-		return true;
+		return false;
 	}
 	
 	/**
@@ -191,14 +185,13 @@ public class UserDetails {
 	 * @param channel : This is the channel that they're being unbanned in
 	 * @return true when complete or false when permissions are not granted
 	 */
-	public boolean remBan( CommandSender unbanner, Channel channel ) {
+	public boolean remBan( String unbanner, Channel channel ) {
 		if ( BannedFrom.contains(channel.getName().toLowerCase() ) ) {
 			BannedFrom.remove( channel.getName().toLowerCase() );
-			unbanner.sendMessage("The player has been unbanned.");
+			return true;
 		} else {
-			unbanner.sendMessage("This player was not banned.");
+			return false;
 		}
-		return true;
 	}
 	
 	/**
@@ -227,20 +220,18 @@ public class UserDetails {
 	 * This kicks the player from the channel
 	 * @param kicker : The kicker of the player
 	 * @param channel : The channel the player is being kicked from
-	 * @return true when complete, false if the person doesn't have perms
+	 * @return true when kicked, false if the player was never in the channel in the first place
 	 */
-	public boolean Kick( CommandSender kicker, Channel channel ) {
-		CyniChat.printDebug( kicker.getName() +" Attempted to kick "+ this.getName() + " from " + channel.getName() );
+	public boolean Kick( String kicker, Channel channel ) {
+		CyniChat.printDebug( kicker +" Attempted to kick "+ this.getName() + " from " + channel.getName() );
 		if ( JoinedChannels.contains( channel.getName().toLowerCase() ) ) {
 			JoinedChannels.remove( channel.getName().toLowerCase() );
 			if ( CurrentChannel.equals(channel.getName().toLowerCase() ) ) {
 				this.CurrentChannel = JoinedChannels.get(0);
 			}
-			kicker.sendMessage("Player has been kicked");
 			return true;
 		}
-		kicker.sendMessage("Player was not in the channel");
-		return true;
+		return false;
 	}
 	
 	/**

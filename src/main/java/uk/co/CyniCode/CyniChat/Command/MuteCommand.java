@@ -86,7 +86,11 @@ public class MuteCommand {
 			player.sendMessage("This player does not exist");
 			return true;
 		}
-		DataManager.getDetails(mutee.toLowerCase()).addMute(player, channel);
+		if (DataManager.getDetails(mutee.toLowerCase()).addMute(player.getName(), channel) == true ) {
+			player.sendMessage( mutee + " has been muted");
+		} else {
+			player.sendMessage( mutee + " was already muted");
+		}
 		return true;
 	}
 
@@ -177,7 +181,11 @@ public class MuteCommand {
 			player.sendMessage("This player does not exist");
 			return true;
 		}
-		DataManager.getDetails( mutee.toLowerCase() ).remMute(player, channel);
+		if ( DataManager.getDetails( mutee.toLowerCase() ).remMute(player.getName(), channel) == true ) {
+			player.sendMessage( mutee + " has been unmuted" );
+		} else {
+			player.sendMessage( mutee + " was already unmuted" );
+		}
 		return true;
 	}
 

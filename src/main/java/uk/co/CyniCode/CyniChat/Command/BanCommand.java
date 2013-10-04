@@ -27,7 +27,11 @@ public class BanCommand {
 			if ( !PermissionManager.checkPerm( (Player) player, "cynichat.mod.ban."+channel.getName().toLowerCase() ) )
 				return false;
 		
-		DataManager.getDetails( banee.toLowerCase() ).newBan(player, channel);
+		if ( DataManager.getDetails( banee.toLowerCase() ).newBan(player.getName(), channel) == true ) {
+			player.sendMessage( banee + " has been banned.");
+		} else {
+			player.sendMessage( banee + " is already banned.");
+		}
 		return true;
 	}
 
@@ -43,7 +47,11 @@ public class BanCommand {
 			if ( !PermissionManager.checkPerm( (Player) player, "cynichat.mod.ban."+channel.getName().toLowerCase() ) )
 				return false;
 		
-		DataManager.getDetails( banee.toLowerCase() ).remBan(player, channel);
+		if ( DataManager.getDetails( banee.toLowerCase() ).remBan( player.getName(), channel) == true ) {
+			player.sendMessage("The player has been unbanned.");
+		} else {
+			player.sendMessage("This player was not banned.");
+		}
 		return true;
 	}
 
@@ -81,7 +89,11 @@ public class BanCommand {
 			if ( !PermissionManager.checkPerm( (Player) player, "cynichat.mod.kick."+channel.getName().toLowerCase() ) )
 				return false;
 		
-		DataManager.getDetails( kickee.toLowerCase() ).Kick(player, channel);
+		if ( DataManager.getDetails( kickee.toLowerCase() ).Kick(player.getName(), channel ) == true ) {
+			player.sendMessage( kickee + " has been kicked from the channel." );
+		} else {
+			player.sendMessage( kickee + " was not in the channel" );
+		}
 		return true;
 		
 	}
