@@ -13,10 +13,20 @@ import uk.co.CyniCode.CyniChat.libs.org.pircbotx.exception.IrcException;
 import uk.co.CyniCode.CyniChat.libs.org.pircbotx.exception.NickAlreadyInUseException;
 import uk.co.CyniCode.CyniChat.objects.UserDetails;
 
+/**
+ * An instantiation of a PircBotX bot
+ * @author Matthew Ball
+ * 
+ */
 public class IRCManager {
 
 private PircBotX bot;
-	
+
+	/**
+	 * Constructor for making a new Bot out of barely anything
+	 * @param plugin : Used for getting the config options
+	 * @throws Exception : So much that could go wrong here...
+	 */
 	public IRCManager( CyniChat plugin ) throws Exception {
 		
 		this.bot = new PircBotX();
@@ -33,6 +43,13 @@ private PircBotX bot;
 		
 	}
 	
+	/**
+	 * Send a message through the bot in the format of :
+	 * [SENDER] : [MESSAGE]
+	 * @param chan : The channel we're sending the message on
+	 * @param sender : The sender who, you guessed it, sent the message
+	 * @param message : The message itself
+	 */
 	public void sendMessage( String chan, String sender, String message ) {
 		if ( CyniChat.IRC == true && chan != "" ) {
 			Channel sendChan = this.bot.getChannel( chan );
@@ -40,6 +57,13 @@ private PircBotX bot;
 		}
 	}
 
+	/**
+	 * Send an action through the bot as a message in the form of
+	 * [SENDER] [ACTION]
+	 * @param chan : The channel that we're transmitting stuff over
+	 * @param sender : The sender who sent the thing that was to be delivered
+	 * @param message : The action itself
+	 */
 	public void sendAction( String chan, UserDetails sender, String message ) {
 		if ( CyniChat.IRC == true && chan != "" ) {
 			Channel sendChan = this.bot.getChannel( chan );
@@ -47,10 +71,15 @@ private PircBotX bot;
 		}
 	}
 	
+	/**
+	 * Load all possible channels into the plugin and
+	 * see which of them are actually going to be connecting
+	 * to the IRC server and whatnot
+	 * @param allChans : All the potential channels there are
+	 */
 	public void loadChannels(
 			Map<String, uk.co.CyniCode.CyniChat.objects.Channel> allChans) {
 		
-		Map<String, String> channels = new HashMap<String, String>();
 		Map<String, String> actingChans = new HashMap<String, String>();
 		
 		Set<String> keys = allChans.keySet();
@@ -75,6 +104,9 @@ private PircBotX bot;
 		}
 	}
 
+	/**
+	 * Restart the IRC component of the plugin via various means
+	 */
 	public void restart() {
 		CyniChat.printWarning( "Restarting the IRC bot..." );
 		CyniChat.printInfo( "Stopping the IRC bot..." );
@@ -97,6 +129,11 @@ private PircBotX bot;
 		return;
 	}
 
+	/**
+	 * Kill the IRC component of the plugin ungracefully
+	 * ...
+	 * In other words, knock it over the head with a bat.
+	 */
 	public void stop() {
 		CyniChat.printInfo( "Shutting down IRC..." );
 		this.bot.shutdown( true );

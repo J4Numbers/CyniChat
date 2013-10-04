@@ -12,8 +12,19 @@ import uk.co.CyniCode.CyniChat.libs.org.pircbotx.User;
 import uk.co.CyniCode.CyniChat.objects.Channel;
 import uk.co.CyniCode.CyniChat.objects.UserDetails;
 
+/**
+ * A class for all the responses that are going to be given by the IRC bot
+ * @author Matthew Ball
+ * 
+ */
 public class ircResponses {
 	
+	/**
+	 * Show all the help text
+	 * @param bot : The bot that originally got pinged
+	 * @param user : The user that pinged the bot
+	 * @return true when complete
+	 */
 	public static boolean helpOutput( PircBotX bot, User user ) {
 		
 		bot.setMessageDelay(0);
@@ -37,6 +48,14 @@ public class ircResponses {
 		return true;
 	}
 	
+	/**
+	 * List all the players on the server or in the channel
+	 * @param user : The user that originally asked
+	 * @param bot : The bot that was pinged
+	 * @param channel : The channel we're returning the information into
+	 * @param all : A boolean of whether it's a single channel or the whole server
+	 * @return true when complete
+	 */
 	public static boolean listOutput( User user, PircBotX bot, String channel, boolean all ) {
 		
 		CyniChat.printDebug( user.getNick() + " : " + channel + " : " + all );
@@ -87,7 +106,15 @@ public class ircResponses {
 		
 		return true;
 	}
-	
+
+	/**
+	 * Kick a player in the MC channel from inside IRC
+	 * @param user : The user that kicked 'im
+	 * @param bot : The bot that was pinged
+	 * @param player : The player who got kicked
+	 * @param channel : The channel the player will get kicked in
+	 * @return true when complete or false if there was a problem
+	 */
 	public static boolean kickOutput( User user, PircBotX bot, String player, String channel ) {
 		
 		CyniChat.printDebug( "Kicking part 2..." );
@@ -120,6 +147,15 @@ public class ircResponses {
 		return true;
 	}
 	
+	/**
+	 * Un/Mute a player inside a channel from the safety of IRC
+	 * @param user : The user who's doing the un/muting
+	 * @param bot : The bot who heard about the un/mute
+	 * @param player : The player who will be un/muted
+	 * @param channel : The channel they're being un/muted inside
+	 * @param undo : Whether we're undoing a previous mute or just making a new one
+	 * @return true when complete or false if an error occurred
+	 */
 	public static boolean muteOutput( User user, PircBotX bot, String player, String channel, Boolean undo ) {
 		
 		UserDetails muting = DataManager.getDetails( player );
@@ -152,6 +188,15 @@ public class ircResponses {
 		return true;
 	}
 	
+	/**
+	 * A method to un/ban a player in the MC channels from IRC
+	 * @param user : The user that's doing the un/banning
+	 * @param bot : The bot that heard about it
+	 * @param player : The player that's being un/banned
+	 * @param channel : The channel that's about to have one more un/banned player
+	 * @param undo : Whether or not it's undoing a previous ban or just making a new one
+	 * @return true when complete or false if an error occurs
+	 */
 	public static boolean banOutput( User user, PircBotX bot, String player, String channel, Boolean undo ) {
 		
 		UserDetails banning = DataManager.getDetails( player );

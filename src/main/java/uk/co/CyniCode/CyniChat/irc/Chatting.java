@@ -11,8 +11,18 @@ import uk.co.CyniCode.CyniChat.libs.org.pircbotx.hooks.events.MessageEvent;
 import uk.co.CyniCode.CyniChat.objects.Channel;
 import uk.co.CyniCode.CyniChat.objects.UserDetails;
 
+/**
+ * Deal with all the output that the bot can see
+ * @author Matthew Ball
+ *
+ */
 public class Chatting extends ListenerAdapter {
 
+	/**
+	 * Listen for all the chatter that is going on on the IRC bot's end
+	 * so that any commands given there are going to be executed while
+	 * commands given from inside MC will be left alone.
+	 */
 	public void onMessage( MessageEvent event ) throws Exception {
 		if ( event.getMessage().startsWith(":?") ) {
 			String[] argments = event.getMessage().split( " " );
