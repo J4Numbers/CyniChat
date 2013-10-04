@@ -140,6 +140,9 @@ public class UserDetails {
 	public boolean addMute( String muter, Channel channel ) {
 		if ( !MutedIn.contains( channel.getName().toLowerCase() ) ) {
 			MutedIn.add( channel.getName().toLowerCase() );
+			if ( this.player != null ) {
+				this.player.sendMessage( "You have been muted in "+channel.getName() );
+			}
 			return true;
 		}
 		return false;
@@ -154,6 +157,9 @@ public class UserDetails {
 	public boolean remMute( String unmuter, Channel channel ) {
 		if ( MutedIn.contains( channel.getName().toLowerCase() ) ) {
 			MutedIn.remove( channel.getName().toLowerCase() );
+			if ( this.player != null ) {
+				this.player.sendMessage( "You have been unmuted in "+channel.getName() );
+			}
 			return true;
 		}
 		return false;
@@ -174,6 +180,9 @@ public class UserDetails {
 				}
 			}
 			BannedFrom.add( channel.getName().toLowerCase() );
+			if ( this.player != null ) {
+				this.player.sendMessage( "You have been banned in "+channel.getName() );
+			}
 			return true;
 		}
 		return false;
@@ -188,6 +197,9 @@ public class UserDetails {
 	public boolean remBan( String unbanner, Channel channel ) {
 		if ( BannedFrom.contains(channel.getName().toLowerCase() ) ) {
 			BannedFrom.remove( channel.getName().toLowerCase() );
+			if ( this.player != null ) {
+				this.player.sendMessage( "You have been unbanned from "+channel.getName() );
+			}
 			return true;
 		} else {
 			return false;
@@ -225,6 +237,9 @@ public class UserDetails {
 	public boolean Kick( String kicker, Channel channel ) {
 		CyniChat.printDebug( kicker +" Attempted to kick "+ this.getName() + " from " + channel.getName() );
 		if ( JoinedChannels.contains( channel.getName().toLowerCase() ) ) {
+			if ( this.player != null ) {
+				this.player.sendMessage( "You have been kicked from "+channel.getName() );
+			}
 			JoinedChannels.remove( channel.getName().toLowerCase() );
 			if ( CurrentChannel.equals(channel.getName().toLowerCase() ) ) {
 				this.CurrentChannel = JoinedChannels.get(0);
