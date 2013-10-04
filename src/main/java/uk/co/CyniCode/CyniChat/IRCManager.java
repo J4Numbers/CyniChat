@@ -1,5 +1,6 @@
 package uk.co.CyniCode.CyniChat;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -8,6 +9,8 @@ import java.util.Set;
 import uk.co.CyniCode.CyniChat.irc.Chatting;
 import uk.co.CyniCode.CyniChat.libs.org.pircbotx.Channel;
 import uk.co.CyniCode.CyniChat.libs.org.pircbotx.PircBotX;
+import uk.co.CyniCode.CyniChat.libs.org.pircbotx.exception.IrcException;
+import uk.co.CyniCode.CyniChat.libs.org.pircbotx.exception.NickAlreadyInUseException;
 import uk.co.CyniCode.CyniChat.objects.UserDetails;
 
 public class IRCManager {
@@ -21,10 +24,9 @@ private PircBotX bot;
 		this.bot.getListenerManager().addListener( new Chatting() );
 		
 		this.bot.setName( plugin.getConfig().getString("CyniChat.irc.nickname") );
-		this.bot.setLogin( "CyniChatBot" );
+		this.bot.setLogin( "CyniBot" );
 		try {
 			this.bot.connect( plugin.getConfig().getString("CyniChat.irc.hostname"), plugin.getConfig().getInt("CyniChat.irc.port") );
-			this.bot.joinChannel( plugin.getConfig().getString("CyniChat.irc.channel") );
 		} catch (Exception e) {
 			throw e;
 		}
@@ -71,6 +73,28 @@ private PircBotX bot;
 		} catch ( Exception e ) {
 			
 		}
+	}
+
+	public void restart() {
+		CyniChat.printWarning( "Restarting the IRC bot..." );
+		CyniChat.printInfo( "Stopping the IRC bot..." );
+		bot.shutdown();
+		CyniChat.printInfo( "Starting up the IRC bot again..." );
+		try {
+			bot.reconnect();
+			loadChannels( DataManager.returnAllChannels() );
+			CyniChat.printInfo( "Reconnected successfully" );
+		} catch ( IOException e ) {
+			CyniChat.printSevere( "We could not connect..." );
+			e.printStackTrace();
+		} catch ( NickAlreadyInUseException e ) {
+			CyniChat.printSevere( "Our nickname was already in use..." );
+			e.printStackTrace();
+		} catch ( IrcException e ) {
+			CyniChat.printSevere( "IRC has failed... call in the drones..." );
+			e.printStackTrace();
+		}
+		return;
 	}
 
 	public void stop() {
