@@ -135,7 +135,7 @@ public class UserDetails {
 	 * Add a muted channel to a player
 	 * @param muter : This is the person trying to mute the player
 	 * @param channel : This is the channel the player is muted in
-	 * @return true when complete or false if no permission
+	 * @return true when complete or false if they're already muted
 	 */
 	public boolean addMute( String muter, Channel channel ) {
 		if ( !MutedIn.contains( channel.getName().toLowerCase() ) ) {
@@ -152,7 +152,7 @@ public class UserDetails {
 	 * Removes a muted channel from a player
 	 * @param unmuter : this is the player that is unmuting someone
 	 * @param channel : This is the channel the player can now talk in again
-	 * @return true when complete or false with lack of perms
+	 * @return true when complete or false if they're not muted anyway
 	 */
 	public boolean remMute( String unmuter, Channel channel ) {
 		if ( MutedIn.contains( channel.getName().toLowerCase() ) ) {
@@ -166,10 +166,10 @@ public class UserDetails {
 	}
 	
 	/**
-	 * Add a new ban to the player as long as the banner has the correct permission
+	 * Add a new ban to the player
 	 * @param banner : This is the person trying to enforce the ban
 	 * @param channel : This is the channel the player is being banned from
-	 * @return true when completed or false with insufficient permissions
+	 * @return true when completed or false if they're already banned
 	 */
 	public boolean newBan( String banner, Channel channel ) {
 		if ( !BannedFrom.contains( channel.getName().toLowerCase() ) ) {
@@ -192,7 +192,7 @@ public class UserDetails {
 	 * Remove a ban from a player
 	 * @param unbanner : This is the player trying to unban someone
 	 * @param channel : This is the channel that they're being unbanned in
-	 * @return true when complete or false when permissions are not granted
+	 * @return true when complete or false when they're not even banned
 	 */
 	public boolean remBan( String unbanner, Channel channel ) {
 		if ( BannedFrom.contains(channel.getName().toLowerCase() ) ) {
@@ -252,7 +252,7 @@ public class UserDetails {
 	/**
 	 * Globally silences a player
 	 * @param silencer : this is the person silencing the player
-	 * @return true when complete, false with insufficient perms
+	 * @return true when complete
 	 */
 	public boolean Silence( CommandSender silencer ) {
 		if ( this.Silenced == false ) {
@@ -267,7 +267,7 @@ public class UserDetails {
 	/**
 	 * Globally unmutes a player
 	 * @param listener : This is the person who unmuted the player
-	 * @return true when complete, false with insufficient perms
+	 * @return true when complete
 	 */
 	public boolean Listen( CommandSender listener ) {
 		if ( this.Silenced == true ) {

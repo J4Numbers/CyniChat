@@ -187,11 +187,21 @@ public class Channel {
 		return true;
 	}
 
+	/**
+	 * Set a new password for the IRC channel
+	 * @param newPass : The new password for the channel
+	 * @return true when complete
+	 */
 	public boolean setIrcPass( String newPass ) {
 		this.ircPassword = newPass;
 		return true;
 	}
 
+	/**
+	 * Set a new channel name for IRC
+	 * @param newName : The name we're changing it to
+	 * @return true when complete
+	 */
 	public boolean setIrcName( String newName ) {
 		this.ircChannel = newName;
 		return true;
