@@ -187,6 +187,16 @@ public class Channel {
 		return true;
 	}
 
+	public boolean setIrcPass( String newPass ) {
+		this.ircPassword = newPass;
+		return true;
+	}
+
+	public boolean setIrcName( String newName ) {
+		this.ircChannel = newName;
+		return true;
+	}
+
 	/**
 	 * Set the ID of the channel
 	 * @param newID : The ID we're changing to

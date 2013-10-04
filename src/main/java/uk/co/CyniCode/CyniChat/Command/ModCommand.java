@@ -93,6 +93,22 @@ public class ModCommand {
 						current.setPassword( args[3] );
 						player.sendMessage("Password change successful!");
 						return true;
+					} else if ( args[2].equalsIgnoreCase("ircchan") ) {
+						if ( args[3].equalsIgnoreCase( "-" ) ) {
+							current.setIrcName( "" );
+						} else {
+							current.setIrcName( args[3] );
+						}
+						player.sendMessage("Name of the IRC channel successfully changed!");
+						return true;
+					} else if ( args[2].equalsIgnoreCase("ircpass") ) {
+						if ( args[3].equalsIgnoreCase( "-" ) ) {
+							current.setIrcPass( "" );
+						} else {
+							current.setIrcPass( args[3] );
+						}
+						player.sendMessage("Password for the IRC channel successfully changed!");
+						return true;
 					} else if ( args[2].equalsIgnoreCase("description") ) {
 						current.setDesc( stacker( args ) );
 						player.sendMessage("Description change successful!");
