@@ -11,9 +11,8 @@ CyniChat:
   other:
     data: "json"
     debug: "false"
-    irc: "true"
+    irc: "false"
   irc:
     hostname: "127.0.0.1"
-    port: 54127
+    port: 6667
     nickname: "CyniBot"
-    channel: "#m4test"
