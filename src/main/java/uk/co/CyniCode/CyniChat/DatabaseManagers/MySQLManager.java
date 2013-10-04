@@ -382,12 +382,12 @@ public class MySQLManager {
 				int ID = rs.getInt(1);
 				String name = rs.getString(2);
 				String nick = rs.getString(4);
-				String irc = "";
-				String ircPass = "";
-				String desc = rs.getString(5);
-				String pass = rs.getString(6);
-				String colour = rs.getString(7);
-				Boolean protect = rs.getBoolean(8);
+				String irc = rs.getString(5);
+				String ircPass = rs.getString(6);
+				String desc = rs.getString(7);
+				String pass = rs.getString(8);
+				String colour = rs.getString(9);
+				Boolean protect = rs.getBoolean(10);
 				Channel current = new Channel();
 				current.loadChannel(ID, name, nick, irc, ircPass, desc, pass, colour, protect);
 				current.printAll();
