@@ -26,15 +26,20 @@ public class MeCommand implements CommandExecutor {
 			String Message = player.getName() + stacker( objects );
 			UserDetails user = DataManager.getOnlineDetails( (Player) player );
 			String curChan = user.getCurrentChannel();
-			Message = DataManager.getChannel(curChan).getColour()+"["+DataManager.getChannel(curChan).getNick()+"] " + Message;
+			String TMessage = DataManager.getChannel(curChan).getColour()+"["+DataManager.getChannel(curChan).getNick()+"] " + Message;
 			Map<String, UserDetails> online = DataManager.returnAllOnline();
 			Object[] all = online.keySet().toArray();
 			for ( int i=0; i<all.length; i++ ) {
 				UserDetails current = online.get(all[i]);
 				if ( current.getAllChannels().contains(curChan) && !current.getIgnoring().contains(player.getName().toLowerCase() ) ) {
-					current.getPlayer().sendMessage(Message);
+					current.getPlayer().sendMessage(TMessage);
 				}
 			}
+			
+			String linkedChan = DataManager.getChannel(curChan).getIRC();
+			if ( CyniChat.IRC == true ) 
+				CyniChat.PBot.sendAction( linkedChan, user, Message );
+			
 			CyniChat.printDebug("End of a /me command");
 			return true;
 		}

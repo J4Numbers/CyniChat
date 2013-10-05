@@ -24,9 +24,13 @@ public class Channel {
 	@Expose
 	private String desc;
 	@Expose
-	private String pass = null;
+	private String pass = "";
 	@Expose
 	private ChatColor colour;
+	@Expose
+	private String ircChannel = "";
+	@Expose
+	private String ircPassword = "";
 	@Expose
 	private Boolean protect = false;
 	
@@ -38,6 +42,8 @@ public class Channel {
 		CyniChat.printDebug("ID: " + ID );
 		CyniChat.printDebug("Name: " + name);
 		CyniChat.printDebug("Nick: " + nick);
+		CyniChat.printDebug("IRC: " + ircChannel);
+		CyniChat.printDebug("IRCP: " + ircPassword);
 		CyniChat.printDebug("Desc: " + desc);
 		CyniChat.printDebug("Pass: " + pass);
 		CyniChat.printDebug("Color: " + colour.toString() );
@@ -50,19 +56,22 @@ public class Channel {
 	 * @param id : The ID of the channel
 	 * @param newName : The name of the channel
 	 * @param newNick : The nickname of the channel
+	 * @param ircChan : The IRC channel for this channel if it is there
 	 * @param newDesc : The description of the channel
 	 * @param newPass : The password of the channel
 	 * @param newColour : The channel's colour
 	 * @param newProtect : Whether or not the channel is protected
 	 * @return true when complete
 	 */
-	public Boolean loadChannel( int id, String newName, String newNick, String newDesc, String newPass, String newColour, boolean newProtect ) {
+	public Boolean loadChannel( int id, String newName, String newNick, String ircChan, String ircPass, String newDesc, String newPass, String newColour, boolean newProtect ) {
 		this.ID = id;
 		this.name = newName;
 		this.nick = newNick;
 		this.desc = newDesc;
 		this.pass = newPass;
 		this.colour = ChatColor.valueOf(newColour);
+		this.ircChannel = ircChan.toLowerCase();
+		this.ircPassword = ircPass;
 		this.protect = newProtect;
 		return true;
 	}
@@ -116,6 +125,22 @@ public class Channel {
 	}
 	
 	/**
+	 * Return the IRC channel that may or may not be connected to this
+	 * @return ircChannel
+	 */
+	public String getIRC() {
+		return ircChannel;
+	}
+	
+	/**
+	 * Return the IRC password that might be the right one for the previous method
+	 * @return ircPassword
+	 */
+	public String getIRCPass() {
+		return ircPassword;
+	}
+	
+	/**
 	 * Check whether two passwords match
 	 * @param checkPass : This is the password to be checked
 	 * @return A boolean value of whether it matches or not
@@ -144,7 +169,7 @@ public class Channel {
 	 */
 	public Channel(){
 		this.ID = 1;
-		this.name = "Global";
+		this.name = "global";
 		this.nick = "g";
 		this.desc = "The global channel for everyone!";
 		this.pass = "";
@@ -159,6 +184,26 @@ public class Channel {
 	 */
 	public boolean setColor( String newColor ) {
 		this.colour = ChatColor.valueOf( newColor.toUpperCase() );
+		return true;
+	}
+
+	/**
+	 * Set a new password for the IRC channel
+	 * @param newPass : The new password for the channel
+	 * @return true when complete
+	 */
+	public boolean setIrcPass( String newPass ) {
+		this.ircPassword = newPass;
+		return true;
+	}
+
+	/**
+	 * Set a new channel name for IRC
+	 * @param newName : The name we're changing it to
+	 * @return true when complete
+	 */
+	public boolean setIrcName( String newName ) {
+		this.ircChannel = newName;
 		return true;
 	}
 

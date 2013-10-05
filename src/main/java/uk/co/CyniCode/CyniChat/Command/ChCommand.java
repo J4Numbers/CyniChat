@@ -85,6 +85,11 @@ public class ChCommand implements CommandExecutor {
 				return true;
 			}
 		}
+		/*if ( args[0].equalsIgnoreCase("bot") ) {
+			if ( args.length > 1 ) {
+				CyniChat.PBot.sendMessage( , sender, message)
+			}
+		}*/
 		if ( args[0].equalsIgnoreCase("ban") ) {
 			if ( ( args.length == 2 ) || ( args.length == 3 ) ) {
 				if ( args.length == 3 ) {
