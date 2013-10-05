@@ -3,20 +3,12 @@ CyniChat:
     default: "Global"
   database:
     host: "localhost"
-<<<<<<< HEAD
-    port: "3306"
-=======
     port: 3306
->>>>>>> develop
     username: "root"
     password: "pass"
     database: "cynichat"
     prefix: "chat_"
   other:
-<<<<<<< HEAD
-    data: "MySQL"
-    debug: "false"
-=======
     data: "json"
     debug: "false"
     irc: "false"
@@ -24,4 +16,3 @@ CyniChat:
     hostname: "127.0.0.1"
     port: 6667
     nickname: "CyniBot"
->>>>>>> develop
