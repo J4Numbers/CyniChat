@@ -362,8 +362,13 @@ public class UserDetails {
 				this.JoinedChannels.remove( chan.toLowerCase() );
 				player.sendMessage("You have left "+ chan);
 				if ( this.CurrentChannel.equals(chan.toLowerCase()) ) {
-					this.CurrentChannel = JoinedChannels.get(0);
-					player.sendMessage("You are now in " + JoinedChannels.get(0));
+					if ( JoinedChannels.size() != 0 ) { 
+						this.CurrentChannel = JoinedChannels.get(0);
+						player.sendMessage("You are now in " + JoinedChannels.get(0));
+					} else {
+						this.CurrentChannel = "";
+						player.sendMessage( "You have left all channels. Join one to talk." );
+					}
 				}
 				return true;
 			} else {
