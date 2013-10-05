@@ -1,5 +1,9 @@
 <?php
 
+DEFINE( "DATA_STORAGE", "json" );
+
+DEFINE( "DATA_PATH", "/absolute/path/to/bukkit/installation/here";
+
 DEFINE( "DATA_HOST",   "localhost" );
 DEFINE( "DATA_PORT",   "3306" );
 DEFINE( "DATA_USER",   "db_username" );
