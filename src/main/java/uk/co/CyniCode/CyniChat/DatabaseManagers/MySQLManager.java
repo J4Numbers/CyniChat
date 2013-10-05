@@ -55,11 +55,7 @@ public class MySQLManager {
 	 */
 	public boolean startConnection( CyniChat plugin ) {
 		this.hostname = plugin.getConfig().getString("CyniChat.database.host");
-<<<<<<< HEAD
-		this.port = 3306; //plugin.getConfig().getInt("CyniChat.database.port");
-=======
 		this.port =     plugin.getConfig().getInt("CyniChat.database.port");
->>>>>>> develop
 		this.Username = plugin.getConfig().getString("CyniChat.database.username");
 		this.Password = plugin.getConfig().getString("CyniChat.database.password");
 		this.Database = plugin.getConfig().getString("CyniChat.database.database");
@@ -131,11 +127,8 @@ public class MySQLManager {
 					+ "VALUES (?,?)", Statement.RETURN_GENERATED_KEYS);
 			UpdateChannel = conn.prepareStatement("UPDATE `"+Prefix+"channels` "
 					+ "SET `channel_desc`=?, "
-<<<<<<< HEAD
-=======
 					+ "`channel_irc_name`=?, "
 					+ "`channel_irc_pass`=?, "
->>>>>>> develop
 					+ "`channel_colour`=?, "
 					+ "`channel_protected`=? "
 					+ "WHERE `channel_id`=?", Statement.RETURN_GENERATED_KEYS);
@@ -187,17 +180,11 @@ public class MySQLManager {
 						InsertChannel.clearParameters();
 					}
 				UpdateChannel.setString(1, current.getDesc());
-<<<<<<< HEAD
-				UpdateChannel.setString(2, current.getColour().name());
-				UpdateChannel.setBoolean(3, current.isProtected());
-				UpdateChannel.setInt( 4, current.getID() );
-=======
 				UpdateChannel.setString(2, current.getIRC());
 				UpdateChannel.setString(3, current.getIRCPass());
 				UpdateChannel.setString(4, current.getColour().name());
 				UpdateChannel.setBoolean(5, current.isProtected());
 				UpdateChannel.setInt( 6, current.getID() );
->>>>>>> develop
 				UpdateChannel.execute();
 				UpdateChannel.clearParameters();
 			} catch (SQLException e) {
@@ -395,14 +382,6 @@ public class MySQLManager {
 				int ID = rs.getInt(1);
 				String name = rs.getString(2);
 				String nick = rs.getString(4);
-<<<<<<< HEAD
-				String desc = rs.getString(5);
-				String pass = rs.getString(6);
-				String colour = rs.getString(7);
-				Boolean protect = rs.getBoolean(8);
-				Channel current = new Channel();
-				current.loadChannel(ID, name, nick, desc, pass, colour, protect);
-=======
 				String irc = rs.getString(5);
 				String ircPass = rs.getString(6);
 				String desc = rs.getString(7);
@@ -411,7 +390,6 @@ public class MySQLManager {
 				Boolean protect = rs.getBoolean(10);
 				Channel current = new Channel();
 				current.loadChannel(ID, name, nick, irc, ircPass, desc, pass, colour, protect);
->>>>>>> develop
 				current.printAll();
 				try {
 					channels.put(rs.getString(2).toLowerCase(),current);
@@ -448,11 +426,8 @@ public class MySQLManager {
 								+ "`channel_name` varchar(64) not null, "
 								+ "`channel_name_clean` varchar(64) not null, "
 								+ "`channel_nickname` varchar(8) not null, "
-<<<<<<< HEAD
-=======
 								+ "`channel_irc_name` varchar(32) default '', "
 								+ "`channel_irc_pass` varchar(32) default '', "
->>>>>>> develop
 								+ "`channel_desc` varchar(128), "
 								+ "`channel_pass` varchar(32) not null DEFAULT '', "
 								+ "`channel_colour` VARCHAR(16) not null DEFAULT 'GRAY', "
