@@ -176,7 +176,11 @@ public class UserDetails {
 			if ( JoinedChannels.contains( channel.getName().toLowerCase() ) ) {
 				JoinedChannels.remove( channel.getName().toLowerCase() );
 				if ( CurrentChannel.equals(channel.getName().toLowerCase() ) ) {
-					CurrentChannel = JoinedChannels.get(0);
+					if ( JoinedChannels.size() == 0 ) {
+						CurrentChannel = "";
+					} else {
+						CurrentChannel = JoinedChannels.get(0);
+					}
 				}
 			}
 			BannedFrom.add( channel.getName().toLowerCase() );
@@ -242,7 +246,11 @@ public class UserDetails {
 			}
 			JoinedChannels.remove( channel.getName().toLowerCase() );
 			if ( CurrentChannel.equals(channel.getName().toLowerCase() ) ) {
-				this.CurrentChannel = JoinedChannels.get(0);
+				if ( JoinedChannels.size() == 0 ) {
+					CurrentChannel = "";
+				} else { 
+					this.CurrentChannel = JoinedChannels.get(0); 
+				}
 			}
 			return true;
 		}
