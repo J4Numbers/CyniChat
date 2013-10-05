@@ -254,13 +254,6 @@ public class ChCommand implements CommandExecutor {
 			GeneralCommand.who( player, DataManager.getDetails( player.getName().toLowerCase() ).getCurrentChannel() );
 			return true;
 		}
-		if ( args[0].equalsIgnoreCase("qm") ){
-			if ( args.length == 3 ) {
-				GeneralCommand.quickMessage( player, args[1], args[2] );
-				return true;
-			}
-			GeneralCommand.qmInfo( player );
-		}
 		if ( args[0].equalsIgnoreCase("info") ){
 			if ( args.length == 2 ) {
 				GeneralCommand.info( player, args[1].toLowerCase() );

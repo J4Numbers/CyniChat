@@ -128,20 +128,30 @@ public class GeneralCommand {
 	 * @return true when complete
 	 */
 	public static boolean quickMessage( CommandSender player, String channel, String Message ) {
-		if ( player instanceof Player )
-			if ( !PermissionManager.checkPerm( (Player) player, "cynichat.basic.qm") )
+		if ( player instanceof Player ) {
+			if ( !PermissionManager.checkPerm( (Player) player, "cynichat.basic.qm") ) {
+				player.sendMessage( "You do not have the necessary permissions for this." );
 				return false;
+			}
+			if ( DataManager.getOnlineDetails( (Player) player ).getMutedChannels().contains( DataManager.getChannel(channel).getName() ) ) {
+				player.sendMessage( "You are muted in this channel... SHAAAAAME" );
+				return false;
+			}
+		}
 		
+		CyniChat.printDebug( "New Quick Message..." );
 		if ( DataManager.getChannel(channel) != null ) {
 			UserDetails sender = DataManager.getOnlineDetails( (Player) player );
+			Channel curChan = DataManager.getChannel(channel);
 			
-			if ( sender.getAllChannels().contains(channel) ) {
-				Channel curChan = DataManager.getChannel(channel);
+			if ( sender.getAllChannels().contains( curChan.getName() ) ) {
 				Map<String, UserDetails> online = DataManager.returnAllOnline();
 				Object[] keys = online.keySet().toArray();
 				for ( int i=0; i<keys.length; i++ ) {
 					UserDetails current = online.get(keys[i]);
-					if ( current.getAllChannels().contains(channel) ) {
+					CyniChat.printDebug( "Current player: "+ keys[i] );
+					if ( current.getAllChannels().contains( curChan.getName() ) ) {
+						CyniChat.printDebug( keys[i] + " added to the list..." );
 						current.getPlayer().sendMessage(curChan.getColour()
 								+"["+curChan.getNick()+"] <"
 								+current.getPlayer().getDisplayName()+"> "

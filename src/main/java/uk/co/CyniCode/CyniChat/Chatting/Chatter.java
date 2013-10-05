@@ -4,17 +4,20 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import uk.co.CyniCode.CyniChat.CyniChat;
 import uk.co.CyniCode.CyniChat.DataManager;
 import uk.co.CyniCode.CyniChat.PermissionManager;
+import uk.co.CyniCode.CyniChat.Command.GeneralCommand;
 import uk.co.CyniCode.CyniChat.events.ChannelChatEvent;
 import uk.co.CyniCode.CyniChat.objects.Channel;
 import uk.co.CyniCode.CyniChat.objects.UserDetails;
@@ -48,6 +51,23 @@ public class Chatter implements Listener {
 	public static void leaveEvent( PlayerQuitEvent event ) {
 		CyniChat.printDebug("Player Left");
 		DataManager.unbindPlayer(event.getPlayer());
+	}
+	
+	@EventHandler(priority = EventPriority.MONITOR)
+	public static void commandEvent( PlayerCommandPreprocessEvent event ) {
+		String comm = event.getMessage().replaceFirst("/", "" );
+		String[] bits = comm.split( " " );
+		String mess = comm.substring( bits[0].length() + 1, comm.length() );
+		CyniChat.printDebug( comm );
+		CyniChat.printDebug( bits[0] );
+		CyniChat.printDebug( mess );
+		if ( CyniChat.ifCommandExists( bits[0] ) == false ) { 
+			if ( DataManager.getChannel( bits[0] ) != null ) {
+				GeneralCommand.quickMessage( (CommandSender) event.getPlayer(), bits[0], mess );
+				event.setCancelled( true );
+			} else CyniChat.printDebug( "No channel was found for this name" );
+		} else CyniChat.printDebug( "A command existed with this prefix of \""+bits[0]+"\"" );
+		return;
 	}
 	
 	/**

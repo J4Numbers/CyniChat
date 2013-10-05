@@ -12,6 +12,7 @@ import uk.co.CyniCode.CyniChat.Command.AfkCommand;
 import uk.co.CyniCode.CyniChat.Command.ChCommand;
 import uk.co.CyniCode.CyniChat.Command.MeCommand;
 import uk.co.CyniCode.CyniChat.Command.MsgCommand;
+import uk.co.CyniCode.CyniChat.Command.QmCommand;
 import uk.co.CyniCode.CyniChat.Command.RCommand;
 
 /**
@@ -21,7 +22,6 @@ import uk.co.CyniCode.CyniChat.Command.RCommand;
  */
 public class CyniChat extends JavaPlugin{
 	
-	public CyniChat plugin;
 	public Logger log = Logger.getLogger("Minecraft");
 	public static IRCManager PBot;
 	
@@ -47,6 +47,12 @@ public class CyniChat extends JavaPlugin{
 	private static PluginManager pm;
 
 	public static int counter;
+	
+	public static boolean ifCommandExists( String comm ) {
+		if ( self.getServer().getPluginCommand( comm ) == null ) 
+			return false;
+		return true;
+	}
 	
 	/**
 	 * This is the onEnable class for when the plugin starts up. Basic checks are run for the version, name and information of the plugin, then startup occurs.
@@ -100,6 +106,7 @@ public class CyniChat extends JavaPlugin{
 		//Start the command
 		this.getCommand("ch").setExecutor(new ChCommand(this));
 		this.getCommand("afk").setExecutor(new AfkCommand() );
+		this.getCommand("qm").setExecutor(new QmCommand() );
 		this.getCommand("me").setExecutor(new MeCommand() );
 		this.getCommand("msg").setExecutor(new MsgCommand() );
 		this.getCommand("r").setExecutor(new RCommand() );
