@@ -23,6 +23,7 @@ public class CyniChat extends JavaPlugin{
 	
 	public CyniChat plugin;
 	public Logger log = Logger.getLogger("Minecraft");
+	public static IRCManager PBot;
 	
 	public static String version;
 	public static String name;
@@ -32,6 +33,7 @@ public class CyniChat extends JavaPlugin{
 	
 	public static Boolean JSON = false;
 	public static Boolean SQL = false;
+	public static Boolean IRC = false;
 	
 	public static String host;
 	public static String username;
@@ -82,6 +84,19 @@ public class CyniChat extends JavaPlugin{
 		DataManager.start( this );
 		DataManager.channelTable();
 		
+		if ( getConfig().getString("CyniChat.other.irc").equalsIgnoreCase("true") ) {
+			printInfo( "Starting IRC..." );
+			try {
+				PBot = new IRCManager( this );
+				PBot.loadChannels( DataManager.returnAllChannels() );
+				IRC = true;
+				printInfo( "IRC has started." );
+			} catch ( Exception e ) {
+				printSevere( "IRC has failed. Switching off..." );
+				e.printStackTrace();
+			}
+		}
+		
 		//Start the command
 		this.getCommand("ch").setExecutor(new ChCommand(this));
 		this.getCommand("afk").setExecutor(new AfkCommand() );
@@ -109,6 +124,7 @@ public class CyniChat extends JavaPlugin{
 	public void onDisable() {
 		DataManager.saveChannelConfig();
 		DataManager.saveUserDetails();
+		if ( IRC == true ) PBot.stop();
 		printInfo("CyniChat has been disabled!");
 	}
 
@@ -165,6 +181,7 @@ public class CyniChat extends JavaPlugin{
 	public static void killPlugin() {
 		printSevere("Fatal error has occured...");
 		printSevere("Killing...");
+		if ( IRC == true ) PBot.stop();
 		pm.disablePlugin( self );
 	}
 }

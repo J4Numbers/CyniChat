@@ -36,7 +36,9 @@ To install CyniChat, download the jar and unzip the file (oh look, you've alread
 
 **Please Note:** You will also need Vault for this plugin to run correctly along with a permissions plugin of your choice.
 
-Start up the server. A lot of errors will initially flash up on your screen, telling you that an SQL connection could not be made. Shut down the server and open up the bukkit plugins folder. Look inside the CyniChat folder and open up the config where you can edit everything to your specification. The data option currently has two options, MySQL or JSON.
+Start up the server to generate the default configuration. This can be located inside the bukkit plugins folder and from there, look inside the CyniChat folder and open up the config where you can edit everything to your specification. The data option currently has two options, MySQL or JSON.
+
+IRC can be turned on and from there, you can connect to a specified server on a specified port as a specified Nick. This main config does not give you the option to select which IRC channels pertain to which MC channels. That can be done inside either the channels.json file or the MySQL equivilent by changing the ircChannel option and the ircPassword option respectively, all done **outside of the plugin**.
 
 Once you have changed the config to suit your needs, start up the server again.
 
@@ -69,7 +71,7 @@ Commands
 - /ch unban <player> [channel] -> Unbans the player in the current, or the defined channel
 - /ch promote <player> [channel] -> Promotes the player to mod in the current, or the defined channel
 - /ch demote <player> [channel] -> Demotes the Player from mod in the current, or the defined channel
-- /ch set <channel> <node> <value> -> Changes a node (color, password or description) to a value you specify.
+- /ch set <channel> <node> <value> -> Changes a node (color, password, ircchan, ircpass or description) to a value you specify. Please note, having the value of '-' will clear the information for ircchan and ircpass.
 - /ch save -> Saves the information about all the players and channels
 - /ch reload -> Saves the information about all the players and channels, then reloads them
 - /ch help [page#] -> Lists help pages [1 - #]
