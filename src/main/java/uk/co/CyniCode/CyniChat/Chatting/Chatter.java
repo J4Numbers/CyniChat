@@ -53,6 +53,11 @@ public class Chatter implements Listener {
 		DataManager.unbindPlayer(event.getPlayer());
 	}
 	
+	/**
+	 * A command has been fed into the server...
+	 * wat do?
+	 * @param event : The Command event that we're checking
+	 */
 	@EventHandler(priority = EventPriority.MONITOR)
 	public static void commandEvent( PlayerCommandPreprocessEvent event ) {
 		String comm = event.getMessage().replaceFirst("/", "" );
