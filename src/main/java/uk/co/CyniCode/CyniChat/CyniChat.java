@@ -48,6 +48,11 @@ public class CyniChat extends JavaPlugin{
 
 	public static int counter;
 	
+	/**
+	 * Is this command being used by bukkit as far as it knows?
+	 * @param comm : The command we're checking off
+	 * @return true if it does exist, false if it doesn't
+	 */
 	public static boolean ifCommandExists( String comm ) {
 		if ( self.getServer().getPluginCommand( comm ) == null ) 
 			return false;
