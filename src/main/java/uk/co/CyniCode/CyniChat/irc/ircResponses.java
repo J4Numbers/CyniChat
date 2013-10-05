@@ -27,7 +27,7 @@ public class ircResponses {
 	 */
 	public static boolean helpOutput( PircBotX bot, User user ) {
 		
-		bot.setMessageDelay(0);
+		bot.setMessageDelay(10);
 		bot.sendMessage( user, "You wanted some help?" );
 		bot.sendMessage( user, "This is the CyniChat bot (c) CyniCode 2013" );
 		bot.sendMessage( user, "All commands start with ':?'" );
@@ -42,7 +42,7 @@ public class ircResponses {
 		bot.sendMessage( user, "':? unban  <MCUser>'    -> Unban the player inside the Minecraft channel (You must be an OP!)" );
 		bot.sendMessage( user, "':? restart'            -> Restart the IRC bot (You must be an OP!)" );
 		bot.sendMessage( user, "':? kill'               -> Kill the IRC server (You must be an OP (and have a bloody good reason)!)" );
-		bot.sendMessage( user, "" );
+		bot.sendMessage( user, " " );
 		bot.sendMessage( user, "If this didn't help you, then you're kinda screwed :P" );
 		
 		return true;

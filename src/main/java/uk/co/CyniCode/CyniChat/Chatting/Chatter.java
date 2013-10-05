@@ -60,6 +60,14 @@ public class Chatter implements Listener {
 		//CyniChat.printDebug( "Recipients ::== " + looper( event.getRecipients() ) );
 		Player player = event.getPlayer();
 		UserDetails user = DataManager.getOnlineDetails( player );
+		
+		if ( user.getCurrentChannel() == "" ) {
+			user.printAll();
+			player.sendMessage( "You are in no channels. Join one to talk." );
+			event.setCancelled( true );
+			return;
+		}
+		
 		Channel current = DataManager.getChannel( user.getCurrentChannel().toLowerCase() );
 		
 		if ( user.getSilenced() ) {

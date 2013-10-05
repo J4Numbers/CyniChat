@@ -55,7 +55,7 @@ public class MySQLManager {
 	 */
 	public boolean startConnection( CyniChat plugin ) {
 		this.hostname = plugin.getConfig().getString("CyniChat.database.host");
-		this.port = 3306; //plugin.getConfig().getInt("CyniChat.database.port");
+		this.port =     plugin.getConfig().getInt("CyniChat.database.port");
 		this.Username = plugin.getConfig().getString("CyniChat.database.username");
 		this.Password = plugin.getConfig().getString("CyniChat.database.password");
 		this.Database = plugin.getConfig().getString("CyniChat.database.database");
