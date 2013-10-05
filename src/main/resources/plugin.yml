@@ -9,6 +9,9 @@ commands:
   ch:
     description: This is a large.
     usage: /ch help
+  qm:
+    description: Sends a single message to a specified channel
+    usage: /qm <channel> <message>
   r:
     description: Replies to a person.
     usage: /r <message>

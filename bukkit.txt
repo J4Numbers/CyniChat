@@ -1,6 +1,6 @@
 ==CyniChat
 
-CyniChat is chat channel plugin, very similar to HeroChat. It is completely open source and has a number of features that make it useful to any server. However, this plugin will offer a much smoother experience during use. By using alternative storage methods, this plugin will be much faster to load, and much more efficient than the current champion.
+CyniChat is a chat channel plugin, very similar to HeroChat. It is completely open source and has a number of features that make it useful to any server. However, this plugin will offer a much smoother experience during use. By using alternative storage methods, this plugin will be much faster to load, and much more efficient than the current champion.
 
 ===Key Features
 * Chat channel capabilities
@@ -21,6 +21,8 @@ The channel configuration file, on the other hand, contains a lot of customisabl
 |ID | This refers to the order of creation and the order that channels will appear in the list view|
 |Name | This is the full, verbose name that will appear in the list view|
 |Nick | This is the shortcut that you can use to quickly join the channel, as opposed to typing the full channel name|
+|ircChannel | This is the channel name in the IRC server that you'd like the plugin to join //Next Release//|
+|ircPassword | This is the corresponding password to the field above. Any channels without passwords can be left blank //Next Release//|
 |Desc | This is the description that is shown to players in the channel information view|
 |Pass | This is a settable password that you can use to restrict who joins your channel|
 |Colour | This controls the colour of the channel fairly obviously enough. Please use the correct names when editing|
@@ -28,8 +30,8 @@ The channel configuration file, on the other hand, contains a lot of customisabl
 
 ===Commands
 |=Command|=Description|
-|/ch <channel> [password] | Changes the current channel or joins a new one|
-|/ch join <channel> [password] | alias of /ch|
+|/ch <channel> [password] | alias of /ch join|
+|/ch join <channel> [password] | Changes the current channel or joins a new one|
 |/ch leave [channel] | Leaves the current channel, or the defined channel|
 |/ch qm <channel> <message> | Sends one message to the defined channel|
 |/ch ignore <player> | Ignores a named player|
@@ -52,6 +54,7 @@ The channel configuration file, on the other hand, contains a lot of customisabl
 |/ch unban <player> [channel] | Unbans the player in the current, or the defined channel|
 |/ch promote <player> [channel] | Promotes the player to mod in the current, or the defined channel|
 |/ch demote <player> [channel] | Demotes the Player from mod in the current, or the defined channel|
+|/ch set <channel> <field> <value> | Changes either the <color>, <password>, <ircchan>, <ircpass> or <description> of a channel as you see fit|
 |/ch save | Saves the information about all the players and channels|
 |/ch reload | Saves the information about all the players and channels, then reloads them|
 |/ch help [page#] | Lists help pages [1 - #]|
@@ -76,6 +79,8 @@ The channel configuration file, on the other hand, contains a lot of customisabl
 *** cynichat.mod.promote.<channel>
 *** cynichat.mod.demote.all
 *** cynichat.mod.demote.<channel>
+*** cynichat.mod.set.all
+*** cynichat.mod.set.<channel>
 ** cynichat.admin.*
 *** cynichat.admin.create
 *** cynichat.admin.remove
@@ -84,14 +89,13 @@ The channel configuration file, on the other hand, contains a lot of customisabl
 
 ===Caveats
 * This plugin stores files in either JSON files, or in an SQL database
-* This plugin currently has a partial dependency on Vault
+* This plugin currently has a **hard** dependency on Vault (So if you're not running Vault, you won't be able to run this. Sorry)
 * Vault will need a permissions plugin for this plugin to run properly
+* Be aware that, since this plugin is still in alpha, there will be some bugs lying around
 
 ===Future Features
 All of the above are definite guarantees for when the plugin reaches //released// status and make up the basic parts of the plugin. What follows are some features that are likely to be added into the plugin at a later date:
-* IRC integration via Pircbot or Pircbotx
-* An event that other plugins can listen in to
-* A web interface to alter the data in the files/database
+* A web interface to alter the data in the files/database **Confirmed Feature in progress**
 
 (This list is liable to be added to at any point in time)
 
@@ -101,4 +105,10 @@ Great, share it with me on either the comments or over a message. If I like it, 
 
 ==Note
 
-Since this is still in the alpha phase of creation, details on this page are likely to change in accordance with the necessary alterations in the code.
+Since this is still in the alpha phase of creation, details on this page are likely to change in accordance with the necessary alterations in the code. I will put a link to this code here once I have hit a beta creation. For now, it can be found by interpreting the information in the Repository tab above. From there, people are free to do as they please with my source as long as it follows the GNU GPLv3 licence given above.
+
+==Current Progress
+
+I changed my mind... IRC may have had a significant leap forward over the past few hours and may or may not be in the next release that I put out. Lucky you. It is an optional extra in that it is an option in the config for IRC where you can put either 'true' or 'false'. I'll be sure to set it to false on default when this build eventually goes live. Hopefully the options will be intuitive enough for people to simply go through and fill in all the blanks that they need to; if this is not the case then I'll have some documentation on how to do so up at some point or another... probably after I have the actual build up mind you.
+
+Thanks for your patience.
