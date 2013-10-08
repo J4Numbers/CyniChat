@@ -8,6 +8,7 @@ import uk.co.CyniCode.CyniChat.DataManager;
 import uk.co.CyniCode.CyniChat.IRCManager;
 import uk.co.CyniCode.CyniChat.libs.org.pircbotx.hooks.ListenerAdapter;
 import uk.co.CyniCode.CyniChat.libs.org.pircbotx.hooks.events.MessageEvent;
+import uk.co.CyniCode.CyniChat.libs.org.pircbotx.hooks.events.PrivateMessageEvent;
 import uk.co.CyniCode.CyniChat.objects.Channel;
 import uk.co.CyniCode.CyniChat.objects.UserDetails;
 
@@ -150,5 +151,40 @@ public class Chatting extends ListenerAdapter {
 		}
 	}
 
+	@Override
+	public void onPrivateMessage( PrivateMessageEvent event ) {
+		CyniChat.printDebug( "Private message called!" );
+		if ( event.getMessage().startsWith( ":?" ) ) {
+			String[] argments = event.getMessage().split( " " );
+			CyniChat.printDebug( ":? called by " + event.getUser().getNick() );
+			
+			if ( argments[1].equalsIgnoreCase( "talk" ) ) {
+				CyniChat.printDebug( "Talking with " +argments.length+ " args... " );
+				if ( argments.length > 3 ) {
+					
+					CyniChat.printDebug( "Talking..." );
+					if ( ircResponses.talkOutput( event.getBot(), argments[2], stacker( argments, 3, argments.length ) ) == false ) 
+						event.respond( "Invalid statement. Please make sure that channel exits in the MC server." );
+				}
+				
+				return;
+			}
+			
+			ircResponses.helpOutput( event.getBot(), event.getUser() );
+		}
+	}
+	
+	public String stacker( String[] args, int start, int end ) {
+		
+		String finalString = "";
+		String connector = "";
+		
+		for ( int i = start; i < end; i++ ) {
+			finalString += connector + args[i];
+			connector = " ";
+		}
+		
+		return finalString;
+	}
 	
 }
