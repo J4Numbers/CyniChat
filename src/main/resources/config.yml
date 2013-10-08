@@ -10,9 +10,14 @@ CyniChat:
     prefix: "chat_"
   other:
     data: "json"
-    debug: "false"
+    debug: "true"
     irc: "false"
+    bungee: "true"
   irc:
     hostname: "127.0.0.1"
     port: 6667
     nickname: "CyniBot"
+  bungee:
+    connected: 
+    - minecraft
+    - craftmine

@@ -7,6 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -36,6 +37,7 @@ public class DataManager {
 	private static Map<String,Channel> channels = null;
 	private static Map<String, String> matching = new HashMap<String, String>();
 	private static Map<String, String> linkedChans = null;
+	private static List<String> servers = null;
 	
 	private static Map<String,UserDetails> loadedUsers = new HashMap<String, UserDetails>();//User data loaded from sources 
 	
@@ -53,6 +55,16 @@ public class DataManager {
 	 * @param cynichat : This is an instance of the plugin
 	 */
 	public static void start( CyniChat cynichat) {
+		if ( CyniChat.bungee == true ) {
+			servers = cynichat.getConfig().getStringList( "CyniChat.bungee.connected" );
+			
+			Iterator<String> serIter = servers.iterator();
+			
+			while ( serIter.hasNext() ) {
+				CyniChat.printDebug( serIter.next() );
+			}
+		}
+		
 		if ( CyniChat.SQL == true ) {
 			Connection = new MySQLManager();
 			if ( Connection.startConnection( cynichat ) == true ) {
@@ -190,6 +202,10 @@ public class DataManager {
 	
 	public static Map<String, String> getLinkedChannels() {
 		return linkedChans;
+	}
+	
+	public static List<String> getServers() {
+		return servers;
 	}
 	
 	/**
