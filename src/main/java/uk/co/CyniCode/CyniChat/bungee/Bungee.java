@@ -15,7 +15,7 @@ import org.bukkit.plugin.messaging.PluginMessageListener;
 import uk.co.CyniCode.CyniChat.CyniChat;
 import uk.co.CyniCode.CyniChat.objects.Channel;
 
-public class Bungee extends JavaPlugin implements PluginMessageListener {
+public class Bungee implements PluginMessageListener {
 
 public String serverName; // Example: using the GetServer subchannel
 public List<String> servers;
