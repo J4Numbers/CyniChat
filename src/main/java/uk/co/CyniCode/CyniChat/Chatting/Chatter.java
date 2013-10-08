@@ -148,7 +148,7 @@ public class Chatter implements Listener {
 			CyniChat.PBot.sendMessage( current.getIRC(), player.getDisplayName(), event.getMessage() );
 		
 		if ( CyniChat.bungee == true )
-			Bungee.transmit( player, current, event.getMessage() );
+			CyniChat.bungeeInstance.transmit( player, current, event.getMessage() );
 		
 		ChannelChatEvent newChatter = new ChannelChatEvent( player.getDisplayName(), current, event.getMessage(), event.getRecipients() );
 		Bukkit.getServer().getPluginManager().callEvent(newChatter);
