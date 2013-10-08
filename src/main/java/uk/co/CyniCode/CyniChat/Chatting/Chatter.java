@@ -18,6 +18,7 @@ import uk.co.CyniCode.CyniChat.CyniChat;
 import uk.co.CyniCode.CyniChat.DataManager;
 import uk.co.CyniCode.CyniChat.PermissionManager;
 import uk.co.CyniCode.CyniChat.Command.GeneralCommand;
+import uk.co.CyniCode.CyniChat.bungee.Bungee;
 import uk.co.CyniCode.CyniChat.events.ChannelChatEvent;
 import uk.co.CyniCode.CyniChat.objects.Channel;
 import uk.co.CyniCode.CyniChat.objects.UserDetails;
@@ -145,6 +146,9 @@ public class Chatter implements Listener {
 		
 		if ( CyniChat.IRC == true ) 
 			CyniChat.PBot.sendMessage( current.getIRC(), player.getDisplayName(), event.getMessage() );
+		
+		if ( CyniChat.bungee == true )
+			Bungee.transmit( player, current, event.getMessage() );
 		
 		ChannelChatEvent newChatter = new ChannelChatEvent( player.getDisplayName(), current, event.getMessage(), event.getRecipients() );
 		Bukkit.getServer().getPluginManager().callEvent(newChatter);
