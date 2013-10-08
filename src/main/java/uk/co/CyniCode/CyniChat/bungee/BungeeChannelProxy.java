@@ -21,13 +21,13 @@ import uk.co.CyniCode.CyniChat.IRCManager;
 import uk.co.CyniCode.CyniChat.objects.Channel;
 import uk.co.CyniCode.CyniChat.objects.UserDetails;
 
-public class Bungee implements PluginMessageListener {
+public class BungeeChannelProxy implements PluginMessageListener {
 
 public String serverName; // Example: using the GetServer subchannel
 public List<String> servers;
 public CyniChat plugin;
 	
-	public Bungee( CyniChat plugin ) {
+	public BungeeChannelProxy( CyniChat plugin ) {
 		plugin.getServer().getMessenger().registerOutgoingPluginChannel(plugin, "BungeeCord");
 		serverName = plugin.getName();
 		this.plugin = plugin;
