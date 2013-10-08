@@ -6,6 +6,7 @@ import net.milkbowl.vault.permission.Permission;
 
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.messaging.PluginMessageListener;
 
 import uk.co.CyniCode.CyniChat.Chatting.Chatter;
 import uk.co.CyniCode.CyniChat.Command.AfkCommand;
@@ -14,6 +15,7 @@ import uk.co.CyniCode.CyniChat.Command.MeCommand;
 import uk.co.CyniCode.CyniChat.Command.MsgCommand;
 import uk.co.CyniCode.CyniChat.Command.QmCommand;
 import uk.co.CyniCode.CyniChat.Command.RCommand;
+import uk.co.CyniCode.CyniChat.bungee.Bungee;
 
 /**
  * Base class for CyniChat. Main parts are the onEnable(), onDisable(), and the print areas at the moment.
@@ -35,6 +37,7 @@ public class CyniChat extends JavaPlugin{
 	public static Boolean SQL = false;
 	public static Boolean IRC = false;
 	public static Boolean bungee = false;
+	public static Bungee bungeeInstance = null;
 	
 	public static String host;
 	public static String username;
@@ -96,6 +99,7 @@ public class CyniChat extends JavaPlugin{
 		if ( getConfig().getString( "CyniChat.other.bungee" ).equalsIgnoreCase( "true" ) ) {
 			bungee = true;
 			printInfo( "Bungee has been enabled" );
+			bungeeInstance = new Bungee( this );
 		} else {
 			bungee = false;
 			printInfo( "Bungee has been disabled" );
