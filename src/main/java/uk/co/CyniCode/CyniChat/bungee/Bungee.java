@@ -66,7 +66,7 @@ public CyniChat plugin;
 	}
 	
 	@Override
-	public void onBungeeMessageReceived(String channel, Player player, byte[] message) {
+	public void onPluginMessageReceived(String channel, Player player, byte[] message) {
 		if (!channel.equals("BungeeCord")) {
 			return;
 		}
