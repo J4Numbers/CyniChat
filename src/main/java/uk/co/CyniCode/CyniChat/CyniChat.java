@@ -8,14 +8,15 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 
-import uk.co.CyniCode.CyniChat.Chatting.Chatter;
+import uk.co.CyniCode.CyniChat.Chatting.ServerChatListener;
 import uk.co.CyniCode.CyniChat.Command.AfkCommand;
 import uk.co.CyniCode.CyniChat.Command.ChCommand;
 import uk.co.CyniCode.CyniChat.Command.MeCommand;
 import uk.co.CyniCode.CyniChat.Command.MsgCommand;
 import uk.co.CyniCode.CyniChat.Command.QmCommand;
 import uk.co.CyniCode.CyniChat.Command.RCommand;
-import uk.co.CyniCode.CyniChat.bungee.Bungee;
+import uk.co.CyniCode.CyniChat.bungee.BungeeChannelProxy;
+import uk.co.CyniCode.CyniChat.routing.ChatRouter;
 
 /**
  * Base class for CyniChat. Main parts are the onEnable(), onDisable(), and the print areas at the moment.
@@ -37,7 +38,7 @@ public class CyniChat extends JavaPlugin{
 	public static Boolean SQL = false;
 	public static Boolean IRC = false;
 	public static Boolean bungee = false;
-	public static Bungee bungeeInstance = null;
+	public static BungeeChannelProxy bungeeInstance = null;
 	
 	public static String host;
 	public static String username;
@@ -99,7 +100,7 @@ public class CyniChat extends JavaPlugin{
 		if ( getConfig().getString( "CyniChat.other.bungee" ).equalsIgnoreCase( "true" ) ) {
 			bungee = true;
 			printInfo( "Bungee has been enabled" );
-			bungeeInstance = new Bungee( this );
+			bungeeInstance = new BungeeChannelProxy( this );
 		} else {
 			bungee = false;
 			printInfo( "Bungee has been disabled" );
@@ -113,6 +114,7 @@ public class CyniChat extends JavaPlugin{
 				PBot = new IRCManager( this );
 				PBot.loadChannels( DataManager.returnAllChannels() );
 				IRC = true;
+                                ChatRouter.addRouter(PBot);
 				printInfo( "IRC has started." );
 			} catch ( Exception e ) {
 				printSevere( "IRC has failed. Switching off..." );
@@ -133,9 +135,11 @@ public class CyniChat extends JavaPlugin{
 			killPlugin();
 			return;
 		}
-		
-		//Register the listeners.
-		pm.registerEvents(new Chatter(), this);
+            //Register the listeners.
+                ServerChatListener listener = new ServerChatListener();
+                ChatRouter.addRouter(listener);
+                
+		pm.registerEvents(listener, this);
 		
 		printInfo("CyniChat has been enabled!");
 		
