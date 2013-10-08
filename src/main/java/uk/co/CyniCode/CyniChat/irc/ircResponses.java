@@ -9,6 +9,7 @@ import uk.co.CyniCode.CyniChat.CyniChat;
 import uk.co.CyniCode.CyniChat.DataManager;
 import uk.co.CyniCode.CyniChat.libs.org.pircbotx.PircBotX;
 import uk.co.CyniCode.CyniChat.libs.org.pircbotx.User;
+import uk.co.CyniCode.CyniChat.libs.org.pircbotx.exception.IrcException;
 import uk.co.CyniCode.CyniChat.objects.Channel;
 import uk.co.CyniCode.CyniChat.objects.UserDetails;
 
@@ -229,4 +230,54 @@ public class ircResponses {
 		return true;
 	}
 	
+	/**
+	 * Direct a single message to this bot and relay it to a given channel
+	 * in terms of the bot.
+	 * @param bot : This is who is going to send the message
+	 * @param chan : This is the channel we're going to send it over
+	 * @param message : This is the message we're carrying
+	 * @return true if the channel exists and we were successful...
+	 * False if the channel didn't actually exist in the first place.
+	 */
+	public static boolean talkOutput( PircBotX bot, String chan, String message ) {
+		
+		CyniChat.printDebug( "Trying to TALK in: " + chan );
+		
+		if ( DataManager.getChannel( chan ) != null ) {
+			
+			CyniChat.printDebug( chan + " exists" );
+			
+			Channel thisChan = DataManager.getChannel( chan );
+			
+			Map<String, UserDetails> online = DataManager.returnAllOnline();
+			
+			Set<String> onSet = online.keySet();
+			Iterator<String> onIter = onSet.iterator();
+			
+			while ( onIter.hasNext() ) {
+				String cur = onIter.next();
+				
+				CyniChat.printDebug( cur + " is the next player in line" );
+				
+				UserDetails thisPlayer = online.get( cur );
+				if ( thisPlayer.getAllChannels().contains( thisChan.getName() ) ) {
+					try {
+						CyniChat.printDebug( "Player found... trying to send message" );
+						thisPlayer.getPlayer().sendMessage( thisChan.getColour()+"[IRC] ["+thisChan.getNick()+"] "+bot.getNick()+" : "+message );
+					} catch ( NullPointerException e ) {
+						CyniChat.printDebug( "Player not found... erroring" );
+						e.printStackTrace();
+					}
+				}
+			}
+			
+			CyniChat.printDebug( "Trying to send message to IRC..." );
+			bot.sendMessage( thisChan.getIRC(), message );
+			
+			return true;
+		}
+		
+		CyniChat.printDebug( "Channel doesn't exist." );
+		return false;
+	}
 }
