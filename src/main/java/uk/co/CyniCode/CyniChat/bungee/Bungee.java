@@ -70,7 +70,7 @@ public CyniChat plugin;
 		if (!channel.equals("BungeeCord")) {
 			return;
 		}
-		
+		try{
 		DataInputStream in = new DataInputStream(new ByteArrayInputStream(message));
 		String subchannel = in.readUTF();
 		if (subchannel.equals("CyniChat")) {
@@ -87,6 +87,7 @@ public CyniChat plugin;
 		} else if (subchannel.equals("GetServer")) {
 			serverName = in.readUTF();
 		}
+                }catch(Exception e){}
     }
 	
 	public boolean transmit( Player player, Channel chan, String message ) {
