@@ -34,6 +34,7 @@ public class CyniChat extends JavaPlugin{
 	public static Boolean JSON = false;
 	public static Boolean SQL = false;
 	public static Boolean IRC = false;
+	public static Boolean bungee = false;
 	
 	public static String host;
 	public static String username;
@@ -91,6 +92,13 @@ public class CyniChat extends JavaPlugin{
 		} else {
 			JSON = true;
 			printInfo("JSON storage enabled!");
+		}
+		if ( getConfig().getString( "CyniChat.other.bungee" ).equalsIgnoreCase( "true" ) ) {
+			bungee = true;
+			printInfo( "Bungee has been enabled" );
+		} else {
+			bungee = false;
+			printInfo( "Bungee has been disabled" );
 		}
 		DataManager.start( this );
 		DataManager.channelTable();
