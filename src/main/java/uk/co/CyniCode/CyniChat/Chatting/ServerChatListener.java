@@ -160,14 +160,14 @@ public class ServerChatListener implements Listener, IChatEndpoint {
         }
 
 
-        ChatRouter.routeMessage(this, current.getName(), player.getName() , event.getMessage());
+        ChatRouter.routeMessage(ChatRouter.EndpointType.PLAYER, this, current.getName(), player.getName(), event.getMessage());
         /*if (CyniChat.IRC == true) {
-            CyniChat.PBot.sendMessage(current.getIRC(), player.getDisplayName(), event.getMessage());
-        }*/
+         CyniChat.PBot.sendMessage(current.getIRC(), player.getDisplayName(), event.getMessage());
+         }*/
 
-        if (CyniChat.bungee == true) {
-            CyniChat.bungeeInstance.transmit(player, current, event.getMessage());
-        }
+        /*if (CyniChat.bungee == true) {
+         CyniChat.bungeeInstance.transmit(player, current, event.getMessage());
+         }*/
 
         ChannelChatEvent newChatter = new ChannelChatEvent(player.getDisplayName(), current, event.getMessage(), event.getRecipients());
         Bukkit.getServer().getPluginManager().callEvent(newChatter);
@@ -201,11 +201,11 @@ public class ServerChatListener implements Listener, IChatEndpoint {
         return recip;
     }
 
-    public void giveMessage(IChatEndpoint from, String player, String channel, String message) {
-        if (from instanceof IRCChatListener) {
+    public void giveMessage(ChatRouter.EndpointType type, String player, String channel, String message) {
+        if (type == ChatRouter.EndpointType.IRC) {
             _handleIRCMessage(player, channel, message);
         }
-        if (from instanceof BungeeChannelProxy) {
+        if (type == ChatRouter.EndpointType.BUNGEE) {
             _handleBungeeMessage(player, channel, message);
         }
     }
@@ -229,6 +229,19 @@ public class ServerChatListener implements Listener, IChatEndpoint {
     }
 
     private void _handleBungeeMessage(String player, String channel, String message) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
+        Channel chatChannel = DataManager.getChannel(channel);
+        if(chatChannel == null){
+            CyniChat.printDebug("Dropped bungee message from unknown channel " + channel + ":: " + player + " said " + message);
+            return;}
+        
+        String formattedMsg = chatChannel.getColour() + "[" + chatChannel.getNick() + "] " + player + " : " + chatChannel.getColour() + message;
+        
+
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            if (DataManager.getOnlineDetails(p).getAllChannels().contains(channel)) {
+                p.sendMessage(formattedMsg);
+            }
+        }
     }
 }

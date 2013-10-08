@@ -13,6 +13,7 @@ import org.pircbotx.exception.IrcException;
 import org.pircbotx.exception.NickAlreadyInUseException;
 import uk.co.CyniCode.CyniChat.Chatting.ServerChatListener;
 import uk.co.CyniCode.CyniChat.objects.UserDetails;
+import uk.co.CyniCode.CyniChat.routing.ChatRouter;
 import uk.co.CyniCode.CyniChat.routing.IChatEndpoint;
 
 /**
@@ -143,8 +144,8 @@ public class IRCManager implements IChatEndpoint {
         CyniChat.printInfo("IRC has been killed.");
     }
 
-    public void giveMessage(IChatEndpoint from, String player, String channel, String message) {
-        if(from instanceof ServerChatListener){
+    public void giveMessage(ChatRouter.EndpointType type, String player, String channel, String message) {
+        if(type == ChatRouter.EndpointType.PLAYER){
             String ircChannel = DataManager.getChannel(channel).getIRC();
             sendMessage(ircChannel, player, message);
         }
