@@ -4,6 +4,8 @@
  */
 package uk.co.CyniCode.CyniChat.routing;
 
+import uk.co.CyniCode.CyniChat.routing.ChatRouter.EndpointType;
+
 /**
  * Represents a destination for chat messages to go to.
  * This can be to players on a server (filtered by channel), an IRC bot, BungeeCord proxy, or logging utilities
@@ -19,5 +21,5 @@ public interface IChatEndpoint {
      * @param channel channel this message comes from, this is a CyniChat channel name, not IRC etc channel
      * @param message Actual content of message
      */
-    public void giveMessage(IChatEndpoint from,String player,String channel,String message);
+    public void giveMessage(EndpointType type,String player,String channel,String message);
 }

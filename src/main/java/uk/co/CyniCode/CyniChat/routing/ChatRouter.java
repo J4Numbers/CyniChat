@@ -13,6 +13,12 @@ import java.util.List;
  * @author James
  */
 public class ChatRouter {
+    
+    public enum EndpointType{
+        PLAYER,
+        BUNGEE,
+        IRC
+    }
 
     private static List<IChatEndpoint> routers = new ArrayList<IChatEndpoint>(10);
 
@@ -28,10 +34,10 @@ public class ChatRouter {
      * @param channel
      * @param message
      */
-    public static void routeMessage(IChatEndpoint from, String player, String channel, String message) {
+    public static void routeMessage(EndpointType type, IChatEndpoint from, String player, String channel, String message) {
         for (IChatEndpoint router : routers) {
             if (router != from) {
-                router.giveMessage(from, player, channel, message);
+                router.giveMessage(type, player, channel, message);
             }
         }
     }

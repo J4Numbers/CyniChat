@@ -14,7 +14,9 @@ import org.bukkit.plugin.messaging.PluginMessageListener;
 
 import uk.co.CyniCode.CyniChat.CyniChat;
 import uk.co.CyniCode.CyniChat.DataManager;
+import uk.co.CyniCode.CyniChat.PermissionManager;
 import uk.co.CyniCode.CyniChat.routing.ChatRouter;
+import uk.co.CyniCode.CyniChat.routing.ChatRouter.EndpointType;
 import uk.co.CyniCode.CyniChat.routing.IChatEndpoint;
 
 public class BungeeChannelProxy implements PluginMessageListener, IChatEndpoint {
@@ -37,21 +39,31 @@ public class BungeeChannelProxy implements PluginMessageListener, IChatEndpoint 
             DataInputStream dis = new DataInputStream(new ByteArrayInputStream(data));
 
             //TODO - Channel protection
-            String player = dis.readUTF();
+            EndpointType type = EndpointType.values()[dis.readInt()];
+            String fancyPlayerName = dis.readUTF();
+            String playerName = dis.readUTF();
             String chatChannel = dis.readUTF();
             String message = dis.readUTF();
+            
             if (DataManager.getChannel(chatChannel) != null) {
-                ChatRouter.routeMessage(this, player, chatChannel, message);
+                if(type == EndpointType.PLAYER){
+                    ChatRouter.routeMessage(EndpointType.BUNGEE, this , fancyPlayerName, chatChannel, message);
+                }
+                else
+                {
+                    ChatRouter.routeMessage(type, this , playerName, chatChannel, message);
+                }
+                
             }
         } catch (IOException ex) {
             CyniChat.printSevere("Error parsing message in BungeeChannelProxy");
-            ex.printStackTrace();;
+            ex.printStackTrace();
         }
 
 
     }
 
-    public void giveMessage(IChatEndpoint from, String player, String channel, String message) {
+    public void giveMessage(EndpointType type, String player, String channel, String message) {
         try {
             ByteArrayOutputStream b = new ByteArrayOutputStream();
             DataOutputStream out = new DataOutputStream(b);
@@ -59,7 +71,16 @@ public class BungeeChannelProxy implements PluginMessageListener, IChatEndpoint 
             out.writeUTF("Forward");
             out.writeUTF("ALL");
             out.writeUTF("CyniChat");
-
+            
+            out.writeInt(type.ordinal());// typeId
+            //Fancy name transmission
+            if(type == EndpointType.PLAYER){
+               out.writeUTF(PermissionManager.getPlayerFull(Bukkit.getPlayer(player)));
+            }
+            else
+            {
+              out.writeUTF("");
+            }
             out.writeUTF(player);
             out.writeUTF(channel);
             out.writeUTF(message);

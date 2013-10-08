@@ -8,7 +8,6 @@ import uk.co.CyniCode.CyniChat.DataManager;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
-import uk.co.CyniCode.CyniChat.objects.Channel;
 import uk.co.CyniCode.CyniChat.routing.ChatRouter;
 
 /**
@@ -137,7 +136,7 @@ public class IRCChatListener extends ListenerAdapter {
             CyniChat.printDebug("Match found: " + event.getChannel().getName() + " -> " + channelName);
 
             //Route message
-            ChatRouter.routeMessage(CyniChat.PBot, event.getUser().getNick(), channelName, event.getMessage());
+            ChatRouter.routeMessage(ChatRouter.EndpointType.IRC,CyniChat.PBot, event.getUser().getNick(), channelName, event.getMessage());
         }
     }
 
