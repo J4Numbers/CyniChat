@@ -136,7 +136,7 @@ public class IRCChatListener extends ListenerAdapter {
             CyniChat.printDebug("Match found: " + event.getChannel().getName() + " -> " + channelName);
 
             //Route message
-            ChatRouter.routeMessage(ChatRouter.EndpointType.IRC,CyniChat.PBot, event.getUser().getNick(), channelName, event.getMessage());
+            ChatRouter.routeMessage(ChatRouter.EndpointType.IRC,event.getUser().getNick(), channelName, event.getMessage());
         }
     }
 
