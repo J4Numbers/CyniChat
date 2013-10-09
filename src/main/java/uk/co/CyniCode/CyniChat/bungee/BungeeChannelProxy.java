@@ -68,14 +68,9 @@ public class BungeeChannelProxy implements PluginMessageListener, IChatEndpoint 
 
     public void giveMessage(EndpointType type, String player, String channel, String message) {
         try {
+            //Create message
             ByteArrayOutputStream b = new ByteArrayOutputStream();
             DataOutputStream out = new DataOutputStream(b);
-
-            //Forwarding header 
-            out.writeUTF("Forward");
-            out.writeUTF("ALL");
-            out.writeUTF("CyniChat");
-            
             out.writeInt(type.ordinal());// typeId
             //Fancy name transmission
             if(type == EndpointType.PLAYER){
@@ -108,8 +103,19 @@ public class BungeeChannelProxy implements PluginMessageListener, IChatEndpoint 
             out.writeUTF(channel);
             out.writeUTF(message);
 
+            
+            
+            ByteArrayOutputStream msgBytes = new ByteArrayOutputStream();
+            DataOutputStream msg = new DataOutputStream(msgBytes);
+            msg.writeUTF("Forward");
+            msg.writeUTF("ALL");
+            msg.writeUTF("CyniChat");
+            //Push message content
+            msg.writeShort(b.toByteArray().length);
+            msg.write(b.toByteArray());
+            
             Player p = Bukkit.getOnlinePlayers()[0];
-            p.sendPluginMessage(plugin, "BungeeCord", b.toByteArray());
+            p.sendPluginMessage(plugin, "BungeeCord", msgBytes.toByteArray());
             CyniChat.printDebug( "Message sent!" );
         } catch (IOException ex) {
             CyniChat.printSevere("Error sending message to BungeeChannelProxy");
