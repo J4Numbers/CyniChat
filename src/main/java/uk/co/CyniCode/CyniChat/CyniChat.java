@@ -6,7 +6,6 @@ import net.milkbowl.vault.permission.Permission;
 
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.plugin.messaging.PluginMessageListener;
 
 import uk.co.CyniCode.CyniChat.Chatting.ServerChatListener;
 import uk.co.CyniCode.CyniChat.Command.AfkCommand;

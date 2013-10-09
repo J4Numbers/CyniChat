@@ -160,7 +160,7 @@ public class ServerChatListener implements Listener, IChatEndpoint {
         }
 
 
-        ChatRouter.routeMessage(ChatRouter.EndpointType.PLAYER, current.getName(), player.getName(), event.getMessage());
+        ChatRouter.routeMessage(ChatRouter.EndpointType.PLAYER, player.getName(), current.getName(), event.getMessage());
         /*if (CyniChat.IRC == true) {
          CyniChat.PBot.sendMessage(current.getIRC(), player.getDisplayName(), event.getMessage());
          }*/
