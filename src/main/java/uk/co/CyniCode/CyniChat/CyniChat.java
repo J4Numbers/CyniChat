@@ -101,6 +101,7 @@ public class CyniChat extends JavaPlugin{
 			bungee = true;
 			printInfo( "Bungee has been enabled" );
 			bungeeInstance = new BungeeChannelProxy( this );
+                        ChatRouter.addRouter(ChatRouter.EndpointType.BUNGEE, bungeeInstance);
 		} else {
 			bungee = false;
 			printInfo( "Bungee has been disabled" );
@@ -114,7 +115,7 @@ public class CyniChat extends JavaPlugin{
 				PBot = new IRCManager( this );
 				PBot.loadChannels( DataManager.returnAllChannels() );
 				IRC = true;
-                                ChatRouter.addRouter(PBot);
+                                ChatRouter.addRouter(ChatRouter.EndpointType.IRC,PBot);
 				printInfo( "IRC has started." );
 			} catch ( Exception e ) {
 				printSevere( "IRC has failed. Switching off..." );
@@ -137,7 +138,7 @@ public class CyniChat extends JavaPlugin{
 		}
             //Register the listeners.
                 ServerChatListener listener = new ServerChatListener();
-                ChatRouter.addRouter(listener);
+                ChatRouter.addRouter(ChatRouter.EndpointType.PLAYER,listener);
                 
 		pm.registerEvents(listener, this);
 		

@@ -45,13 +45,14 @@ public class BungeeChannelProxy implements PluginMessageListener, IChatEndpoint 
             String chatChannel = dis.readUTF();
             String message = dis.readUTF();
             
+            //if this is a player type message, use the fancy name, else use the regular name
             if (DataManager.getChannel(chatChannel) != null) {
                 if(type == EndpointType.PLAYER){
-                    ChatRouter.routeMessage(EndpointType.BUNGEE, this , fancyPlayerName, chatChannel, message);
+                    ChatRouter.routeMessage(EndpointType.BUNGEE, fancyPlayerName, chatChannel, message);
                 }
                 else
                 {
-                    ChatRouter.routeMessage(type, this , playerName, chatChannel, message);
+                    ChatRouter.routeMessage(type, playerName, chatChannel, message);
                 }
                 
             }
@@ -68,6 +69,7 @@ public class BungeeChannelProxy implements PluginMessageListener, IChatEndpoint 
             ByteArrayOutputStream b = new ByteArrayOutputStream();
             DataOutputStream out = new DataOutputStream(b);
 
+            //Forwarding header 
             out.writeUTF("Forward");
             out.writeUTF("ALL");
             out.writeUTF("CyniChat");

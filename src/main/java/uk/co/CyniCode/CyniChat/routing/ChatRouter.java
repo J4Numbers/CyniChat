@@ -5,7 +5,9 @@
 package uk.co.CyniCode.CyniChat.routing;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Acts as a central hub for routing messages to various IChatRouters
@@ -20,10 +22,10 @@ public class ChatRouter {
         IRC
     }
 
-    private static List<IChatEndpoint> routers = new ArrayList<IChatEndpoint>(10);
+    private static Map<EndpointType,IChatEndpoint> routers = new HashMap<EndpointType,IChatEndpoint>(10);
 
-    public static void addRouter(IChatEndpoint router) {
-        routers.add(router);
+    public static void addRouter(EndpointType type,IChatEndpoint router) {
+        routers.put(type, router);
     }
 
     /**
@@ -34,10 +36,10 @@ public class ChatRouter {
      * @param channel
      * @param message
      */
-    public static void routeMessage(EndpointType type, IChatEndpoint from, String player, String channel, String message) {
-        for (IChatEndpoint router : routers) {
-            if (router != from) {
-                router.giveMessage(type, player, channel, message);
+    public static void routeMessage(EndpointType type, String player, String channel, String message) {
+        for (Map.Entry<EndpointType, IChatEndpoint> router : routers.entrySet()) {
+            if (router.getKey() != type) {
+                router.getValue().giveMessage(type, player, channel, message);
             }
         }
     }
