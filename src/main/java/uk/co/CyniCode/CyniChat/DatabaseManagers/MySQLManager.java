@@ -24,7 +24,7 @@ import uk.co.CyniCode.CyniChat.objects.UserDetails;
  * @author Matthew Ball
  *
  */
-public class MySQLManager {
+public class MySQLManager implements IDataManager {
 
 	private String hostname;
 	private int port;

@@ -31,6 +31,9 @@ public class BungeeChannelProxy implements PluginMessageListener, IChatEndpoint 
 
     public void onPluginMessageReceived(String pluginChnl, Player plr, byte[] data) {
         try {
+        	
+        	CyniChat.printDebug( "Channel recieved : " + pluginChnl );
+        	
             if (!pluginChnl.equals("CyniChat")) {
                 CyniChat.printWarning("BungeeChannelProxy was given message for channel " + pluginChnl);
                 return;
