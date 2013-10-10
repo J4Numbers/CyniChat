@@ -100,7 +100,7 @@
                             <configuration>
                                 <artifactSet>
                                     <includes>
-                                        <groupId>org.pircbotx:pircbotx</groupId>
+                                        <include>org.pircbotx:pircbotx</include>
                                     </includes>
                                 </artifactSet>
                                 <relocations>
