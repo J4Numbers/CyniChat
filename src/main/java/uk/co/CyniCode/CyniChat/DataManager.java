@@ -18,6 +18,8 @@ import org.bukkit.craftbukkit.libs.com.google.gson.JsonSyntaxException;
 import org.bukkit.craftbukkit.libs.com.google.gson.reflect.TypeToken;
 import org.bukkit.entity.Player;
 
+import uk.co.CyniCode.CyniChat.DatabaseManagers.IDataManager;
+import uk.co.CyniCode.CyniChat.DatabaseManagers.JSONManager;
 import uk.co.CyniCode.CyniChat.DatabaseManagers.MySQLManager;
 import uk.co.CyniCode.CyniChat.objects.Channel;
 import uk.co.CyniCode.CyniChat.objects.UserDetails;
@@ -29,10 +31,6 @@ import uk.co.CyniCode.CyniChat.objects.UserDetails;
  * 
  */
 public class DataManager {
-	
-	//Create a gson parser, only look at fields tagged with @Expose
-	private static Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-
 	//List of loaded channels
 	private static Map<String,Channel> channels = null;
 	private static Map<String, String> matching = new HashMap<String, String>();
@@ -45,9 +43,7 @@ public class DataManager {
 	
 	private static Map<String,UserDetails> activeUsers = new HashMap<String, UserDetails>();//Users that were online
 	
-	private static File channelFile = null;
-	private static File userFile = null;
-	private static MySQLManager Connection;
+	private static IDataManager Connection;
 	
 	/**
 	 * Let's start grabbing all the data we can. Check which method of storage we're using
@@ -67,19 +63,26 @@ public class DataManager {
 		
 		if ( CyniChat.SQL == true ) {
 			Connection = new MySQLManager();
-			if ( Connection.startConnection( cynichat ) == true ) {
-				loadedUsers = Connection.returnPlayers();
-				channels = Connection.returnChannels();
-				return;
-			}
+		} else {
+			Connection = new JSONManager();
 		}
-		setChannelFile(new File( cynichat.getDataFolder(),"channels.json"));
-		loadChannelConfig();
-		printAllChannels();
 		
-		setUserFile(new File( cynichat.getDataFolder(),"players.json"));
-		loadUserDetails();
-		printAllUsers();
+		if ( Connection.startConnection(cynichat) == true ) {
+			channels = Connection.returnChannels();
+			loadedUsers = Connection.returnPlayers();
+		}
+	}
+	
+	public static void saveUsers() {
+		if ( CyniChat.SQL == true ) {
+			Connection.saveUsers( loadedUsers );
+		} else {
+			Connection.saveUsers( activeUsers );
+		}
+	}
+	
+	public static void saveChannels() {
+		Connection.saveChannels( channels );
 	}
 	
 	/**
@@ -94,60 +97,6 @@ public class DataManager {
 			matching.put( channels.get(curName).getNick(), curName);
 		}
 		return;
-	}
-	
-	/**
-	 * Loads the list of channels from a file 
-	 * @param file channel definition file
-	 */
-	public static void loadChannelConfig(){
-		try {
-			channelFile.createNewFile();
-			channels = gson.fromJson(new FileReader(channelFile), new TypeToken<Map<String,Channel>>(){}.getType());
-			if(channels == null){channels = new HashMap<String, Channel>();}
-			if(channels.size() == 0){
-				//Add default channel
-				CyniChat.printInfo("Creating default global channel");
-				addChannel(new Channel());
-				saveChannelConfig();
-			}
-		} catch (JsonIOException e) {
-			CyniChat.printSevere("IO error occured reading channel file");
-			e.printStackTrace();
-		} catch (JsonSyntaxException e) {
-			CyniChat.printSevere("JSON is invalid");
-			e.printStackTrace();
-		} catch (FileNotFoundException e) {
-			CyniChat.printSevere("File not found!");
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	/**
-	 * Save channel configuration to file
-	 * @param file
-	 */
-	public static void saveChannelConfig(){
-		if (CyniChat.SQL == true) {
-			Connection.saveChannels(channels);
-			return;
-		}
-		try {
-			CyniChat.printDebug( channelFile.getAbsolutePath() );
-			channels.get(channels.keySet().toArray()[0]).printAll();
-			FileWriter fw = new FileWriter( channelFile );
-			gson.toJson(channels, fw);
-			fw.flush();
-			fw.close();
-		} catch (JsonIOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 	
 	/**
@@ -209,54 +158,6 @@ public class DataManager {
 	}
 	
 	/**
-	 * Load user details from file
-	 * @param file
-	 */
-	public static void loadUserDetails(){
-		try {
-			userFile.createNewFile();
-			loadedUsers = gson.fromJson(new FileReader(userFile), new TypeToken<Map<String,UserDetails>>(){}.getType());
-			if(loadedUsers == null){loadedUsers = new HashMap<String, UserDetails>();}
-		} catch (JsonIOException e) {
-			CyniChat.printSevere("IO error occured reading channel file");
-			e.printStackTrace();
-		} catch (JsonSyntaxException e) {
-			CyniChat.printSevere("JSON is invalid");
-			e.printStackTrace();
-		} catch (FileNotFoundException e) {
-			CyniChat.printSevere("File not found!");
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	/**
-	 * Save all user details to file 
-	 * @param file
-	 */
-	public static void saveUserDetails(){
-		if ( CyniChat.SQL == true ) {
-			printAllUsers();
-			Connection.saveUsers(activeUsers);
-			activeUsers.clear();
-			return;
-		}
-		try {
-			FileWriter fw = new FileWriter( userFile );
-			gson.toJson(loadedUsers, fw);
-			fw.flush();
-			fw.close();
-		} catch (JsonIOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	/**
 	 * Get a users details
 	 * user may not be online!
 	 * @param player
@@ -304,14 +205,6 @@ public class DataManager {
 	}
 
 	/**
-	 * Set the channel file as defined
-	 * @param channelFile : Absolute path to the channel file
-	 */
-	public static void setChannelFile(File channelFile) {
-		DataManager.channelFile = channelFile;
-	}
-
-	/**
 	 * Print all the users that are loaded and all the users that are online
 	 * (Only visible if you have debug on)
 	 */
@@ -332,14 +225,6 @@ public class DataManager {
 			}
 		} else
 			CyniChat.printDebug( "No loaded users" );
-	}
-
-	/**
-	 * Set a new file for the user details
-	 * @param userFile : The absolute path of a new users file
-	 */
-	public static void setUserFile(File userFile) {
-		DataManager.userFile = userFile;
 	}
 
 	/**
