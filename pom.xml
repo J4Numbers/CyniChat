@@ -84,7 +84,6 @@
                 <version>2.2</version>
             </extension>
         </extensions>
-        <pluginManagement>
             <plugins>
                
                 <plugin>
@@ -100,13 +99,13 @@
                             <configuration>
                                 <artifactSet>
                                     <includes>
-                                        <groupId>org.pircbotx:pircbotx</groupId>
+                                        <include>org.pircbotx:pircbotx</include>
                                     </includes>
                                 </artifactSet>
                                 <relocations>
                                     <relocation>
                                         <pattern>org.pircbotx</pattern>
-                                        <shadedPattern>uk.co.CyniCode.CyniChat.lig.pircbotx</shadedPattern>
+                                        <shadedPattern>uk.co.CyniCode.CyniChat.lib.pircbotx</shadedPattern>
                                     </relocation>
                                 </relocations>
                                 <minimizeJar>true</minimizeJar>
@@ -115,6 +114,5 @@
                     </executions>
                 </plugin>
             </plugins>
-        </pluginManagement>
     </build>
 </project>
