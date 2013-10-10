@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import uk.co.CyniCode.CyniChat.CyniChat;
+
 /**
  * Acts as a central hub for routing messages to various IChatRouters
  *
@@ -37,8 +39,11 @@ public class ChatRouter {
      * @param message
      */
     public static void routeMessage(EndpointType type, String player, String channel, String message) {
+    	CyniChat.printDebug( "Routing message for type: " + type.name() );
         for (Map.Entry<EndpointType, IChatEndpoint> router : routers.entrySet()) {
+        	CyniChat.printDebug( "Checking " + router.getKey().name() + " against " + type.name() );
             if (router.getKey() != type) {
+            	CyniChat.printDebug( "Giving the message on..." );
                 router.getValue().giveMessage(type, player, channel, message);
             }
         }
