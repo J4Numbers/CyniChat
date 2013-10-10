@@ -203,11 +203,15 @@ public class ServerChatListener implements Listener, IChatEndpoint {
 
     public void giveMessage(ChatRouter.EndpointType type, String player, String channel, String message) {
         if (type == ChatRouter.EndpointType.IRC) {
+        	CyniChat.printDebug( "Handling an IRC endtype" );
             _handleIRCMessage(player, channel, message);
         }
         if (type == ChatRouter.EndpointType.BUNGEE) {
+        	CyniChat.printDebug( "Handling a bungee endtype" );
             _handleBungeeMessage(player, channel, message);
+            return;
         }
+        CyniChat.printDebug( type.name() + " endpoint not defined" );
     }
 
     private void _handleIRCMessage(String player, String channel, String message) {
@@ -230,18 +234,29 @@ public class ServerChatListener implements Listener, IChatEndpoint {
 
     private void _handleBungeeMessage(String player, String channel, String message) {
 
+    	CyniChat.printDebug( "Handling a bungee message..." );
+    	
         Channel chatChannel = DataManager.getChannel(channel);
         if(chatChannel == null){
             CyniChat.printDebug("Dropped bungee message from unknown channel " + channel + ":: " + player + " said " + message);
-            return;}
+            return;
+        }
         
         String formattedMsg = chatChannel.getColour() + "[" + chatChannel.getNick() + "] " + player + " : " + chatChannel.getColour() + message;
         
-
+        CyniChat.printDebug( "Message : " + formattedMsg );
+        CyniChat.printDebug( "On : " + chatChannel.getName() );
+        
         for (Player p : Bukkit.getOnlinePlayers()) {
-            if (DataManager.getOnlineDetails(p).getAllChannels().contains(channel)) {
+        	CyniChat.printDebug( "Current Player: " + p.getDisplayName() );
+        	CyniChat.printDebug( "Checking channel: " + chatChannel.getName() );
+            if (DataManager.getOnlineDetails(p).getAllChannels().contains( chatChannel.getName() )) {
+            	CyniChat.printDebug( "Player was in the channel... sending" );
                 p.sendMessage(formattedMsg);
+            } else {
+            	CyniChat.printDebug( "Player was not in the channel..." );
             }
+            DataManager.getOnlineDetails(p).printAll();
         }
     }
 }
