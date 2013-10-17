@@ -7,11 +7,12 @@ import java.util.Set;
 
 import uk.co.CyniCode.CyniChat.CyniChat;
 import uk.co.CyniCode.CyniChat.DataManager;
-import uk.co.CyniCode.CyniChat.libs.org.pircbotx.PircBotX;
-import uk.co.CyniCode.CyniChat.libs.org.pircbotx.User;
-import uk.co.CyniCode.CyniChat.libs.org.pircbotx.exception.IrcException;
 import uk.co.CyniCode.CyniChat.objects.Channel;
 import uk.co.CyniCode.CyniChat.objects.UserDetails;
+
+import org.pircbotx.PircBotX;
+import org.pircbotx.User;
+import org.pircbotx.exception.IrcException;
 
 /**
  * A class for all the responses that are going to be given by the IRC bot

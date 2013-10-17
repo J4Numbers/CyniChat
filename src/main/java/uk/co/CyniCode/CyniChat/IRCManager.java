@@ -7,11 +7,12 @@ import java.util.Map;
 import java.util.Set;
 
 import uk.co.CyniCode.CyniChat.irc.Chatting;
-import uk.co.CyniCode.CyniChat.libs.org.pircbotx.Channel;
-import uk.co.CyniCode.CyniChat.libs.org.pircbotx.PircBotX;
-import uk.co.CyniCode.CyniChat.libs.org.pircbotx.exception.IrcException;
-import uk.co.CyniCode.CyniChat.libs.org.pircbotx.exception.NickAlreadyInUseException;
 import uk.co.CyniCode.CyniChat.objects.UserDetails;
+
+import org.pircbotx.Channel;
+import org.pircbotx.PircBotX;
+import org.pircbotx.exception.IrcException;
+import org.pircbotx.exception.NickAlreadyInUseException;
 
 /**
  * An instantiation of a PircBotX bot
