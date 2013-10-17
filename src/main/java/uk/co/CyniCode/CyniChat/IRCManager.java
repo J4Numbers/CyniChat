@@ -6,19 +6,11 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-<<<<<<< HEAD
-import uk.co.CyniCode.CyniChat.irc.IRCChatListener;
-import org.pircbotx.Channel;
-import org.pircbotx.PircBotX;
-import org.pircbotx.exception.IrcException;
-import org.pircbotx.exception.NickAlreadyInUseException;
 import uk.co.CyniCode.CyniChat.Chatting.ServerChatListener;
-=======
-import uk.co.CyniCode.CyniChat.irc.Chatting;
->>>>>>> stable
 import uk.co.CyniCode.CyniChat.objects.UserDetails;
 import uk.co.CyniCode.CyniChat.routing.ChatRouter;
 import uk.co.CyniCode.CyniChat.routing.IChatEndpoint;
+import uk.co.CyniCode.CyniChat.irc.IRCChatListener;
 
 import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
