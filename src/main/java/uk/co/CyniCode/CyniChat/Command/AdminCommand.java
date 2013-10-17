@@ -41,11 +41,14 @@ public class AdminCommand {
 		
 		newChan.create( name.toLowerCase(), nick.toLowerCase(), protect );
 		DataManager.addChannel( newChan );
-		PermissionManager.addChannelPerms( player, newChan, protect );
+		
 		player.sendMessage( "The channel: " + name + " has now been created" );
 		
-		UserDetails current = DataManager.getOnlineDetails( (Player) player);
-		current.joinChannel(newChan, "");
+		if ( player instanceof Player ) {
+			PermissionManager.addChannelPerms( player, newChan, protect );
+			UserDetails current = DataManager.getOnlineDetails( (Player) player);
+			current.joinChannel(newChan, "");
+		}
 		
 		return true;
 	}
