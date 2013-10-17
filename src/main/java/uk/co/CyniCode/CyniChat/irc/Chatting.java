@@ -6,11 +6,12 @@ import org.bukkit.entity.Player;
 import uk.co.CyniCode.CyniChat.CyniChat;
 import uk.co.CyniCode.CyniChat.DataManager;
 import uk.co.CyniCode.CyniChat.IRCManager;
-import uk.co.CyniCode.CyniChat.libs.org.pircbotx.hooks.ListenerAdapter;
-import uk.co.CyniCode.CyniChat.libs.org.pircbotx.hooks.events.MessageEvent;
-import uk.co.CyniCode.CyniChat.libs.org.pircbotx.hooks.events.PrivateMessageEvent;
 import uk.co.CyniCode.CyniChat.objects.Channel;
 import uk.co.CyniCode.CyniChat.objects.UserDetails;
+
+import org.pircbotx.hooks.ListenerAdapter;
+import org.pircbotx.hooks.events.MessageEvent;
+import org.pircbotx.hooks.events.PrivateMessageEvent;
 
 /**
  * Deal with all the output that the bot can see
@@ -27,7 +28,7 @@ public class Chatting extends ListenerAdapter {
 	public void onMessage( MessageEvent event ) throws Exception {
 		if ( event.getMessage().startsWith(":?") ) {
 			String[] argments = event.getMessage().split( " " );
-			uk.co.CyniCode.CyniChat.libs.org.pircbotx.Channel thisChan = event.getChannel();
+			org.pircbotx.Channel thisChan = event.getChannel();
 			
 			if ( argments.length == 1 ) {
 				CyniChat.printDebug( "Default used..." );
