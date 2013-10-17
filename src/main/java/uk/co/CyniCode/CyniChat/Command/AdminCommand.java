@@ -41,6 +41,7 @@ public class AdminCommand {
 		
 		newChan.create( name.toLowerCase(), nick.toLowerCase(), protect );
 		DataManager.addChannel( newChan );
+		
 		player.sendMessage( "The channel: " + name + " has now been created" );
 		
 		if ( player instanceof Player ) {

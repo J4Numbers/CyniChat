@@ -1,6 +1,9 @@
 package uk.co.CyniCode.CyniChat.Command;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+import org.bukkit.Bukkit;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -9,6 +12,7 @@ import org.bukkit.entity.Player;
 import uk.co.CyniCode.CyniChat.CyniChat;
 import uk.co.CyniCode.CyniChat.DataManager;
 import uk.co.CyniCode.CyniChat.PermissionManager;
+import uk.co.CyniCode.CyniChat.events.ChannelChatEvent;
 import uk.co.CyniCode.CyniChat.objects.Channel;
 import uk.co.CyniCode.CyniChat.objects.UserDetails;
 
@@ -147,17 +151,27 @@ public class GeneralCommand {
 			if ( sender.getAllChannels().contains( curChan.getName() ) ) {
 				Map<String, UserDetails> online = DataManager.returnAllOnline();
 				Object[] keys = online.keySet().toArray();
+				Set<Player> recip = new HashSet<Player>();
+				
 				for ( int i=0; i<keys.length; i++ ) {
 					UserDetails current = online.get(keys[i]);
 					CyniChat.printDebug( "Current player: "+ keys[i] );
 					if ( current.getAllChannels().contains( curChan.getName() ) ) {
 						CyniChat.printDebug( keys[i] + " added to the list..." );
+						recip.add( current.getPlayer() );
 						current.getPlayer().sendMessage(curChan.getColour()
-								+"["+curChan.getNick()+"] <"
-								+current.getPlayer().getDisplayName()+"> "
+								+"["+curChan.getNick()+"] "
+								+ PermissionManager.getPlayerFull( (Player) player ) +" : "
 								+ Message );
 					}
 				}
+				
+				if ( CyniChat.IRC == true ) 
+					CyniChat.PBot.sendMessage( curChan.getIRC(), player.getName(), Message );
+				
+				ChannelChatEvent newChatter = new ChannelChatEvent( player.getName(), curChan, Message, recip );
+				Bukkit.getServer().getPluginManager().callEvent(newChatter);
+				
 				return true;
 			}
 			player.sendMessage("You are not in this channel");
