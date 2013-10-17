@@ -6,7 +6,7 @@ A Note From the Author
 
 Hello.
 
-The name's Cynical (or CyniCode; dependant on who you listen to) and thank you for choosing CyniChat. This is a chat channel plugin with a likeness to the popular option, HeroChat. In fact, the majority of the plguin is extremely similar to it, containing a similar command and permission structure.
+The name's Cynical (or CyniCode; dependent on who you listen to) and thank you for choosing CyniChat. This is a chat channel plugin with a likeness to the popular option, HeroChat. In fact, the majority of the plugin is extremely similar to it, containing a similar command and permission structure.
 
 So why choose this plugin?
 
@@ -19,6 +19,7 @@ Well something must have grabbed your attention if you're looking a this text. S
 Some people are probably wondering what HeroChat is by this point... if you haven't heard of it already that is. To paraphrase, HeroChat is a chat channel plugin which gives server owners the ability to create multiple chat channels on a server and to moderate them as they see fit. Yet it has a number of glaring flaws in its design which I, and a few others, have found to be undesirable.
 
 Such flaws include:
+
 - Giving one file to EVERY player and one file to EVERY channel created
 - Some of the commands are somewhat counter-intuitive (banning someone twice to unban them)
 - A lack of storage choices
@@ -38,7 +39,7 @@ To install CyniChat, download the jar and unzip the file (oh look, you've alread
 
 Start up the server to generate the default configuration. This can be located inside the bukkit plugins folder and from there, look inside the CyniChat folder and open up the config where you can edit everything to your specification. The data option currently has two options, MySQL or JSON.
 
-IRC can be turned on and from there, you can connect to a specified server on a specified port as a specified Nick. This main config does not give you the option to select which IRC channels pertain to which MC channels. That can be done inside either the channels.json file or the MySQL equivilent by changing the ircChannel option and the ircPassword option respectively, all done **outside of the plugin**.
+IRC can be turned on and from there, you can connect to a specified server on a specified port as a specified Nick. This main config does not give you the option to select which IRC channels pertain to which MC channels. That can be done inside either the channels.json file or the MySQL equivalent by changing the ircChannel option and the ircPassword option respectively, all done **outside of the plugin**.
 
 Once you have changed the config to suit your needs, start up the server again.
 
