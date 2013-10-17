@@ -7,12 +7,6 @@ import java.util.Set;
 
 import uk.co.CyniCode.CyniChat.CyniChat;
 import uk.co.CyniCode.CyniChat.DataManager;
-<<<<<<< HEAD
-import org.pircbotx.PircBotX;
-import org.pircbotx.User;
-import org.pircbotx.exception.IrcException;
-=======
->>>>>>> stable
 import uk.co.CyniCode.CyniChat.objects.Channel;
 import uk.co.CyniCode.CyniChat.objects.UserDetails;
 
