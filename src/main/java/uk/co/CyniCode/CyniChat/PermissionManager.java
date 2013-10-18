@@ -138,5 +138,5 @@ public class PermissionManager {
 		String message = prefix + player.getDisplayName() + suffix;
 		
 		return message.replaceAll("(?i)&([a-f0-9])", "\u00A7$1");
-	}
+	}        
 }

@@ -29,8 +29,8 @@ public class GeneralCommand {
 			if ( PermissionManager.checkPerm( (Player) player, "cynichat.admin.save") )
 				return false;
 		
-		DataManager.saveChannelConfig();
-		DataManager.saveUserDetails();
+		DataManager.saveChannels();
+		DataManager.saveUsers();
 		return true;
 	}
 	

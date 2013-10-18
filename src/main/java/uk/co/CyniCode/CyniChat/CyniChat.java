@@ -7,13 +7,15 @@ import net.milkbowl.vault.permission.Permission;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import uk.co.CyniCode.CyniChat.Chatting.Chatter;
+import uk.co.CyniCode.CyniChat.Chatting.ServerChatListener;
 import uk.co.CyniCode.CyniChat.Command.AfkCommand;
 import uk.co.CyniCode.CyniChat.Command.ChCommand;
 import uk.co.CyniCode.CyniChat.Command.MeCommand;
 import uk.co.CyniCode.CyniChat.Command.MsgCommand;
 import uk.co.CyniCode.CyniChat.Command.QmCommand;
 import uk.co.CyniCode.CyniChat.Command.RCommand;
+import uk.co.CyniCode.CyniChat.bungee.BungeeChannelProxy;
+import uk.co.CyniCode.CyniChat.routing.ChatRouter;
 
 /**
  * Base class for CyniChat. Main parts are the onEnable(), onDisable(), and the print areas at the moment.
@@ -34,6 +36,8 @@ public class CyniChat extends JavaPlugin{
 	public static Boolean JSON = false;
 	public static Boolean SQL = false;
 	public static Boolean IRC = false;
+	public static Boolean bungee = false;
+	public static BungeeChannelProxy bungeeInstance = null;
 	
 	public static String host;
 	public static String username;
@@ -92,6 +96,15 @@ public class CyniChat extends JavaPlugin{
 			JSON = true;
 			printInfo("JSON storage enabled!");
 		}
+		if ( getConfig().getString( "CyniChat.other.bungee" ).equalsIgnoreCase( "true" ) ) {
+			bungee = true;
+			printInfo( "Bungee has been enabled" );
+			bungeeInstance = new BungeeChannelProxy( this );
+			ChatRouter.addRouter(ChatRouter.EndpointType.BUNGEE, bungeeInstance);
+		} else {
+			bungee = false;
+			printInfo( "Bungee has been disabled" );
+		}
 		DataManager.start( this );
 		DataManager.channelTable();
 		
@@ -101,6 +114,7 @@ public class CyniChat extends JavaPlugin{
 				PBot = new IRCManager( this );
 				PBot.loadChannels( DataManager.returnAllChannels() );
 				IRC = true;
+				ChatRouter.addRouter(ChatRouter.EndpointType.IRC,PBot);
 				printInfo( "IRC has started." );
 			} catch ( Exception e ) {
 				printSevere( "IRC has failed. Switching off..." );
@@ -121,9 +135,11 @@ public class CyniChat extends JavaPlugin{
 			killPlugin();
 			return;
 		}
-		
 		//Register the listeners.
-		pm.registerEvents(new Chatter(), this);
+		ServerChatListener listener = new ServerChatListener();
+		ChatRouter.addRouter(ChatRouter.EndpointType.PLAYER,listener);
+		
+		pm.registerEvents(listener, this);
 		
 		printInfo("CyniChat has been enabled!");
 		
@@ -134,8 +150,8 @@ public class CyniChat extends JavaPlugin{
 	 */
 	@Override
 	public void onDisable() {
-		DataManager.saveChannelConfig();
-		DataManager.saveUserDetails();
+		DataManager.saveChannels();
+		DataManager.saveUsers();
 		if ( IRC == true ) PBot.stop();
 		printInfo("CyniChat has been disabled!");
 	}
