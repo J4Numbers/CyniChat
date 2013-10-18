@@ -108,7 +108,7 @@ public class CyniChat extends JavaPlugin{
 		DataManager.start( this );
 		DataManager.channelTable();
 		
-		if ( getConfig().getString("CyniChat.other.irc").equalsIgnoreCase("true") ) {
+		/*if ( getConfig().getString("CyniChat.other.irc").equalsIgnoreCase("true") ) {
 			printInfo( "Starting IRC..." );
 			try {
 				PBot = new IRCManager( this );
@@ -120,7 +120,7 @@ public class CyniChat extends JavaPlugin{
 				printSevere( "IRC has failed. Switching off..." );
 				e.printStackTrace();
 			}
-		}
+		}*/
 		
 		//Start the command
 		this.getCommand("ch").setExecutor(new ChCommand(this));
@@ -152,7 +152,7 @@ public class CyniChat extends JavaPlugin{
 	public void onDisable() {
 		DataManager.saveChannels();
 		DataManager.saveUsers();
-		if ( IRC == true ) PBot.stop();
+		//if ( IRC == true ) PBot.stop();
 		printInfo("CyniChat has been disabled!");
 	}
 
