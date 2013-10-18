@@ -6,7 +6,7 @@
 * Author: James Holt
 * Date  : febuary 2011
 **/
-define("TMPL_DIR", HOME_DIR."template/");
+define("TMPL_DIR", /*HOME_DIR.*/"template/");
 
 class pageTemplate{
 	private $raw_html="";

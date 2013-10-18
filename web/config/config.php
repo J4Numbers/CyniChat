@@ -2,7 +2,7 @@
 
 DEFINE( "DATA_STORAGE", "json" );
 
-DEFINE( "DATA_PATH", "/absolute/path/to/bukkit/installation/here";
+DEFINE( "DATA_PATH", "I:\\bukkit\\plugins\\CyniChat\\" );
 
 DEFINE( "DATA_HOST",   "localhost" );
 DEFINE( "DATA_PORT",   "3306" );
@@ -12,8 +12,8 @@ DEFINE( "DATA_BASE",   "cynichat" );
 DEFINE( "DATA_PREFIX", "cyni_" );
 
 DEFINE( "NUM_CONST",   26 );
-DEFINE( "HOME_DIR",    "/var/www/chatter/" );
+DEFINE( "HOME_DIR",    "127.0.0.1/Cynichat/" );
 DEFINE( "HOME_DNS",    "127.0.0.1" );
-DEFINE( "HOME_URL",    "/chatter/" );
+DEFINE( "HOME_URL",    "Cynichat/" );
 
 ?>
