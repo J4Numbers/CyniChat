@@ -37,6 +37,7 @@ public class CyniChat extends JavaPlugin{
 	public static Boolean SQL = false;
 	public static Boolean IRC = false;
 	public static Boolean bungee = false;
+	public static Boolean connected = false;
 	public static BungeeChannelProxy bungeeInstance = null;
 	
 	public static String host;
