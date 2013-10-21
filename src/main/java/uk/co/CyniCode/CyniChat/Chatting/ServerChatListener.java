@@ -18,6 +18,8 @@ import uk.co.CyniCode.CyniChat.CyniChat;
 import uk.co.CyniCode.CyniChat.DataManager;
 import uk.co.CyniCode.CyniChat.PermissionManager;
 import uk.co.CyniCode.CyniChat.Command.GeneralCommand;
+import static uk.co.CyniCode.CyniChat.CyniChat.bungee;
+import static uk.co.CyniCode.CyniChat.CyniChat.bungeeInstance;
 import uk.co.CyniCode.CyniChat.bungee.BungeeChannelProxy;
 import uk.co.CyniCode.CyniChat.events.ChannelChatEvent;
 import uk.co.CyniCode.CyniChat.irc.IRCChatListener;
@@ -47,6 +49,9 @@ public class ServerChatListener implements Listener, IChatEndpoint {
         Player player = event.getPlayer();
         CyniChat.printDebug("Player joined");
         DataManager.bindPlayer(player);//Load player details into online users.
+	
+	if ( CyniChat.bungee == true && CyniChat.connected == false ) 
+		CyniChat.bungeeInstance.sendInformationToBungee();
     }
 
     /**
