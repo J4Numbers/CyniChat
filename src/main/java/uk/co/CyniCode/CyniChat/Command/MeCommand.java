@@ -37,8 +37,6 @@ public class MeCommand implements CommandExecutor {
 			}
 			
 			String linkedChan = DataManager.getChannel(curChan).getIRC();
-			if ( CyniChat.IRC == true ) 
-				CyniChat.PBot.sendAction( linkedChan, user, Message );
 			
 			CyniChat.printDebug("End of a /me command");
 			return true;
