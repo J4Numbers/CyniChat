@@ -46,11 +46,6 @@
             <!-- Bukkit API Version, change if nessesary -->
             <version>1.6.2-R1.0</version>
         </dependency>
-        <dependency>
-            <groupId>org.pircbotx</groupId>
-            <artifactId>pircbotx</artifactId>
-            <version>1.9</version>
-        </dependency>
     </dependencies>
     
     <distributionManagement>
@@ -84,35 +79,5 @@
                 <version>2.2</version>
             </extension>
         </extensions>
-            <plugins>
-               
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-shade-plugin</artifactId>
-                    <version>1.5</version>
-                    <executions>
-                        <execution>
-                            <phase>package</phase>
-                            <goals>
-                                <goal>shade</goal>
-                            </goals>
-                            <configuration>
-                                <artifactSet>
-                                    <includes>
-                                        <include>org.pircbotx:pircbotx</include>
-                                    </includes>
-                                </artifactSet>
-                                <relocations>
-                                    <relocation>
-                                        <pattern>org.pircbotx</pattern>
-                                        <shadedPattern>uk.co.CyniCode.CyniChat.lib.pircbotx</shadedPattern>
-                                    </relocation>
-                                </relocations>
-                                <minimizeJar>true</minimizeJar>
-                            </configuration>
-                        </execution>
-                    </executions>
-                </plugin>
-            </plugins>
     </build>
 </project>

@@ -18,11 +18,7 @@ import uk.co.CyniCode.CyniChat.CyniChat;
 import uk.co.CyniCode.CyniChat.DataManager;
 import uk.co.CyniCode.CyniChat.PermissionManager;
 import uk.co.CyniCode.CyniChat.Command.GeneralCommand;
-import static uk.co.CyniCode.CyniChat.CyniChat.bungee;
-import static uk.co.CyniCode.CyniChat.CyniChat.bungeeInstance;
-import uk.co.CyniCode.CyniChat.bungee.BungeeChannelProxy;
 import uk.co.CyniCode.CyniChat.events.ChannelChatEvent;
-import uk.co.CyniCode.CyniChat.irc.IRCChatListener;
 import uk.co.CyniCode.CyniChat.objects.Channel;
 import uk.co.CyniCode.CyniChat.objects.UserDetails;
 import uk.co.CyniCode.CyniChat.routing.ChatRouter;
@@ -50,8 +46,10 @@ public class ServerChatListener implements Listener, IChatEndpoint {
         CyniChat.printDebug("Player joined");
         DataManager.bindPlayer(player);//Load player details into online users.
 	
-	if ( CyniChat.bungee == true && CyniChat.connected == false ) 
+	if ( CyniChat.bungee == true && CyniChat.connected == false ) {
 		CyniChat.bungeeInstance.sendInformationToBungee();
+		CyniChat.bungeeInstance.giveAMessage(ChatRouter.EndpointType.BUNGEE, "M3lancholy", "global", "Heya");
+	}
     }
 
     /**
@@ -166,13 +164,6 @@ public class ServerChatListener implements Listener, IChatEndpoint {
 
 
         ChatRouter.routeMessage(ChatRouter.EndpointType.PLAYER, player.getName(), current.getName(), event.getMessage());
-        /*if (CyniChat.IRC == true) {
-         CyniChat.PBot.sendMessage(current.getIRC(), player.getDisplayName(), event.getMessage());
-         }*/
-
-        /*if (CyniChat.bungee == true) {
-         CyniChat.bungeeInstance.transmit(player, current, event.getMessage());
-         }*/
 
         ChannelChatEvent newChatter = new ChannelChatEvent(player.getDisplayName(), current, event.getMessage(), event.getRecipients());
         Bukkit.getServer().getPluginManager().callEvent(newChatter);
