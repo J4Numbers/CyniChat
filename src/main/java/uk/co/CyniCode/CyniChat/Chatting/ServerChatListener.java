@@ -47,8 +47,10 @@ public class ServerChatListener implements Listener, IChatEndpoint {
         DataManager.bindPlayer(player);//Load player details into online users.
 	
 	if ( CyniChat.bungee == true && CyniChat.connected == false ) {
-		CyniChat.bungeeInstance.sendInformationToBungee();
-		CyniChat.bungeeInstance.giveAMessage(ChatRouter.EndpointType.BUNGEE, "M3lancholy", "global", "Heya");
+		ChatRouter.routeMessage(ChatRouter.EndpointType.PLAYER, player.getName(), "global", "Heyay");
+
+		//CyniChat.bungeeInstance.sendInformationToBungee();
+		//CyniChat.bungeeInstance.giveMessage(ChatRouter.EndpointType.BUNGEE, "M3lancholy", "global", "Heya");
 	}
     }
 
