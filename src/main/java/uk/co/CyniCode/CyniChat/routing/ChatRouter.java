@@ -21,7 +21,8 @@ public class ChatRouter {
     public enum EndpointType{
         PLAYER,
         BUNGEE,
-        IRC
+        IRC,
+		BUNGEEIRC
     }
 
     private static Map<EndpointType,IChatEndpoint> routers = new HashMap<EndpointType,IChatEndpoint>(10);

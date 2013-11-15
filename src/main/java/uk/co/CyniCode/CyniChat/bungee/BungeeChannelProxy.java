@@ -19,135 +19,27 @@ import uk.co.CyniCode.CyniChat.routing.ChatRouter;
 import uk.co.CyniCode.CyniChat.routing.ChatRouter.EndpointType;
 import uk.co.CyniCode.CyniChat.routing.IChatEndpoint;
 
+/**
+ * Class for handling all the bungee nonsense
+ * @author Cynical
+ */
 public class BungeeChannelProxy implements PluginMessageListener, IChatEndpoint {
 
+	//The instance of the plugin
 	public CyniChat plugin;
 
+	/**
+	 * Instantiate bungeecord proxies with an iteration of CyniChat
+	 * @param plugin : The instance of the plugin
+	 */
 	public BungeeChannelProxy(CyniChat plugin) {
+		//Register that we're using the channel 'BungeeCord'
 		plugin.getServer().getMessenger().registerOutgoingPluginChannel(plugin, "BungeeCord");
+		//And register that we're listening on the same channel
 		plugin.getServer().getMessenger().registerIncomingPluginChannel(plugin, "BungeeCord", this);
 		this.plugin = plugin;
 	}
 	
-	public void giveAMessage(EndpointType type, String player, String channel, String message) {
-		try {
-			//Create message
-			ByteArrayOutputStream b = new ByteArrayOutputStream();
-			DataOutputStream out = new DataOutputStream(b);
-			out.writeInt(type.ordinal());// typeId
-			//Fancy name transmission
-			if (type == EndpointType.PLAYER) {
-				
-				try {
-					CyniChat.printDebug(player);
-					CyniChat.printDebug(channel);
-					CyniChat.printDebug(message);
-					Player thisOne = Bukkit.getPlayerExact(player);
-
-					if (thisOne != null) {
-						CyniChat.printDebug("Player recognised, name of : " + thisOne.getDisplayName());
-					} else {
-						CyniChat.printDebug("Null found");
-					}
-
-					out.writeUTF(PermissionManager.getPlayerFull(thisOne));
-				} catch (NullPointerException e) {
-					CyniChat.printDebug("Null error...");
-					e.printStackTrace();
-					return;
-				}
-
-			} else {
-				out.writeUTF("");
-			}
-			out.writeUTF(player);
-			out.writeUTF(channel);
-			out.writeUTF(message);
-
-			ByteArrayOutputStream msgBytes = new ByteArrayOutputStream();
-			DataOutputStream msg = new DataOutputStream(msgBytes);
-			msg.writeUTF("Forward");
-			msg.writeUTF("ALL");
-			msg.writeUTF("CyniChat");
-			//Push message content
-			msg.writeShort(b.toByteArray().length);
-			msg.write(b.toByteArray());
-
-			Player p = Bukkit.getOnlinePlayers()[0];
-			
-			CyniChat.printDebug( msgBytes.toString() );
-			
-			Thread.sleep( 5000 );
-			
-			p.sendPluginMessage(plugin, "BungeeCord", msgBytes.toByteArray());
-			CyniChat.printDebug("Message sent!");
-		} catch (IOException ex) {
-			CyniChat.printSevere("Error sending message to BungeeChannelProxy");
-			ex.printStackTrace();
-		} catch ( InterruptedException exc ) {
-			
-		}
-	}
-	
-	public void sendInformationToBungee() {
-		
-		CyniChat.printDebug( "Sending information to bungee..." );
-		
-		try {
-			//Create message
-			ByteArrayOutputStream bit = new ByteArrayOutputStream();
-			DataOutputStream outward = new DataOutputStream(bit);
-			
-			Set<String> keys = DataManager.returnAllChannels().keySet();
-			Iterator<String> iterKeys = keys.iterator();
-			
-			while ( iterKeys.hasNext() ) {
-				
-				String thisChanName = iterKeys.next();
-				
-				CyniChat.printDebug( "Checking " + thisChanName+ "..." );
-				
-				Channel thisChan = DataManager.returnAllChannels().get( thisChanName );
-				CyniChat.printDebug( "Checking " + thisChan.getName() + " for IRC channels..." );
-				if ( !thisChan.getIRC().equals("") ) {
-					
-					CyniChat.printDebug( "Found channel... " + thisChan.getIRC() );
-					outward.writeUTF( thisChanName + "~|~" + thisChan.getIRC() + "~|~" + thisChan.getIRCPass() );
-					
-				}
-			}
-			
-			outward.writeUTF( "END" );
-			
-			CyniChat.printDebug( "Found the end..." );
-			
-			ByteArrayOutputStream msgByter = new ByteArrayOutputStream();
-			DataOutputStream msgd = new DataOutputStream(msgByter);
-			msgd.writeUTF("Forward");
-			msgd.writeUTF("ALL");
-			msgd.writeUTF("CyniCord");
-			//Push message content
-			msgd.writeShort(bit.toByteArray().length);
-			msgd.write(bit.toByteArray());
-			
-			Thread.sleep( 5000 );
-			
-			Player p = Bukkit.getOnlinePlayers()[0];
-			p.sendPluginMessage(plugin, "BungeeCord", msgByter.toByteArray());
-			
-			CyniChat.printDebug( msgByter.toString() );
-			CyniChat.printDebug("Message sent!");
-			CyniChat.connected = true;
-		} catch (IOException ex) {
-			CyniChat.printSevere("Error sending message to BungeeChannelProxy");
-			ex.printStackTrace();
-		} catch ( InterruptedException exc ) {
-			CyniChat.printSevere("Thread was interrupted...");
-			exc.printStackTrace();
-		}
-		
-	}
-
 	public void onPluginMessageReceived(String pluginChnl, Player plr, byte[] data) {
 		try {
 			
@@ -210,14 +102,18 @@ public class BungeeChannelProxy implements PluginMessageListener, IChatEndpoint 
 					CyniChat.printDebug(player);
 					CyniChat.printDebug(channel);
 					CyniChat.printDebug(message);
+					
+					//Get the player object from Bukkit when given the name
 					Player thisOne = Bukkit.getPlayerExact(player);
-
+					
+					//If it's a null instance, then debug it through
 					if (thisOne != null) {
 						CyniChat.printDebug("Player recognised, name of : " + thisOne.getDisplayName());
 					} else {
 						CyniChat.printDebug("Null found");
 					}
-
+					
+					//Write out the name of the player into the message
 					out.writeUTF(PermissionManager.getPlayerFull(thisOne));
 				} catch (NullPointerException e) {
 					CyniChat.printDebug("Null error...");
@@ -225,29 +121,65 @@ public class BungeeChannelProxy implements PluginMessageListener, IChatEndpoint 
 					return;
 				}
 
+			} else if ( type == EndpointType.BUNGEEIRC ) {
+				
+				Set<String> keys = DataManager.returnAllChannels().keySet();
+				Iterator<String> iterKeys = keys.iterator();
+				
+				while ( iterKeys.hasNext() ) {
+					
+					String thisChanName = iterKeys.next();
+					
+					CyniChat.printDebug( "Checking " + thisChanName+ "..." );
+					
+					Channel thisChan = DataManager.returnAllChannels().get( thisChanName );
+					CyniChat.printDebug( "Checking " + thisChan.getName() + " for IRC channels..." );
+					if ( !thisChan.getIRC().equals("") ) {
+						
+						CyniChat.printDebug( "Found channel... " + thisChan.getIRC() );
+						out.writeUTF( thisChanName + "~|~" + thisChan.getIRC() + "~|~" + thisChan.getIRCPass() );
+						
+					}
+				}
+				
+				out.writeUTF( "END" );
+				
+				CyniChat.printDebug( "Found the end..." );
+				
 			} else {
+				//No specific player defined.
 				out.writeUTF("");
 			}
-			out.writeUTF(player);
-			out.writeUTF(channel);
-			out.writeUTF(message);
-
+			
+			if ( type != EndpointType.BUNGEEIRC ) {
+				//Add the basic details to what we're transmitting
+				out.writeUTF(player);
+				out.writeUTF(channel);
+				out.writeUTF(message);
+			}
+			
+			//Make a data stream of the byte stream
 			ByteArrayOutputStream msgBytes = new ByteArrayOutputStream();
 			DataOutputStream msg = new DataOutputStream(msgBytes);
+			
+			//And put in the details of where it's going
 			msg.writeUTF("Forward");
 			msg.writeUTF("ALL");
 			msg.writeUTF("CyniChat");
-			//Push message content
+			
+			//Push message content in
 			msg.writeShort(b.toByteArray().length);
 			msg.write(b.toByteArray());
-
-			Player p = Bukkit.getOnlinePlayers()[0];
 			
+			Player p = Bukkit.getOnlinePlayers()[0];
 			CyniChat.printDebug( msgBytes.toString() );
 			
+			//Then send the message
 			p.sendPluginMessage(plugin, "BungeeCord", msgBytes.toByteArray());
 			CyniChat.printDebug("Message sent!");
+			
 		} catch (IOException ex) {
+			//Error...
 			CyniChat.printSevere("Error sending message to BungeeChannelProxy");
 			ex.printStackTrace();
 		}
