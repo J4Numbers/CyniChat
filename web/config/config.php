@@ -4,6 +4,9 @@ DEFINE( "DATA_STORAGE", "json" );
 
 DEFINE( "DATA_PATH", "I:\\bukkit\\plugins\\CyniChat\\" );
 
+DEFINE( "FILE_USER", "admin" );
+DEFINE( "FILE_PASS", "almighty" );
+
 DEFINE( "DATA_HOST",   "localhost" );
 DEFINE( "DATA_PORT",   "3306" );
 DEFINE( "DATA_USER",   "db_username" );
