@@ -50,27 +50,43 @@ public class BungeeChannelProxy implements PluginMessageListener, IChatEndpoint 
 				return;
 			}
 			
+			CyniChat.printDebug( "Applicable to us" );
 			DataInputStream in = new DataInputStream(new ByteArrayInputStream(data));
 			String subChannel = in.readUTF();
+			
+			CyniChat.printDebug( "Is it REALLY applicable to us?" );
 			if(!subChannel.equals("CyniChat")){return;/*Not our problem*/}
 			
+			CyniChat.printDebug( "Apparently so." );
 			short len = in.readShort();
 			byte[] msgbytes = new byte[len];
 			in.readFully(msgbytes);
-
+			
 			CyniChat.printDebug("CyniChat message recieved!");
-
 			
 			DataInputStream dis = new DataInputStream(new ByteArrayInputStream(msgbytes));
 			
+			CyniChat.printDebug( "Let's go through all the values" );
 			EndpointType type = EndpointType.values()[dis.readInt()];
+			
+			CyniChat.printDebug( "Type: " + type.name() );
 			String fancyPlayerName = dis.readUTF();
+			
+			CyniChat.printDebug( "Name: " + fancyPlayerName );
 			String playerName = dis.readUTF();
+			
+			CyniChat.printDebug( "Name2: " + playerName );
 			String chatChannel = dis.readUTF();
+			
+			CyniChat.printDebug( "Channel: " + chatChannel );
 			String IRCChannel = dis.readUTF();
+			
+			CyniChat.printDebug( "IRC Channel: " + IRCChannel );
 			String IRCPassword = dis.readUTF();
+			
+			CyniChat.printDebug( "IRC Password: " + IRCPassword );
 			String message = dis.readUTF();
-
+			
 			CyniChat.printDebug( "Player name : " + playerName );
 			CyniChat.printDebug( "Channel name : " + chatChannel );
 			CyniChat.printDebug( "Message : " + message );
