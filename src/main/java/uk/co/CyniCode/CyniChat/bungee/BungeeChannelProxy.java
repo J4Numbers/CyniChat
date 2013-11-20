@@ -67,6 +67,8 @@ public class BungeeChannelProxy implements PluginMessageListener, IChatEndpoint 
 			String fancyPlayerName = dis.readUTF();
 			String playerName = dis.readUTF();
 			String chatChannel = dis.readUTF();
+			String IRCChannel = dis.readUTF();
+			String IRCPassword = dis.readUTF();
 			String message = dis.readUTF();
 
 			CyniChat.printDebug( "Player name : " + playerName );
@@ -92,6 +94,7 @@ public class BungeeChannelProxy implements PluginMessageListener, IChatEndpoint 
 	public void giveMessage(EndpointType type, String player, String channel, String message) {
 		try {
 			//Create message
+			Channel thisChan;
 			ByteArrayOutputStream b = new ByteArrayOutputStream();
 			DataOutputStream out = new DataOutputStream(b);
 			out.writeInt(type.ordinal());// typeId
@@ -120,42 +123,22 @@ public class BungeeChannelProxy implements PluginMessageListener, IChatEndpoint 
 					e.printStackTrace();
 					return;
 				}
-
-			} else if ( type == EndpointType.BUNGEEIRC ) {
-				
-				Set<String> keys = DataManager.returnAllChannels().keySet();
-				Iterator<String> iterKeys = keys.iterator();
-				
-				while ( iterKeys.hasNext() ) {
-					
-					String thisChanName = iterKeys.next();
-					
-					CyniChat.printDebug( "Checking " + thisChanName+ "..." );
-					
-					Channel thisChan = DataManager.returnAllChannels().get( thisChanName );
-					CyniChat.printDebug( "Checking " + thisChan.getName() + " for IRC channels..." );
-					if ( !thisChan.getIRC().equals("") ) {
-						
-						CyniChat.printDebug( "Found channel... " + thisChan.getIRC() );
-						out.writeUTF( thisChanName + "~|~" + thisChan.getIRC() + "~|~" + thisChan.getIRCPass() );
-						
-					}
-				}
-				
-				out.writeUTF( "END" );
-				
-				CyniChat.printDebug( "Found the end..." );
-				
 			} else {
 				//No specific player defined.
 				out.writeUTF("");
 			}
 			
-			if ( type != EndpointType.BUNGEEIRC ) {
-				//Add the basic details to what we're transmitting
+			thisChan = DataManager.getChannel( channel );
+			
+			//Add the basic details to what we're transmitting
+			try {
 				out.writeUTF(player);
 				out.writeUTF(channel);
+				out.writeUTF(thisChan.getIRC() );
+				out.writeUTF(thisChan.getIRCPass());
 				out.writeUTF(message);
+			} catch (NullPointerException e) {
+				
 			}
 			
 			//Make a data stream of the byte stream

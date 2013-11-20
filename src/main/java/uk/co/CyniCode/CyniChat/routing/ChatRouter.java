@@ -22,7 +22,6 @@ public class ChatRouter {
         PLAYER,
         BUNGEE,
         IRC,
-		BUNGEEIRC
     }
 
     private static Map<EndpointType,IChatEndpoint> routers = new HashMap<EndpointType,IChatEndpoint>(10);
