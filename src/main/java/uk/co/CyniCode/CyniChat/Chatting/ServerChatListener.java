@@ -46,9 +46,9 @@ public class ServerChatListener implements Listener, IChatEndpoint {
         CyniChat.printDebug("Player joined");
         DataManager.bindPlayer(player);//Load player details into online users.
 	
-	if ( CyniChat.bungee == true && CyniChat.connected == false ) {
-		ChatRouter.routeMessage(ChatRouter.EndpointType.BUNGEEIRC, "", "", "");
-	}
+	//if ( CyniChat.bungee == true && CyniChat.connected == false ) {
+	//	ChatRouter.routeMessage(ChatRouter.EndpointType.BUNGEEIRC, "", "", "");
+	//}
     }
 
     /**
