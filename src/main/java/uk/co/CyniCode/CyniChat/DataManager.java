@@ -59,6 +59,7 @@ public class DataManager {
 		
 		if ( Connection.startConnection(cynichat) == true ) {
 			channels = Connection.returnChannels();
+			setIRCChans( channels );
 			loadedUsers = Connection.returnPlayers();
 		}
 	}
@@ -127,16 +128,20 @@ public class DataManager {
 	 * Set all those channels which are linked in IRC
 	 * @param chans
 	 */
-	public static void setIRCChans( Map<String, String> chans ) {
+	public static void setIRCChans( Map<String, Channel> chans ) {
 		Set<String> setter = chans.keySet();
 		Iterator<String> iter = setter.iterator();
+		
+		Map<String, String> linkedChannels = new HashMap<String, String>();
+		
 		while ( iter.hasNext() ) {
 			String thisOne = iter.next();
-			CyniChat.printDebug( "IRC name : "+thisOne );
-			CyniChat.printDebug( "CC name : "+chans.get(thisOne) );
+			CyniChat.printDebug( "IRC name : "+chans.get( thisOne ).getIRC() );
+			CyniChat.printDebug( "CC name : "+thisOne );
+			linkedChannels.put( chans.get(thisOne).getIRC(), thisOne );
 		}
 		
-		linkedChans = chans;
+		linkedChans = linkedChannels;
 	}
 	
 	public static Map<String, String> getLinkedChannels() {
