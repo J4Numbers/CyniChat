@@ -52,9 +52,15 @@ public class BungeeChannelProxy implements PluginMessageListener, IChatEndpoint 
 			
 			CyniChat.printDebug( "Applicable to us" );
 			DataInputStream in = new DataInputStream(new ByteArrayInputStream(data));
-			String bungeeScope = in.readUTF();
-			String allScope =  in.readUTF();
+			
+			//String bungeeScope = in.readUTF();
+			//CyniChat.printDebug( "Bungee Scope : " + bungeeScope );
+			
+			//String allScope =  in.readUTF();
+			//CyniChat.printDebug( "All Scope : " + allScope );
+			
 			String subChannel = in.readUTF();
+			CyniChat.printDebug( "Sub Channel : " + subChannel );
 			
 			CyniChat.printDebug( "Is it REALLY applicable to us?" );
 			if ( !subChannel.equals("CyniChat") && !subChannel.equals( "CyniCord" ) ) {
@@ -74,7 +80,7 @@ public class BungeeChannelProxy implements PluginMessageListener, IChatEndpoint 
 			
 			CyniChat.printDebug( "Let's go through all the values" );
 			
-			EndpointType type = EndpointType.IRC;
+			EndpointType type = EndpointType.PLAYER;
 			String chatChannel;
 			String IRCPassword;
 			
@@ -106,7 +112,7 @@ public class BungeeChannelProxy implements PluginMessageListener, IChatEndpoint 
 			if ( chatChannel.equals("N/A") )
 				chatChannel = ( DataManager.getLinkedChannels().containsKey( IRCChannel ) ) ? 
 					DataManager.getLinkedChannels().get( IRCChannel ) :
-					"";
+					"N/A";
 			
 			CyniChat.printDebug( "Player name : " + playerName );
 			CyniChat.printDebug( "Channel name : " + chatChannel );
