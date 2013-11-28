@@ -80,7 +80,7 @@ public class BungeeChannelProxy implements PluginMessageListener, IChatEndpoint 
 			
 			CyniChat.printDebug( "Let's go through all the values" );
 			
-			EndpointType type = EndpointType.PLAYER;
+			EndpointType type = EndpointType.BUNGEE;
 			String chatChannel;
 			String IRCPassword;
 			
