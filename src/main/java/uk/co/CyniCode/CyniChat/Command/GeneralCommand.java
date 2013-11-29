@@ -8,7 +8,6 @@ import org.bukkit.entity.Player;
 
 import uk.co.CyniCode.CyniChat.CyniChat;
 import uk.co.CyniCode.CyniChat.DataManager;
-import uk.co.CyniCode.CyniChat.PermissionManager;
 import uk.co.CyniCode.CyniChat.objects.Channel;
 import uk.co.CyniCode.CyniChat.objects.UserDetails;
 
@@ -26,7 +25,7 @@ public class GeneralCommand {
 	 */
 	public static boolean save( CommandSender player ) {
 		if ( player instanceof Player )
-			if ( PermissionManager.checkPerm( (Player) player, "cynichat.admin.save") )
+			if ( CyniChat.perms.checkPerm( (Player) player, "cynichat.admin.save") )
 				return false;
 		
 		DataManager.saveChannels();
@@ -41,7 +40,7 @@ public class GeneralCommand {
 	 */
 	public static boolean reload( CommandSender player ) {
 		if ( player instanceof Player )
-			if ( !PermissionManager.checkPerm( (Player) player, "cynichat.admin.reload") )
+			if ( !CyniChat.perms.checkPerm( (Player) player, "cynichat.admin.reload") )
 				return false;
 		
 		CyniChat.reload();
@@ -56,7 +55,7 @@ public class GeneralCommand {
 	 */
 	public static boolean info( CommandSender player, String channel ) {
 		if ( player instanceof Player )
-			if ( !PermissionManager.checkPerm( (Player) player, "cynichat.basic.info."+channel) )
+			if ( !CyniChat.perms.checkPerm( (Player) player, "cynichat.basic.info."+channel) )
 				return false;
 		
 		if ( DataManager.getChannel(channel) == null ) {
@@ -79,15 +78,14 @@ public class GeneralCommand {
 	 */
 	public static boolean list( CommandSender player, int page ) {
 		if ( player instanceof Player )
-			if ( !PermissionManager.checkPerm( (Player) player, "cynichat.basic.list" ) )
+			if ( !CyniChat.perms.checkPerm( (Player) player, "cynichat.basic.list" ) )
 				return false;
 		
-		Map<String, Channel> channels = DataManager.returnAllChannels();
-		Object[] keys = channels.keySet().toArray();
-		for ( int i=0; i<keys.length; i++ ) {
-			Channel current = channels.get(keys[i]);
+		for ( Map.Entry<String, Channel> entrySet : DataManager.getChannels().entrySet() ) {
+			Channel current = entrySet.getValue();
 			player.sendMessage( current.getColour() +"["+ current.getNick() +"] "+ current.getName() );
 		}
+		
 		return true;
 	}
 	
@@ -99,7 +97,7 @@ public class GeneralCommand {
 	 */
 	public static boolean who( CommandSender player, String channel ) {
 		if ( player instanceof Player )
-			if ( !PermissionManager.checkPerm( (Player) player, "cynichat.basic.who."+channel) )
+			if ( !CyniChat.perms.checkPerm( (Player) player, "cynichat.basic.who."+channel) )
 				return false;
 		
 		if ( DataManager.getChannel(channel) == null ) {
@@ -108,14 +106,13 @@ public class GeneralCommand {
 		}
 		
 		String players = "";
-		Map<String, UserDetails> online = DataManager.returnAllOnline();
-		Object[] keys = online.keySet().toArray();
-		for ( int i=0; i<keys.length; i++ ) {
-			UserDetails current = online.get(keys[i]);
-			if ( current.getAllChannels().contains(channel) ) {
+		for ( Map.Entry<String, UserDetails> entrySet : DataManager.getOnlineUsers().entrySet() ) {
+			UserDetails current = entrySet.getValue();
+			if ( current.getAllChannels().contains(channel) )
 				players = players + current.getName()+" ";
-			}
+			
 		}
+		
 		player.sendMessage(players);
 		return true;
 	}
@@ -128,8 +125,9 @@ public class GeneralCommand {
 	 * @return true when complete
 	 */
 	public static boolean quickMessage( CommandSender player, String channel, String Message ) {
+		
 		if ( player instanceof Player ) {
-			if ( !PermissionManager.checkPerm( (Player) player, "cynichat.basic.qm") ) {
+			if ( !CyniChat.perms.checkPerm( (Player) player, "cynichat.basic.qm") ) {
 				player.sendMessage( "You do not have the necessary permissions for this." );
 				return false;
 			}
@@ -145,13 +143,13 @@ public class GeneralCommand {
 			Channel curChan = DataManager.getChannel(channel);
 			
 			if ( sender.getAllChannels().contains( curChan.getName() ) ) {
-				Map<String, UserDetails> online = DataManager.returnAllOnline();
-				Object[] keys = online.keySet().toArray();
-				for ( int i=0; i<keys.length; i++ ) {
-					UserDetails current = online.get(keys[i]);
-					CyniChat.printDebug( "Current player: "+ keys[i] );
+				
+				for ( Map.Entry< String, UserDetails > entrySet : 
+						DataManager.getOnlineUsers().entrySet() ) {
+					UserDetails current = entrySet.getValue();
+					CyniChat.printDebug( "Current player: "+ entrySet.getKey() );
 					if ( current.getAllChannels().contains( curChan.getName() ) ) {
-						CyniChat.printDebug( keys[i] + " added to the list..." );
+						CyniChat.printDebug( entrySet.getKey() + " added to the list..." );
 						current.getPlayer().sendMessage(curChan.getColour()
 								+"["+curChan.getNick()+"] <"
 								+current.getPlayer().getDisplayName()+"> "

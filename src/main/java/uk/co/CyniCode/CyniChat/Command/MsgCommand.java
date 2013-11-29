@@ -7,7 +7,6 @@ import org.bukkit.entity.Player;
 
 import uk.co.CyniCode.CyniChat.CyniChat;
 import uk.co.CyniCode.CyniChat.DataManager;
-import uk.co.CyniCode.CyniChat.PermissionManager;
 import uk.co.CyniCode.CyniChat.objects.UserDetails;
 
 /**
@@ -20,15 +19,20 @@ public class MsgCommand implements CommandExecutor {
 	/**
 	 * Shh... we're sending a message between 2 people
 	 * No, you can't see what it is, it's private!
+	 * @param player
+	 * @param command
+	 * @param key
+	 * @param objects
+	 * @return 
 	 */
 	public boolean onCommand(CommandSender player, Command command, String key, String[] objects) {
 		if ( player instanceof Player )
-			if ( !PermissionManager.checkPerm( (Player) player, "cynichat.basic.msg") )
+			if ( !CyniChat.perms.checkPerm( (Player) player, "cynichat.basic.msg") )
 				return false;
 		if ( objects.length >= 2 ) {
 			try {
 				CyniChat.printDebug(objects[0]);
-				UserDetails person = DataManager.returnAllOnline().get( objects[0].toLowerCase() );
+				UserDetails person = DataManager.getOnlineUsers().get( objects[0].toLowerCase() );
 				person.printAll();
 				String Message = stacker( objects );
 				CyniChat.printDebug( Message );
@@ -59,10 +63,11 @@ public class MsgCommand implements CommandExecutor {
 	 */
 	public String stacker( String[] stacking ) {
 		try {
+			
 			String finalStack = "";
-			for ( int i=1; i<stacking.length; i++ ) {
-				finalStack += " "+stacking[i];
-			}
+			for ( String stack : stacking ) 
+				finalStack += " "+stack;
+			
 			return finalStack;
 		} catch ( NullPointerException e ) {
 			return "";

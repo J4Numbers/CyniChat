@@ -8,7 +8,6 @@ import org.bukkit.ChatColor;
 
 import uk.co.CyniCode.CyniChat.CyniChat;
 import uk.co.CyniCode.CyniChat.DataManager;
-import uk.co.CyniCode.CyniChat.Command.HelpCommand;
 
 /**
  * Class for most of the commands
@@ -45,6 +44,11 @@ public class ChCommand implements CommandExecutor {
 	
 	/**
 	 * Iterate through all potential commands to allow a player to execute commands
+	 * @param player
+	 * @param comm
+	 * @param Label
+	 * @param args
+	 * @return 
 	 */
 	public boolean onCommand(CommandSender player, Command comm, String Label, String[] args) {
 		//CyniChat.printDebug(player.getName() + " -> " + comm.getLabel() + " -> " + Label );

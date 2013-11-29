@@ -14,12 +14,18 @@ public class QmCommand implements CommandExecutor {
 	/**
 	 * So we have the command and the bits that follow it, let's transmit
 	 * it to the right channel and the right people
+	 * @param player
+	 * @param command
+	 * @param key
+	 * @param args
+	 * @return 
 	 */
 	public boolean onCommand(CommandSender player, Command command, String key, String[] args) {
 		if ( args.length >= 2 ) {
 			GeneralCommand.quickMessage( player, args[0], stacker( args ) );
 			return true;
 		}
+		
 		GeneralCommand.qmInfo( player );
 		
 		return true;
@@ -35,8 +41,8 @@ public class QmCommand implements CommandExecutor {
 		String finalString = "";
 		String connect = "";
 		
-		for ( int i=1; i<args.length; i++) {
-			finalString += connect + args[i];
+		for ( String arg : args ) {
+			finalString += connect + arg;
 			connect = " ";
 		}
 		

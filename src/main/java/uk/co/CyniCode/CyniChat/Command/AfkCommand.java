@@ -16,8 +16,14 @@ public class AfkCommand implements CommandExecutor {
 
 	/**
 	 * When we get the command, simply switch the player from state to state
+	 * @param player
+	 * @param command
+	 * @param key
+	 * @param objects
+	 * @return
 	 */
 	public boolean onCommand(CommandSender player, Command command, String key, String[] objects) {
+		
 		if ( !(player instanceof Player) )
 			return false;
 		

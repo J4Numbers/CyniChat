@@ -3,8 +3,8 @@ package uk.co.CyniCode.CyniChat.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import uk.co.CyniCode.CyniChat.CyniChat;
 import uk.co.CyniCode.CyniChat.DataManager;
-import uk.co.CyniCode.CyniChat.PermissionManager;
 
 /**
  * The class for leaving a channel
@@ -19,7 +19,7 @@ public class LeaveCommand {
 	 * @return true if permission is given, false if otherwise
 	 */
 	public static boolean info( CommandSender player ) {
-		if ( PermissionManager.checkPerm( (Player) player, "cynichat.basic.leave.info") ) {
+		if ( CyniChat.perms.checkPerm( (Player) player, "cynichat.basic.leave.info") ) {
 			player.sendMessage("Type /cyn leave "+ChCommand.necessary("channel") );
 			return true;
 		}

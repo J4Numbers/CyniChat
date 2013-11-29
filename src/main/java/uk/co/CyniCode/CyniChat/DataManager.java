@@ -69,65 +69,101 @@ public class DataManager {
 	 */
 	public static void start( CyniChat cynichat) {
 		
+		//If we're using SQL as a data type...
 		if ( CyniChat.SQL == true ) {
-			Connection = new MySQLManager();
+			
+			//Use the MySQL manager
+			setConnection(new MySQLManager());
+			
 		} else {
-			Connection = new JSONManager();
+			
+			//Otherwise, we're using JSON
+			setConnection(new JSONManager());
+			
 		}
 		
-		if ( Connection.startConnection(cynichat) == true ) {
-			channels = Connection.returnChannels();
-			setIRCChans( channels );
-			loadedUsers = Connection.returnPlayers();
+		//Start the connection and make sure we /are/ connected
+		if ( getConnection().startConnection(cynichat) == true ) {
+			
+			//Get the channels
+			setChannels( getConnection().returnChannels() );
+			
+			//Set the linked channels
+			setIRCChans( getChannels() );
+			
+			//And load all the users in
+			setLoadedUsers(getConnection().returnPlayers());
+			
 		}
 	}
 	
+	/**
+	 * Save all the data
+	 */
 	public static void saveUsers() {
+		
+		//If we're using the SQL data type...
 		if ( CyniChat.SQL == true ) {
-			Connection.saveUsers( loadedUsers );
+			
+			//Then save everyone
+			getConnection().saveUsers( getLoadedUsers());
+			
 		} else {
-			Connection.saveUsers( activeUsers );
+			
+			//Save only those that have been active
+			getConnection().saveUsers( getActiveUsers());
+			
 		}
 	}
 	
+	/**
+	 * Save all the channels
+	 */
 	public static void saveChannels() {
-		Connection.saveChannels( channels );
+		getConnection().saveChannels( getChannels() );
 	}
 	
 	/**
 	 * Generate a map of nicknames to channel names to make nick-name joining possible
 	 */
 	public static void channelTable() {
-		Set<String> channelKeys = channels.keySet();
-		Iterator<String> chanIter = channelKeys.iterator();
 		
-		while ( chanIter.hasNext() ) {
-			String curName = chanIter.next();
-			matching.put( channels.get(curName).getNick(), curName);
-		}
-		return;
+		//Iterate through the map of all channels
+		for ( Map.Entry< String, Channel > channelSet : getChannels().entrySet() )
+			
+			//And put in the format <nick, name>
+			getMatching().put( channelSet.getValue().getNick(),
+					channelSet.getKey() );
+		
 	}
 	
 	/**
-	 * Add a channel
+	 * Add a channel to all our items
 	 * @param channel
 	 */
 	public static void addChannel(Channel channel) {
-		channels.put(channel.getName().toLowerCase(), channel);
-		matching.put( channel.getNick(), channel.getName() );
+		getChannels().put(channel.getName().toLowerCase(), channel);
+		getMatching().put( channel.getNick(), channel.getName() );
 	}
 
 	/**
 	 * Return a channel
 	 * @param name
-	 * @return
+	 * @return the asked channel if it exists
 	 */
 	public static Channel getChannel(String name){
-		Channel cn = channels.get(name);
-		if ( cn == null ) {
-			cn = channels.get( matching.get(name) );
-		}
+		
+		//Do a basic ask on the all channels
+		Channel cn = getChannels().get(name);
+		
+		//If it's still null...
+		if ( cn == null )
+			//Check the nickname
+			cn = getChannels().get( getMatching().get(name) );
+		
+		//Return what is left
 		return cn;
+		
 	}
 	
 	/**
@@ -135,35 +171,36 @@ public class DataManager {
 	 * (Only visible if you have debug on)
 	 */
 	public static void printAllChannels() {
-		for ( int i=0; i<channels.size(); i++ ) {
-			CyniChat.printDebug( String.valueOf(i) );
-			CyniChat.printDebug( String.valueOf( channels.keySet().toArray()[i] ) );
-			channels.get( channels.keySet().toArray()[i] ).printAll();
+		
+		//Iterate over all the channels
+		for ( Map.Entry< String, Channel > entrySet : getChannels().entrySet() ) {
+			
+			//And debug everything
+			CyniChat.printDebug( "Channel name : " + entrySet.getKey() );
+			entrySet.getValue().printAll();
+			
 		}
+		
 	}
 	
 	/**
 	 * Set all those channels which are linked in IRC
-	 * @param chans
+	 * @param chans : The channels that we're putting into our links
 	 */
 	public static void setIRCChans( Map<String, Channel> chans ) {
+		
 		Set<String> setter = chans.keySet();
 		Iterator<String> iter = setter.iterator();
 		
 		Map<String, String> linkedChannels = new HashMap<String, String>();
 		
-		while ( iter.hasNext() ) {
-			String thisOne = iter.next();
-			CyniChat.printDebug( "IRC name : "+chans.get( thisOne ).getIRC() );
-			CyniChat.printDebug( "CC name : "+thisOne );
-			linkedChannels.put( chans.get(thisOne).getIRC(), thisOne );
+		for ( Map.Entry< String, Channel > entrySet : chans.entrySet() ) {
+			CyniChat.printDebug( "IRC name : "+ entrySet.getValue().getIRC() );
+			CyniChat.printDebug( "CC name : "+ entrySet.getKey() );
+			linkedChannels.put( entrySet.getValue().getIRC(), entrySet.getKey() );
 		}
 		
-		linkedChans = linkedChannels;
-	}
-	
-	public static Map<String, String> getLinkedChannels() {
-		return linkedChans;
+		setLinkedChans(linkedChannels);
 	}
 	
 	/**
@@ -174,10 +211,10 @@ public class DataManager {
 	 */
 	public static UserDetails getDetails(String player){
 		String uName = player.toLowerCase();
-		UserDetails details = loadedUsers.get(uName);
+		UserDetails details = getLoadedUsers().get(uName);
 		if(details == null){
 			details = new UserDetails(); 
-			loadedUsers.put(uName, details);
+			getLoadedUsers().put(uName, details);
 		}
 		return details;
 	}
@@ -190,8 +227,8 @@ public class DataManager {
 		String playerName = player.getName().toLowerCase();
 		UserDetails details = getDetails(playerName);
 		details.bindPlayer(player);
-		onlineUsers.put(playerName,details);
-		activeUsers.put(playerName, details);
+		getOnlineUsers().put(playerName,details);
+		getActiveUsers().put(playerName, details);
 		details.printAll();
 		printAllUsers();
 	}
@@ -201,7 +238,7 @@ public class DataManager {
 	 * @param player
 	 */
 	public static void unbindPlayer(Player player){
-		onlineUsers.remove(player.getName().toLowerCase()).bindPlayer(null);
+		getOnlineUsers().remove(player.getName().toLowerCase()).bindPlayer(null);
 	}
 	
 	/**
@@ -210,7 +247,7 @@ public class DataManager {
 	 * @return
 	 */
 	public static UserDetails getOnlineDetails(Player player){
-		return onlineUsers.get(player.getName().toLowerCase());
+		return getOnlineUsers().get( player.getName().toLowerCase() );
 	}
 
 	/**
@@ -218,30 +255,21 @@ public class DataManager {
 	 * (Only visible if you have debug on)
 	 */
 	public static void printAllUsers() {
-		if ( onlineUsers.size() != 0 ) {
-			for ( int i=0; i<onlineUsers.size(); i++ ) {
-				CyniChat.printDebug( String.valueOf(i) );
-				CyniChat.printDebug( String.valueOf( onlineUsers.keySet().toArray()[i] ) );
-				onlineUsers.get( onlineUsers.keySet().toArray()[i] ).printAll();
+		if ( !getOnlineUsers().isEmpty() ) {
+			for ( Map.Entry< String, UserDetails > entrySet : getOnlineUsers().entrySet() ) {
+				CyniChat.printDebug( "Person : " + entrySet.getKey() );
+				entrySet.getValue().printAll();
 			}
 		} else
 			CyniChat.printDebug("No online users");
-		if ( loadedUsers.size() != 0 ) {
-			for ( int i=0; i<loadedUsers.size(); i++ ) {
-				CyniChat.printDebug( String.valueOf(i) );
-				CyniChat.printDebug( String.valueOf( loadedUsers.keySet().toArray()[i] ) );
-				loadedUsers.get( loadedUsers.keySet().toArray()[i] ).printAll();
+		
+		if ( !getLoadedUsers().isEmpty() ) {
+			for ( Map.Entry< String, UserDetails> entrySet : getLoadedUsers().entrySet() ) {
+				CyniChat.printDebug( "Person : " + entrySet.getKey() );
+				entrySet.getValue().printAll();
 			}
 		} else
 			CyniChat.printDebug( "No loaded users" );
-	}
-
-	/**
-	 * Get the map of those online.
-	 * @return onlineUsers : Everyone who is currently online
-	 */
-	public static Map<String, UserDetails> returnAllOnline() {
-		return onlineUsers;
 	}
 
 	/**
@@ -251,38 +279,128 @@ public class DataManager {
 	 */
 	public static boolean deleteChannel(String name) {
 		try {
-			Iterator<String> userIter = loadedUsers.keySet().iterator();
-			while ( userIter.hasNext() ) {
-				String username = userIter.next();
-				UserDetails current = loadedUsers.get( username );
+			
+			for ( Map.Entry< String, UserDetails > entrySet : getLoadedUsers().entrySet() ) {
+				UserDetails current = entrySet.getValue();
 				if ( current.clearChannel(name) == true )
-					activeUsers.put(username, current);
+					getActiveUsers().put(entrySet.getKey(), current);
 			}
-			matching.remove( getChannel( name.toLowerCase() ).getNick() );
-			channels.remove( name.toLowerCase() );
+			
+			getMatching().remove( getChannel( name.toLowerCase() ).getNick() );
+			getChannels().remove( name.toLowerCase() );
 			return true;
+			
 		} catch (NullPointerException e) {
 			return false;
 		}
 		
 	}
-
-	/**
-	 * Get all the channels
-	 * @return channels : Every channel
-	 */
-	public static Map<String, Channel> returnAllChannels() {
-		return channels;
-	}
-
+	
 	/**
 	 * If there is a nickname in the matching table which matches the input, say so
 	 * @param nick : The nickname we're checking.
 	 * @return true if it exists, false if not.
 	 */
 	public static boolean hasNick(String nick) {
-		if ( matching.containsKey(nick) )
-			return true;
-		return false;
+		return getChannels().containsKey(nick);
 	}
+	
+	/**
+	 * @return the channels
+	 */
+	public static Map<String,Channel> getChannels() {
+		return channels;
+	}
+	
+	/**
+	 * @param aChannels the channels to set
+	 */
+	public static void setChannels(Map<String,Channel> aChannels) {
+		channels = aChannels;
+	}
+	
+	/**
+	 * @return the matching
+	 */
+	public static Map<String, String> getMatching() {
+		return matching;
+	}
+	
+	/**
+	 * @param aMatching the matching to set
+	 */
+	public static void setMatching(Map<String, String> aMatching) {
+		matching = aMatching;
+	}
+	
+	/**
+	 * @return the linkedChans
+	 */
+	public static Map<String, String> getLinkedChans() {
+		return linkedChans;
+	}
+	
+	/**
+	 * @param aLinkedChans the linkedChans to set
+	 */
+	public static void setLinkedChans(Map<String, String> aLinkedChans) {
+		linkedChans = aLinkedChans;
+	}
+	
+	/**
+	 * @return the loadedUsers
+	 */
+	public static Map<String,UserDetails> getLoadedUsers() {
+		return loadedUsers;
+	}
+	
+	/**
+	 * @param aLoadedUsers the loadedUsers to set
+	 */
+	public static void setLoadedUsers(Map<String,UserDetails> aLoadedUsers) {
+		loadedUsers = aLoadedUsers;
+	}
+	
+	/**
+	 * @return the onlineUsers
+	 */
+	public static Map<String,UserDetails> getOnlineUsers() {
+		return onlineUsers;
+	}
+	
+	/**
+	 * @param aOnlineUsers the onlineUsers to set
+	 */
+	public static void setOnlineUsers(Map<String,UserDetails> aOnlineUsers) {
+		onlineUsers = aOnlineUsers;
+	}
+	
+	/**
+	 * @return the activeUsers
+	 */
+	public static Map<String,UserDetails> getActiveUsers() {
+		return activeUsers;
+	}
+	
+	/**
+	 * @param aActiveUsers the activeUsers to set
+	 */
+	public static void setActiveUsers(Map<String,UserDetails> aActiveUsers) {
+		activeUsers = aActiveUsers;
+	}
+	
+	/**
+	 * @return the Connection
+	 */
+	public static IDataManager getConnection() {
+		return Connection;
+	}
+	
+	/**
+	 * @param aConnection the Connection to set
+	 */
+	public static void setConnection(IDataManager aConnection) {
+		Connection = aConnection;
+	}
+	
 }

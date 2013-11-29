@@ -210,10 +210,10 @@ public class PermissionManager {
 		
 		//Does the player have a prefix?
 		if ( getChat().getPlayerPrefix(player) == null )
-		    
+			
 			//Nope.
 			prefix = "";
-		
+			
 		else
 			
 			//Appparently so.
