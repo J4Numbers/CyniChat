@@ -4,8 +4,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import uk.co.CyniCode.CyniChat.CyniChat;
 import uk.co.CyniCode.CyniChat.DataManager;
-import uk.co.CyniCode.CyniChat.PermissionManager;
 import uk.co.CyniCode.CyniChat.objects.Channel;
 import uk.co.CyniCode.CyniChat.objects.UserDetails;
 
@@ -27,24 +27,24 @@ public class AdminCommand {
 	 */
 	public static boolean create( CommandSender player, String name, String nick, Boolean protect ) {
 		if ( player instanceof Player )
-			if ( !PermissionManager.checkPerm( (Player) player, "cynichat.admin.create") )
+			if ( !CyniChat.perms.checkPerm( (Player) player, "cynichat.admin.create") )
 				return false;
 		
 		if ( DataManager.getChannel(name) != null ) {
 			player.sendMessage("This channel is already in existance");
 			return true;
 		}
-		Channel newChan = new Channel();
 		
 		if ( DataManager.hasNick( nick ) == true )
 			nick = name.substring(0, 2);
 		
-		newChan.create( name.toLowerCase(), nick.toLowerCase(), protect );
+		Channel newChan = new Channel( name.toLowerCase(), nick.toLowerCase(), protect );
+		
 		DataManager.addChannel( newChan );
 		player.sendMessage( "The channel: " + name + " has now been created" );
 		
 		if ( player instanceof Player ) {
-			PermissionManager.addChannelPerms( player, newChan, protect );
+			CyniChat.perms.addChannelPerms( player, newChan, protect );
 			UserDetails current = DataManager.getOnlineDetails( (Player) player);
 			current.joinChannel(newChan, "");
 		}
@@ -60,7 +60,7 @@ public class AdminCommand {
 	 */
 	public static boolean remove( CommandSender player, String name ) {
 		if ( player instanceof Player )
-			if ( PermissionManager.checkPerm( (Player) player, "cynichat.admin.remove") )
+			if ( CyniChat.perms.checkPerm( (Player) player, "cynichat.admin.remove") )
 				return false;
 		
 		if ( DataManager.deleteChannel( name ) == true ) {

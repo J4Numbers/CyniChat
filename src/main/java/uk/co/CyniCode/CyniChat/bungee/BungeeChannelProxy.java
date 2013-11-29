@@ -11,7 +11,6 @@ import org.bukkit.plugin.messaging.PluginMessageListener;
 
 import uk.co.CyniCode.CyniChat.CyniChat;
 import uk.co.CyniCode.CyniChat.DataManager;
-import uk.co.CyniCode.CyniChat.PermissionManager;
 import uk.co.CyniCode.CyniChat.objects.Channel;
 import uk.co.CyniCode.CyniChat.routing.ChatRouter;
 import uk.co.CyniCode.CyniChat.routing.ChatRouter.EndpointType;
@@ -140,8 +139,8 @@ public class BungeeChannelProxy implements PluginMessageListener, IChatEndpoint 
 			//Now let's set the actual chat channel if it came from
 			// IRC.
 			if ( chatChannel.equals("N/A") )
-				chatChannel = ( DataManager.getLinkedChannels().containsKey( IRCChannel ) ) ? 
-					DataManager.getLinkedChannels().get( IRCChannel ) :
+				chatChannel = ( DataManager.getLinkedChans().containsKey( IRCChannel ) ) ? 
+					DataManager.getLinkedChans().get( IRCChannel ) :
 					"N/A";
 			
 			//Print out concise debug

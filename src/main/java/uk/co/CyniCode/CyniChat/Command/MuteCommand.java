@@ -6,7 +6,6 @@ import org.bukkit.entity.Player;
 
 import uk.co.CyniCode.CyniChat.CyniChat;
 import uk.co.CyniCode.CyniChat.DataManager;
-import uk.co.CyniCode.CyniChat.PermissionManager;
 import uk.co.CyniCode.CyniChat.objects.Channel;
 
 /**
@@ -79,7 +78,7 @@ public class MuteCommand {
 	 */
 	public static boolean mute( CommandSender player, Channel channel, String mutee ) {
 		if ( player instanceof Player )
-			if ( !PermissionManager.checkPerm( (Player) player, "cynichat.mod.mute."+channel) )
+			if ( !CyniChat.perms.checkPerm( (Player) player, "cynichat.mod.mute."+channel) )
 				return false;
 		
 		if ( DataManager.getDetails( mutee.toLowerCase() ) == null ) {
@@ -102,7 +101,7 @@ public class MuteCommand {
 	 */
 	public static boolean gmute( CommandSender player, String mutee ) {
 		if ( player instanceof Player )
-			if ( !PermissionManager.checkPerm( (Player) player, "cynichat.admin.silence" ) )
+			if ( !CyniChat.perms.checkPerm( (Player) player, "cynichat.admin.silence" ) )
 				return false;
 		
 		if ( DataManager.getDetails( mutee.toLowerCase() ) == null ) {
@@ -143,7 +142,7 @@ public class MuteCommand {
 	 */
 	public static boolean gUnMute( CommandSender player, String mutee) {
 		if ( player instanceof Player )
-			if ( !PermissionManager.checkPerm( (Player) player, "cynichat.admin.silence") )
+			if ( !CyniChat.perms.checkPerm( (Player) player, "cynichat.admin.silence") )
 				return false;
 		
 		if ( DataManager.getDetails( mutee.toLowerCase() ) == null ) {
@@ -174,7 +173,7 @@ public class MuteCommand {
 	 */
 	public static boolean unmute( CommandSender player, Channel channel, String mutee ) {
 		if ( player instanceof Player )
-			if ( !PermissionManager.checkPerm( (Player) player, "cynichat.mod.mute."+channel) )
+			if ( !CyniChat.perms.checkPerm( (Player) player, "cynichat.mod.mute."+channel) )
 				return false;
 		
 		if ( DataManager.getDetails( mutee.toLowerCase() ) == null ) {

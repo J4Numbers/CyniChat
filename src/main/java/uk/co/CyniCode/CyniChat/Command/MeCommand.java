@@ -26,30 +26,31 @@ public class MeCommand implements CommandExecutor {
 			String Message = player.getName() + stacker( objects );
 			UserDetails user = DataManager.getOnlineDetails( (Player) player );
 			String curChan = user.getCurrentChannel();
-			String TMessage = DataManager.getChannel(curChan).getColour()+"["+DataManager.getChannel(curChan).getNick()+"] " + Message;
-			Map<String, UserDetails> online = DataManager.returnAllOnline();
-			Object[] all = online.keySet().toArray();
-			for ( int i=0; i<all.length; i++ ) {
-				UserDetails current = online.get(all[i]);
-				if ( current.getAllChannels().contains(curChan) && !current.getIgnoring().contains(player.getName().toLowerCase() ) ) {
+			String TMessage = DataManager.getChannel(curChan).getColour()+"["
+					+DataManager.getChannel(curChan).getNick()+"] " + Message;
+			for ( Map.Entry<String, UserDetails> entrySet : DataManager.getOnlineUsers().entrySet() ) {
+				UserDetails current = entrySet.getValue();
+				if ( current.getAllChannels().contains(curChan) && 
+						!current.getIgnoring().contains(player.getName().toLowerCase() ) ) {
 					current.getPlayer().sendMessage(TMessage);
 				}
 			}
 			
-			String linkedChan = DataManager.getChannel(curChan).getIRC();
+			//String linkedChan = DataManager.getChannel(curChan).getIRC();
 			
 			CyniChat.printDebug("End of a /me command");
 			return true;
 		}
-		player.sendMessage("Please provide an action to go with the /me action");
+		player.sendMessage("Please provide an action to go with the /me command");
 		return true;
 	}
 	
 	public String stacker( String[] message ) {
 		String stackedMessage = "";
-		for ( int i=0; i<message.length; i++ ) {
-			stackedMessage += " "+message[i];
-		}
+		
+		for (String message1 : message)
+			stackedMessage += " " + message1;
+		
 		return stackedMessage;
 	}
 

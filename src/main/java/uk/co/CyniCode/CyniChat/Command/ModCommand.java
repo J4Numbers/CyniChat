@@ -4,8 +4,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import uk.co.CyniCode.CyniChat.CyniChat;
 import uk.co.CyniCode.CyniChat.DataManager;
-import uk.co.CyniCode.CyniChat.PermissionManager;
 import uk.co.CyniCode.CyniChat.objects.Channel;
 
 /**
@@ -25,10 +25,10 @@ public class ModCommand {
 	 */
 	public static boolean promote( CommandSender player, String channel, String newMod ) {
 		if ( player instanceof Player )
-			if ( !PermissionManager.checkPerm( (Player) player, "cynichat.mod.promote."+channel ) )
+			if ( !CyniChat.perms.checkPerm( (Player) player, "cynichat.mod.promote."+channel ) )
 				return false;
 		
-		PermissionManager.promotePlayer( newMod, DataManager.getChannel( channel ) );
+		CyniChat.perms.promotePlayer( newMod, DataManager.getChannel( channel ) );
 		return true;
 	}
 
@@ -41,10 +41,10 @@ public class ModCommand {
 	 */
 	public static boolean demote( CommandSender player, String channel, String oldMod ) {
 		if ( player instanceof Player )
-			if ( !PermissionManager.checkPerm( (Player) player, "cynichat.mod.demote."+channel ))
+			if ( !CyniChat.perms.checkPerm( (Player) player, "cynichat.mod.demote."+channel ))
 				return false;
 		
-		PermissionManager.demotePlayer( oldMod, DataManager.getChannel( channel ) );
+		CyniChat.perms.demotePlayer( oldMod, DataManager.getChannel( channel ) );
 		return true;
 	}
 
@@ -81,7 +81,8 @@ public class ModCommand {
 			if ( ( DataManager.getChannel( args[1] ) != null ) ) {
 				Channel current = DataManager.getChannel( args[1] );
 				if ( player instanceof Player )
-					if ( !PermissionManager.checkPerm( (Player) player, "cynichat.mod.set."+current.getName().toLowerCase() ) )
+					if ( !CyniChat.perms.checkPerm( (Player) player, 
+							"cynichat.mod.set."+current.getName().toLowerCase() ) )
 						return false;
 				
 				if ( args.length >= 4 ) {
