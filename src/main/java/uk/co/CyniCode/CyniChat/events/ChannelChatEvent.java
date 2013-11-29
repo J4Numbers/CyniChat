@@ -19,13 +19,34 @@ import uk.co.CyniCode.CyniChat.objects.UserDetails;
  */
 public class ChannelChatEvent extends Event {
 	
+	/**
+	 * This is the player that originally sent the message
+	 */
 	private UserDetails player;
+	
+	/**
+	 * This is the channel that the player sent the message from
+	 */
 	private Channel channel;
+	
+	/**
+	 * These are those which will see the message
+	 */
 	private Set<Player> recipients;
 	
+	/**
+	 * This is the message itself
+	 */
 	private String message;
+	
+	/**
+	 * And just for the hell of it... this is the name of the sender
+	 */
 	private String senderName;
 	
+	/**
+	 * Needed to make bukkit play nice
+	 */
 	private static final HandlerList handlers = new HandlerList();
 	
 	/**
@@ -51,12 +72,24 @@ public class ChannelChatEvent extends Event {
 		return player;
 	}
 	
+	public void setSender( Player newSender ) {
+		this.player = DataManager.getOnlineDetails( newSender );
+	}
+	
 	/**
 	 * Get the sender's actual name
 	 * @return
 	 */
 	public String getSenderName() {
 		return senderName;
+	}
+	
+	/**
+	 * Give the sender a new name
+	 * @param newName : The name we're giving the person
+	 */
+	public void setSenderName( String newName ) {
+		this.senderName = newName;
 	}
 	
 	/**
@@ -68,6 +101,14 @@ public class ChannelChatEvent extends Event {
 	}
 	
 	/**
+	 * Set the channel to something else
+	 * @param newChannel : such as this
+	 */
+	public void setChannel( Channel newChannel ) {
+		this.channel = newChannel;
+	}
+	
+	/**
 	 * Get the message the event contained
 	 * @return
 	 */
@@ -76,20 +117,43 @@ public class ChannelChatEvent extends Event {
 	}
 	
 	/**
+	 * We don't like what they were originally sending...
+	 * @param newMessage : change it to this
+	 */
+	public void setMessage( String newMessage ) {
+		this.message = newMessage;
+	}
+	
+	public Set<Player> getRecipients() {
+		return this.recipients;
+	}
+	
+	public void setRecipients( Set<Player> newSet ) {
+		this.recipients = newSet;
+	}
+	
+	/**
 	 * Get a complete list of those that saw the event
-	 * @return
+	 * @return a string of the recipients
 	 */
 	public String printVerboseRecip() {
 		
-		Iterator<Player> iterReci =  recipients.iterator();
-		String Out = "";
+		//Get the list of those that are going to hear the event
+		Iterator<Player> iterReci =  getRecipients().iterator();
 		
+		//Initialise the output
+		String out = "";
+		
+		//While there is another player in the set...
 		while ( iterReci.hasNext() ) {
-			Player currentP = iterReci.next();
-			Out += currentP.getDisplayName() + " ";
+			
+			//Add their name to the output
+			out += iterReci.next().getDisplayName() + " ";
+			
 		}
 		
-		return Out;
+		//And return what we must
+		return out;
 	}
 	
 	/**

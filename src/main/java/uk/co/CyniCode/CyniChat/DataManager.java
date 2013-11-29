@@ -21,18 +21,45 @@ import uk.co.CyniCode.CyniChat.objects.UserDetails;
  * 
  */
 public class DataManager {
-	//List of loaded channels
-	private static Map<String,Channel> channels = null;
-	private static Map<String, String> matching = new HashMap<String, String>();
-	private static Map<String, String> linkedChans = null;
-	private static List<String> servers = null;
 	
+	/**
+	 * The list of all channels that are loaded
+	 */
+	private static Map<String,Channel> channels = null;
+	
+	/**
+	 * The nickname-to-name matching table... I think
+	 */
+	private static Map<String, String> matching = new HashMap<String, String>();
+	
+	/**
+	 * Any channels that are also linked to IRC
+	 */
+	private static Map<String, String> linkedChans = null;
+	
+	
+	
+	/**
+	 * The list of everyone that is in the data structure,
+	 * regardless of whether they're online or not
+	 */
 	private static Map<String,UserDetails> loadedUsers = new HashMap<String, UserDetails>();//User data loaded from sources 
 	
+	/**
+	 * The list of every online user that is currently
+	 *  ... well... online
+	 */
 	private static Map<String,UserDetails> onlineUsers = new HashMap<String, UserDetails>();//Users who are online
 	
+	/**
+	 * The active users. These are people that have been online since
+	 * the last reload and save so we know who to update
+	 */
 	private static Map<String,UserDetails> activeUsers = new HashMap<String, UserDetails>();//Users that were online
 	
+	/**
+	 * The connection bit that lets us access the data
+	 */
 	private static IDataManager Connection;
 	
 	/**
@@ -41,15 +68,6 @@ public class DataManager {
 	 * @param cynichat : This is an instance of the plugin
 	 */
 	public static void start( CyniChat cynichat) {
-		if ( CyniChat.bungee == true ) {
-			servers = cynichat.getConfig().getStringList( "CyniChat.bungee.connected" );
-			
-			Iterator<String> serIter = servers.iterator();
-			
-			while ( serIter.hasNext() ) {
-				CyniChat.printDebug( serIter.next() );
-			}
-		}
 		
 		if ( CyniChat.SQL == true ) {
 			Connection = new MySQLManager();
@@ -146,10 +164,6 @@ public class DataManager {
 	
 	public static Map<String, String> getLinkedChannels() {
 		return linkedChans;
-	}
-	
-	public static List<String> getServers() {
-		return servers;
 	}
 	
 	/**
