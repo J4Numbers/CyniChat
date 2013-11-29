@@ -1,5 +1,6 @@
 package uk.co.CyniCode.CyniChat;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.milkbowl.vault.permission.Permission;
@@ -24,13 +25,13 @@ import uk.co.CyniCode.CyniChat.routing.ChatRouter;
  */
 public class CyniChat extends JavaPlugin{
 	
-	public Logger log = Logger.getLogger("Minecraft");
+	public static final Logger log = Logger.getLogger("Minecraft");
 	
 	public static String version;
 	public static String name;
 	public static String Server;
 	public static CyniChat self = null;
-	public static Permission perms = null;
+	public static PermissionManager perms = null;
 	
 	public static Boolean JSON = false;
 	public static Boolean SQL = false;
@@ -58,9 +59,7 @@ public class CyniChat extends JavaPlugin{
 	 * @return true if it does exist, false if it doesn't
 	 */
 	public static boolean ifCommandExists( String comm ) {
-		if ( self.getServer().getPluginCommand( comm ) == null ) 
-			return false;
-		return true;
+		return self.getServer().getPluginCommand( comm ) != null;
 	}
 	
 	/**
@@ -73,7 +72,8 @@ public class CyniChat extends JavaPlugin{
 		version = this.getDescription().getVersion();
 		name = this.getDescription().getName();
 		self = this;
-		log.info(name + " version " + version + " has started...");
+		log.log( Level.INFO, "{0} version {1} has started...", 
+				new Object[]{name, version} );
 		
 		//Start up the managers and the configs and all that
 		pm = getServer().getPluginManager();
@@ -105,6 +105,7 @@ public class CyniChat extends JavaPlugin{
 			bungee = false;
 			printInfo( "Bungee has been disabled" );
 		}
+		
 		DataManager.start( this );
 		DataManager.channelTable();
 		
@@ -117,14 +118,16 @@ public class CyniChat extends JavaPlugin{
 		this.getCommand("r").setExecutor(new RCommand() );
 		counter = 1;
 		
-		if ( PermissionManager.setupPermissions( this ) == false ) {
+		try {
+			perms = new PermissionManager( this );
+		} catch ( ClassNotFoundException e ) {
 			killPlugin();
-			return;
 		}
+		
 		//Register the listeners.
 		ServerChatListener listener = new ServerChatListener();
-		ChatRouter.addRouter(ChatRouter.EndpointType.PLAYER,listener);
 		
+		ChatRouter.addRouter( ChatRouter.EndpointType.PLAYER,listener );
 		pm.registerEvents(listener, this);
 		
 		printInfo("CyniChat has been enabled!");
@@ -146,7 +149,7 @@ public class CyniChat extends JavaPlugin{
 	 * @param line : This is the error message
 	 */
 	public static void printSevere(String line) {
-		self.log.severe("[CyniChat] " + line);
+		log.log( Level.SEVERE, "[CyniChat] {0}", line );
 	}
 
 	/**
@@ -154,7 +157,7 @@ public class CyniChat extends JavaPlugin{
 	 * @param line : This is the error message
 	 */
 	public static void printWarning(String line) {
-		self.log.warning("[CyniChat] " + line);
+		log.log( Level.WARNING, "[CyniChat] {0}", line );
 	}
 
 	/**
@@ -162,7 +165,7 @@ public class CyniChat extends JavaPlugin{
 	 * @param line : This is the information
 	 */
 	public static void printInfo(String line) {
-		self.log.info("[CyniChat] " + line);
+		log.log( Level.INFO, "[CyniChat] {0}", line );
 	}
 
 	/**
@@ -170,9 +173,8 @@ public class CyniChat extends JavaPlugin{
 	 * @param line : This contains the information to be outputted
 	 */
 	public static void printDebug(String line) {
-		if ( debug == true ) {
-			self.log.info("[CyniChat DEBUG] " + line);
-		}
+		if ( debug == true )
+			log.log( Level.INFO, "[CyniChat DEBUG] {0}", line );
 	}
 
 	/**

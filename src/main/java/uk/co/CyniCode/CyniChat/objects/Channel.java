@@ -13,155 +13,58 @@ import uk.co.CyniCode.CyniChat.CyniChat;
 public class Channel {
 	
 	/**
-	 * Expose all data to json for saving
+	 * What is the ID of the channel (used only in MySQL data storage)?
 	 */
 	@Expose
 	private int ID;
+	
+	/**
+	 * What is the name of the channel?
+	 */
 	@Expose
 	private String name;
+	
+	/**
+	 * What is the nickname of the channel?
+	 */
 	@Expose
 	private String nick;
+	
+	/**
+	 * What is the description of the channel?
+	 */
 	@Expose
 	private String desc;
+	
+	/**
+	 * Does the channel have a password?
+	 */
 	@Expose
 	private String pass = "";
+	
+	/**
+	 * What is the colour of the chatter that happens in here?
+	 */
 	@Expose
 	private ChatColor colour;
+	
+	/**
+	 * Is the channel connected to an IRC channel?
+	 */
 	@Expose
 	private String ircChannel = "";
+	
+	/**
+	 * Does the IRC channel have a password?
+	 */
 	@Expose
 	private String ircPassword = "";
+	
+	/**
+	 * Is the channel protected?
+	 */
 	@Expose
 	private Boolean protect = false;
-	
-	/**
-	 * Print data about the selected object.
-	 * @return ALL THE DEBUG
-	 */
-	public boolean printAll() {
-		CyniChat.printDebug("ID: " + ID );
-		CyniChat.printDebug("Name: " + name);
-		CyniChat.printDebug("Nick: " + nick);
-		CyniChat.printDebug("IRC: " + ircChannel);
-		CyniChat.printDebug("IRCP: " + ircPassword);
-		CyniChat.printDebug("Desc: " + desc);
-		CyniChat.printDebug("Pass: " + pass);
-		CyniChat.printDebug("Color: " + colour.toString() );
-		CyniChat.printDebug("Protected: " + protect );
-		return true;
-	}
-	
-	/**
-	 * Load a channel into the system
-	 * @param id : The ID of the channel
-	 * @param newName : The name of the channel
-	 * @param newNick : The nickname of the channel
-	 * @param ircChan : The IRC channel for this channel if it is there
-	 * @param newDesc : The description of the channel
-	 * @param newPass : The password of the channel
-	 * @param newColour : The channel's colour
-	 * @param newProtect : Whether or not the channel is protected
-	 * @return true when complete
-	 */
-	public Boolean loadChannel( int id, String newName, String newNick, String ircChan, String ircPass, String newDesc, String newPass, String newColour, boolean newProtect ) {
-		this.ID = id;
-		this.name = newName;
-		this.nick = newNick;
-		this.desc = newDesc;
-		this.pass = newPass;
-		this.colour = ChatColor.valueOf(newColour);
-		this.ircChannel = ircChan.toLowerCase();
-		this.ircPassword = ircPass;
-		this.protect = newProtect;
-		return true;
-	}
-	
-	/**
-	 * Return the ID number of the channel
-	 * @return ID
-	 */
-	public int getID() {
-		return ID;
-	}
-	
-	/**
-	 * Return the verbose name of the channel
-	 * @return name
-	 */
-	public String getName() {
-		return name;
-	}
-	
-	/**
-	 * Return the nickname of the channel
-	 * @return nick
-	 */
-	public String getNick() {
-		return nick;
-	}
-	
-	/**
-	 * Return the description of the channel
-	 * @return desc
-	 */
-	public String getDesc() {
-		return desc;
-	}
-	
-	/**
-	 * Return the Password of the channel
-	 * @return pass
-	 */
-	public String getPass() {
-		return pass;
-	}
-	
-	/**
-	 * Return the colour object of the channel
-	 * @return colour
-	 */
-	public ChatColor getColour() {
-		return colour;
-	}
-	
-	/**
-	 * Return the IRC channel that may or may not be connected to this
-	 * @return ircChannel
-	 */
-	public String getIRC() {
-		return ircChannel;
-	}
-	
-	/**
-	 * Return the IRC password that might be the right one for the previous method
-	 * @return ircPassword
-	 */
-	public String getIRCPass() {
-		return ircPassword;
-	}
-	
-	/**
-	 * Check whether two passwords match
-	 * @param checkPass : This is the password to be checked
-	 * @return A boolean value of whether it matches or not
-	 */
-	public boolean equalsPass( String checkPass ) {
-		if ( this.pass != null ) {
-			if ( this.pass.equals( checkPass ) ) {
-				return true;
-			}
-			return false;
-		}
-		return true;
-	}
-	
-	/**
-	 * Return whether the channel is protected or not
-	 * @return protect
-	 */
-	public Boolean isProtected() {
-		return protect;
-	}
 	
 	/**
 	 * Public constructor for gson
@@ -178,81 +81,226 @@ public class Channel {
 	}
 	
 	/**
-	 * Set the colour of the channel to something else
-	 * @param newColor : This must be in the list of bukkit colours (RED, DARK_RED etc.)
-	 * @return true when complete
-	 */
-	public boolean setColor( String newColor ) {
-		this.colour = ChatColor.valueOf( newColor.toUpperCase() );
-		return true;
-	}
-
-	/**
-	 * Set a new password for the IRC channel
-	 * @param newPass : The new password for the channel
-	 * @return true when complete
-	 */
-	public boolean setIrcPass( String newPass ) {
-		this.ircPassword = newPass;
-		return true;
-	}
-
-	/**
-	 * Set a new channel name for IRC
-	 * @param newName : The name we're changing it to
-	 * @return true when complete
-	 */
-	public boolean setIrcName( String newName ) {
-		this.ircChannel = newName;
-		return true;
-	}
-
-	/**
-	 * Set the ID of the channel
-	 * @param newID : The ID we're changing to
-	 * @return true when complete
-	 */
-	public boolean setId( int newID ) {
-		this.ID = newID;
-		return true;
-	}
-
-	/**
-	 * Set the password of the channel to something else
-	 * @param newPass : The password which is being set
-	 * @return true when complete
-	 */
-	public boolean setPassword( String newPass ) {
-		this.pass = newPass;
-		return true;
-	}
-
-	/**
-	 * Set the description of the channel to something else
-	 * @param newDesc : What we're changing it to
-	 * @return true when complete
-	 */
-	public boolean setDesc( String newDesc ) {
-		this.desc = newDesc;
-		return true;
-	}
-
-	/**
 	 * Create a completely new channel with an impossible ID
-	 * @param name : The namme of the new channel
+	 * @param name : The name of the new channel
 	 * @param nick : The nickname of the new channel
 	 * @param protect : Whether or not this channel is protected
-	 * @return true when complete
 	 */
-	public boolean create(String name, String nick, Boolean protect ) {
+	public Channel(String name, String nick, Boolean protect ) {
 		this.ID = 0;
 		this.name = name;
 		this.nick = nick;
 		this.protect = protect;
 		this.desc = "";
 		this.pass = "";
-		
+	}
+	
+	/**
+	 * Print data about the selected object.
+	 * @return ALL THE DEBUG
+	 */
+	public boolean printAll() {
+		CyniChat.printDebug("ID: " + getID() );
+		CyniChat.printDebug("Name: " + getName() );
+		CyniChat.printDebug("Nick: " + getNick() );
+		CyniChat.printDebug("IRC: " + getIRC() );
+		CyniChat.printDebug("IRCP: " + getIRCPass() );
+		CyniChat.printDebug("Desc: " + getDesc() );
+		CyniChat.printDebug("Pass: " + getPass() );
+		CyniChat.printDebug("Color: " + getColour().toString() );
+		CyniChat.printDebug("Protected: " + isProtected() );
 		return true;
 	}
-
+	
+	/**
+	 * Load a channel into the system
+	 * @param id : The ID of the channel
+	 * @param newName : The name of the channel
+	 * @param newNick : The nickname of the channel
+	 * @param ircChan : The IRC channel for this channel if it is there
+	 * @param ircPass : The password for the IRC channel if it exists
+	 * @param newDesc : The description of the channel
+	 * @param newPass : The password of the channel
+	 * @param newColour : The channel's colour
+	 * @param newProtect : Whether or not the channel is protected
+	 * @return true when complete
+	 */
+	public Boolean loadChannel( int id, String newName, String newNick, String ircChan, String ircPass, String newDesc, String newPass, String newColour, boolean newProtect ) {
+		setId( id );
+		setName( newName );
+		setNick( newNick );
+		setDesc( newDesc );
+		setPassword( newPass );
+		setColor( newColour );
+		setIrcName( ircChan.toLowerCase() );
+		setIrcPass( ircPass );
+		setProtected( newProtect );
+		return true;
+	}
+	
+	/**
+	 * Return the ID number of the channel
+	 * @return ID
+	 */
+	public int getID() {
+		return ID;
+	}
+	
+	/**
+	 * Set the ID of the channel
+	 * @param newID : The ID we're changing to
+	 */
+	public void setId( int newID ) {
+		this.ID = newID;
+	}
+	
+	/**
+	 * Return the verbose name of the channel
+	 * @return name
+	 */
+	public String getName() {
+		return name;
+	}
+	
+	/**
+	 * Set the name of the channel to something else
+	 * @param name : Which is defined here
+	 */
+	public void setName( String name ) {
+		this.name = name;
+	}
+	
+	/**
+	 * Return the nickname of the channel
+	 * @return nick
+	 */
+	public String getNick() {
+		return nick;
+	}
+	
+	/**
+	 * Set the nickname of the channel to something else
+	 * @param nickname : which is defined here
+	 */
+	public void setNick( String nickname ) {
+		this.nick = nickname;
+	}
+	
+	/**
+	 * Return the description of the channel
+	 * @return description of the channel
+	 */
+	public String getDesc() {
+		return desc;
+	}
+	
+	/**
+	 * Set the description of the channel
+	 * @param desc : to whatever is contained in this
+	 */
+	public void setDesc( String desc ) {
+		this.desc = desc;
+	}
+	
+	/**
+	 * Return the Password of the channel
+	 * @return pass
+	 */
+	public String getPass() {
+		return pass;
+	}
+	
+	/**
+	 * Set the password of the channel to something else
+	 * @param newPass : The password which is being set
+	 */
+	public void setPassword( String newPass ) {
+		this.pass = newPass;
+	}
+	
+	/**
+	 * Return the colour object of the channel
+	 * @return colour
+	 */
+	public ChatColor getColour() {
+		return colour;
+	}
+	
+	/**
+	 * Set the colour of the channel to something else
+	 * @param newColor : This must be in the list of bukkit colours (RED, DARK_RED etc.)
+	 */
+	public void setColor( String newColor ) {
+		this.colour = ChatColor.valueOf( newColor.toUpperCase() );
+	}
+	
+	/**
+	 * Return the IRC channel that may or may not be connected to this
+	 * @return ircChannel
+	 */
+	public String getIRC() {
+		return ircChannel;
+	}
+	
+	/**
+	 * Set a new channel name for IRC
+	 * @param newName : The name we're changing it to
+	 */
+	public void setIrcName( String newName ) {
+		this.ircChannel = newName;
+	}
+	
+	/**
+	 * Return the IRC password that might be the right one for the previous method
+	 * @return ircPassword
+	 */
+	public String getIRCPass() {
+		return ircPassword;
+	}
+	
+	/**
+	 * Set a new password for the IRC channel
+	 * @param newPass : The new password for the channel
+	 */
+	public void setIrcPass( String newPass ) {
+		this.ircPassword = newPass;
+	}
+	
+	/**
+	 * Check whether two passwords match
+	 * @param checkPass : This is the password to be checked
+	 * @return A boolean value of whether it matches or not
+	 */
+	public boolean equalsPass( String checkPass ) {
+		
+		//If the password has been initialised
+		if ( getPass() != null ) {
+			
+			//Return the check of whether it is equal to the 
+			// password we're checking off
+			return getPass().equals( checkPass );
+			
+		}
+		
+		//Otherwise, we can join the channel regardless
+		return true;
+		
+	}
+	
+	/**
+	 * Return whether the channel is protected or not
+	 * @return protect
+	 */
+	public Boolean isProtected() {
+		return protect;
+	}
+	
+	/**
+	 * Set whether the channel is protected or not
+	 * @param state : The state that it is now in
+	 */
+	public void setProtected( Boolean state ) {
+		this.protect = state;
+	}
+	
 }
