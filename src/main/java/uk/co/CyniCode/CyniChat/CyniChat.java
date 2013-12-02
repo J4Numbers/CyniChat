@@ -39,6 +39,7 @@ public class CyniChat extends JavaPlugin{
 	public static Boolean bungee = false;
 	public static Boolean connected = false;
 	public static BungeeChannelProxy bungeeInstance = null;
+	public static String bungeeName;
 	
 	public static String host;
 	public static String username;
@@ -99,6 +100,7 @@ public class CyniChat extends JavaPlugin{
 		if ( getConfig().getString( "CyniChat.other.bungee" ).equalsIgnoreCase( "true" ) ) {
 			bungee = true;
 			printInfo( "Bungee has been enabled" );
+			bungeeName = getConfig().getString( "CyniChat.bungee.name" );
 			bungeeInstance = new BungeeChannelProxy( this );
 			ChatRouter.addRouter(ChatRouter.EndpointType.BUNGEE, bungeeInstance);
 		} else {
@@ -149,7 +151,7 @@ public class CyniChat extends JavaPlugin{
 	 * @param line : This is the error message
 	 */
 	public static void printSevere(String line) {
-		log.log( Level.SEVERE, "[CyniChat] {0}", line );
+		log.severe( "[CyniChat] " + line );
 	}
 
 	/**
@@ -157,7 +159,7 @@ public class CyniChat extends JavaPlugin{
 	 * @param line : This is the error message
 	 */
 	public static void printWarning(String line) {
-		log.log( Level.WARNING, "[CyniChat] {0}", line );
+		log.warning( "[CyniChat] " + line );
 	}
 
 	/**
@@ -165,7 +167,7 @@ public class CyniChat extends JavaPlugin{
 	 * @param line : This is the information
 	 */
 	public static void printInfo(String line) {
-		log.log( Level.INFO, "[CyniChat] {0}", line );
+		log.info( "[CyniChat] " + line );
 	}
 
 	/**
@@ -174,7 +176,7 @@ public class CyniChat extends JavaPlugin{
 	 */
 	public static void printDebug(String line) {
 		if ( debug == true )
-			log.log( Level.INFO, "[CyniChat DEBUG] {0}", line );
+			log.info( "[CyniChat DEBUG] " + line );
 	}
 
 	/**

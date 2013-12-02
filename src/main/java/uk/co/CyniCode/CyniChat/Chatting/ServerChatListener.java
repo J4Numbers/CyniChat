@@ -47,6 +47,9 @@ public class ServerChatListener implements Listener, IChatEndpoint {
 		//Load player details into online users.
 		DataManager.bindPlayer(event.getPlayer());
 		
+		//Debug again due to a testing error
+		CyniChat.printDebug( "Player Bound" );
+		
 	}
 	
 	/**
@@ -63,6 +66,9 @@ public class ServerChatListener implements Listener, IChatEndpoint {
 		
 		//And make the player leave the plugin
 		DataManager.unbindPlayer( event.getPlayer() );
+		
+		//Some more debug, just in case
+		CyniChat.printDebug( "Player Unbound" );
 		
 	}
 	

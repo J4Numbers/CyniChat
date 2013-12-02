@@ -224,7 +224,7 @@ public class BungeeChannelProxy implements PluginMessageListener, IChatEndpoint 
 			
 			//Add the basic details to what we're transmitting
 			try {
-				out.writeUTF(player);
+				out.writeUTF( "["+CyniChat.bungeeName+"] ["+player+"]" );
 				out.writeUTF(channel);
 				out.writeUTF(thisChan.getIRC() );
 				out.writeUTF(thisChan.getIRCPass());
