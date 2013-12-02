@@ -18,7 +18,6 @@ import uk.co.CyniCode.CyniChat.CyniChat;
 import uk.co.CyniCode.CyniChat.DataManager;
 import uk.co.CyniCode.CyniChat.PermissionManager;
 import uk.co.CyniCode.CyniChat.Command.GeneralCommand;
-import uk.co.CyniCode.CyniChat.bungee.BungeeChannelProxy;
 import uk.co.CyniCode.CyniChat.events.ChannelChatEvent;
 import uk.co.CyniCode.CyniChat.irc.IRCChatListener;
 import uk.co.CyniCode.CyniChat.objects.Channel;
@@ -84,7 +83,6 @@ public class ServerChatListener implements Listener, IChatEndpoint {
         } else {
             CyniChat.printDebug("A command existed with this prefix of \"" + bits[0] + "\"");
         }
-        return;
     }
 
     /**
@@ -100,7 +98,7 @@ public class ServerChatListener implements Listener, IChatEndpoint {
         Player player = event.getPlayer();
         UserDetails user = DataManager.getOnlineDetails(player);
 
-        if (user.getCurrentChannel() == "") {
+        if ( user.getCurrentChannel().equals( "" ) ) {
             user.printAll();
             player.sendMessage("You are in no channels. Join one to talk.");
             event.setCancelled(true);
@@ -165,10 +163,6 @@ public class ServerChatListener implements Listener, IChatEndpoint {
          CyniChat.PBot.sendMessage(current.getIRC(), player.getDisplayName(), event.getMessage());
          }*/
 
-        /*if (CyniChat.bungee == true) {
-         CyniChat.bungeeInstance.transmit(player, current, event.getMessage());
-         }*/
-
         ChannelChatEvent newChatter = new ChannelChatEvent(player.getDisplayName(), current, event.getMessage(), event.getRecipients());
         Bukkit.getServer().getPluginManager().callEvent(newChatter);
     }
@@ -193,7 +187,7 @@ public class ServerChatListener implements Listener, IChatEndpoint {
     public static String looper(Set<Player> item) {
         String recip = null;
         int j = item.size();
-        Object[] arrItem = null;
+        Object[] arrItem;
         arrItem = item.toArray();
         for (int i = 0; i < j; i++) {
             recip += arrItem[i] + ", ";
@@ -206,57 +200,20 @@ public class ServerChatListener implements Listener, IChatEndpoint {
         	CyniChat.printDebug( "Handling an IRC endtype" );
             _handleIRCMessage(player, channel, message);
         }
-        if (type == ChatRouter.EndpointType.BUNGEE) {
-        	CyniChat.printDebug( "Handling a bungee endtype" );
-            _handleBungeeMessage(player, channel, message);
-            return;
-        }
         CyniChat.printDebug( type.name() + " endpoint not defined" );
     }
 
     private void _handleIRCMessage(String player, String channel, String message) {
         Player[] online = Bukkit.getServer().getOnlinePlayers();
         Channel chatChannel = DataManager.getChannel(channel);
-        for (int i = 0; i < online.length; i++) {
-
-            UserDetails curPl = DataManager.getOnlineDetails(online[i]);
-
-            if (curPl.getAllChannels().contains(channel)) {
-                CyniChat.printDebug("Sending message to " + online[i].getDisplayName());
-                String outing = chatChannel.getColour() + "[IRC] [" + chatChannel.getNick() + "] ";
-                outing += player + " : " + message;
-
-                online[i].sendMessage(outing);
-            }
-
-        }
-    }
-
-    private void _handleBungeeMessage(String player, String channel, String message) {
-
-    	CyniChat.printDebug( "Handling a bungee message..." );
-    	
-        Channel chatChannel = DataManager.getChannel(channel);
-        if(chatChannel == null){
-            CyniChat.printDebug("Dropped bungee message from unknown channel " + channel + ":: " + player + " said " + message);
-            return;
-        }
-        
-        String formattedMsg = chatChannel.getColour() + "[" + chatChannel.getNick() + "] " + player + " : " + chatChannel.getColour() + message;
-        
-        CyniChat.printDebug( "Message : " + formattedMsg );
-        CyniChat.printDebug( "On : " + chatChannel.getName() );
-        
-        for (Player p : Bukkit.getOnlinePlayers()) {
-        	CyniChat.printDebug( "Current Player: " + p.getDisplayName() );
-        	CyniChat.printDebug( "Checking channel: " + chatChannel.getName() );
-            if (DataManager.getOnlineDetails(p).getAllChannels().contains( chatChannel.getName() )) {
-            	CyniChat.printDebug( "Player was in the channel... sending" );
-                p.sendMessage(formattedMsg);
-            } else {
-            	CyniChat.printDebug( "Player was not in the channel..." );
-            }
-            DataManager.getOnlineDetails(p).printAll();
-        }
+	for (Player online1 : online) {
+		UserDetails curPl = DataManager.getOnlineDetails(online1);
+		if (curPl.getAllChannels().contains(channel)) {
+			CyniChat.printDebug("Sending message to " + online1.getDisplayName());
+			String outing = chatChannel.getColour() + "[IRC] [" + chatChannel.getNick() + "] ";
+			outing += player + " : " + message;
+			online1.sendMessage(outing);
+		}
+	}
     }
 }

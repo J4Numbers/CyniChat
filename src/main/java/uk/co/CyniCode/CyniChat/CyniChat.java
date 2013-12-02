@@ -14,7 +14,6 @@ import uk.co.CyniCode.CyniChat.Command.MeCommand;
 import uk.co.CyniCode.CyniChat.Command.MsgCommand;
 import uk.co.CyniCode.CyniChat.Command.QmCommand;
 import uk.co.CyniCode.CyniChat.Command.RCommand;
-import uk.co.CyniCode.CyniChat.bungee.BungeeChannelProxy;
 import uk.co.CyniCode.CyniChat.routing.ChatRouter;
 
 /**
@@ -36,8 +35,6 @@ public class CyniChat extends JavaPlugin{
 	public static Boolean JSON = false;
 	public static Boolean SQL = false;
 	public static Boolean IRC = false;
-	public static Boolean bungee = false;
-	public static BungeeChannelProxy bungeeInstance = null;
 	
 	public static String host;
 	public static String username;
@@ -95,15 +92,6 @@ public class CyniChat extends JavaPlugin{
 		} else {
 			JSON = true;
 			printInfo("JSON storage enabled!");
-		}
-		if ( getConfig().getString( "CyniChat.other.bungee" ).equalsIgnoreCase( "true" ) ) {
-			bungee = true;
-			printInfo( "Bungee has been enabled" );
-			bungeeInstance = new BungeeChannelProxy( this );
-			ChatRouter.addRouter(ChatRouter.EndpointType.BUNGEE, bungeeInstance);
-		} else {
-			bungee = false;
-			printInfo( "Bungee has been disabled" );
 		}
 		DataManager.start( this );
 		DataManager.channelTable();

@@ -20,7 +20,6 @@ public class ChatRouter {
     
     public enum EndpointType{
         PLAYER,
-        BUNGEE,
         IRC
     }
 

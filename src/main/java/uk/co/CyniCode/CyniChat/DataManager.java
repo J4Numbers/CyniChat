@@ -41,15 +41,6 @@ public class DataManager {
 	 * @param cynichat : This is an instance of the plugin
 	 */
 	public static void start( CyniChat cynichat) {
-		if ( CyniChat.bungee == true ) {
-			servers = cynichat.getConfig().getStringList( "CyniChat.bungee.connected" );
-			
-			Iterator<String> serIter = servers.iterator();
-			
-			while ( serIter.hasNext() ) {
-				CyniChat.printDebug( serIter.next() );
-			}
-		}
 		
 		if ( CyniChat.SQL == true ) {
 			Connection = new MySQLManager();
@@ -86,7 +77,6 @@ public class DataManager {
 			String curName = chanIter.next();
 			matching.put( channels.get(curName).getNick(), curName);
 		}
-		return;
 	}
 	
 	/**
@@ -262,8 +252,6 @@ public class DataManager {
 	 * @return true if it exists, false if not.
 	 */
 	public static boolean hasNick(String nick) {
-		if ( matching.containsKey(nick) )
-			return true;
-		return false;
+		return matching.containsKey(nick);
 	}
 }
