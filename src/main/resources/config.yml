@@ -8,12 +8,9 @@ CyniChat:
     password: "pass"
     database: "cynichat"
     prefix: "chat_"
+  bungee:
+    name: "lobby"
   other:
     data: "json"
     debug: "true"
-    irc: "false"
     bungee: "true"
-  irc:
-    hostname: "127.0.0.1"
-    port: 6667
-    nickname: "CyniBot"
