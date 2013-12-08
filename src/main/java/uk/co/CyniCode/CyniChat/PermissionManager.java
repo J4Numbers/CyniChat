@@ -159,11 +159,11 @@ public class PermissionManager {
 		
 		//This player has been promoted to channel moderater status...
 		// congratulations to them
-		getPerms().playerAdd( DataManager.getDetails( player ).getPlayer() ,
+		getPerms().playerAdd( CyniChat.data.getDetails( player ).getPlayer() ,
 					"cynichat.mod.kick."+channel.getName().toLowerCase() );
-		getPerms().playerAdd( DataManager.getDetails( player ).getPlayer() ,
+		getPerms().playerAdd( CyniChat.data.getDetails( player ).getPlayer() ,
 					"cynichat.mod.ban."+channel.getName().toLowerCase() );
-		getPerms().playerAdd( DataManager.getDetails( player ).getPlayer() ,
+		getPerms().playerAdd( CyniChat.data.getDetails( player ).getPlayer() ,
 					"cynichat.mod.mute."+channel.getName().toLowerCase() );
 		
 	}
@@ -177,11 +177,11 @@ public class PermissionManager {
 		
 		//This player has been demoted...
 		// boo!
-		getPerms().playerRemove( DataManager.getDetails( player ).getPlayer() ,
+		getPerms().playerRemove( CyniChat.data.getDetails( player ).getPlayer() ,
 					"cynichat.mod.kick."+channel.getName().toLowerCase() );
-		getPerms().playerRemove( DataManager.getDetails( player ).getPlayer() ,
+		getPerms().playerRemove( CyniChat.data.getDetails( player ).getPlayer() ,
 					"cynichat.mod.kick."+channel.getName().toLowerCase() );
-		getPerms().playerRemove( DataManager.getDetails( player ).getPlayer() ,
+		getPerms().playerRemove( CyniChat.data.getDetails( player ).getPlayer() ,
 					"cynichat.mod.kick."+channel.getName().toLowerCase() );
 		
 	}

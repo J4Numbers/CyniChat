@@ -8,7 +8,6 @@ import org.bukkit.craftbukkit.libs.com.google.gson.annotations.Expose;
 import org.bukkit.entity.Player;
 
 import uk.co.CyniCode.CyniChat.CyniChat;
-import uk.co.CyniCode.CyniChat.DataManager;
 
 /**
  * UserDetails class and object which stores all of the relevant information for each and every player
@@ -114,7 +113,7 @@ public class UserDetails {
 		if ( CyniChat.perms.checkPerm( getPlayer(), "cynichat.basic.ignore") ) {
 			
 			//Well apparently they can. Can the ignoree be ignored?
-			if ( DataManager.getDetails(ignoree.toLowerCase()).canIgnore() ) {
+			if ( CyniChat.data.getDetails(ignoree.toLowerCase()).canIgnore() ) {
 				
 				//Yeppers yet again...
 				//Now, let's just see if the player is already being
@@ -218,7 +217,7 @@ public class UserDetails {
 	 */
 	public boolean newR( Player receiver ) {
 		if ( this.LastMessage != null )
-			DataManager.getOnlineDetails( receiver )
+			CyniChat.data.getOnlineDetails( receiver )
 				.changeLatest( this.getName() );
 		return true;
 	}

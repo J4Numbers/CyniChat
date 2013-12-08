@@ -6,7 +6,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import uk.co.CyniCode.CyniChat.CyniChat;
-import uk.co.CyniCode.CyniChat.DataManager;
 import uk.co.CyniCode.CyniChat.objects.UserDetails;
 
 /**
@@ -32,7 +31,7 @@ public class MsgCommand implements CommandExecutor {
 		if ( objects.length >= 2 ) {
 			try {
 				CyniChat.printDebug(objects[0]);
-				UserDetails person = DataManager.getOnlineUsers().get( objects[0].toLowerCase() );
+				UserDetails person = CyniChat.data.getOnlineUsers().get( objects[0].toLowerCase() );
 				person.printAll();
 				String Message = stacker( objects );
 				CyniChat.printDebug( Message );
@@ -41,7 +40,7 @@ public class MsgCommand implements CommandExecutor {
 				person.changeLatest( player.getName() );
 				CyniChat.printDebug( person.getLatest() );
 				if ( player instanceof Player ) {
-					UserDetails user = DataManager.getOnlineDetails( (Player) player );
+					UserDetails user = CyniChat.data.getOnlineDetails( (Player) player );
 					user.changeLatest( person.getName() );
 					CyniChat.printDebug( user.getLatest() );
 				}

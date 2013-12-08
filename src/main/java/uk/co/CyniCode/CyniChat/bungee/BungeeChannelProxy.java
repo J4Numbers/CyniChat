@@ -10,7 +10,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 
 import uk.co.CyniCode.CyniChat.CyniChat;
-import uk.co.CyniCode.CyniChat.DataManager;
 import uk.co.CyniCode.CyniChat.objects.Channel;
 import uk.co.CyniCode.CyniChat.routing.ChatRouter;
 import uk.co.CyniCode.CyniChat.routing.ChatRouter.EndpointType;
@@ -139,8 +138,8 @@ public class BungeeChannelProxy implements PluginMessageListener, IChatEndpoint 
 			//Now let's set the actual chat channel if it came from
 			// IRC.
 			if ( chatChannel.equals("N/A") )
-				chatChannel = ( DataManager.getLinkedChans().containsKey( IRCChannel ) ) ? 
-					DataManager.getLinkedChans().get( IRCChannel ) :
+				chatChannel = ( CyniChat.data.getLinkedChans().containsKey( IRCChannel ) ) ? 
+					CyniChat.data.getLinkedChans().get( IRCChannel ) :
 					"N/A";
 			
 			//Print out concise debug
@@ -151,7 +150,7 @@ public class BungeeChannelProxy implements PluginMessageListener, IChatEndpoint 
 			//If the channel cannot flag a match, skip over everything
 			// and if this is a player type message, use the fancy 
 			// name, else use the regular name
-			if (DataManager.getChannel(chatChannel) != null) {
+			if (CyniChat.data.getChannel(chatChannel) != null) {
 				if (type == EndpointType.PLAYER) {
 					ChatRouter.routeMessage(EndpointType.BUNGEE, fancyPlayerName, chatChannel, message);
 				} else {
@@ -220,7 +219,7 @@ public class BungeeChannelProxy implements PluginMessageListener, IChatEndpoint 
 			}
 			
 			//Get the actual channel that we are sending on
-			thisChan = DataManager.getChannel( channel );
+			thisChan = CyniChat.data.getChannel( channel );
 			
 			//Add the basic details to what we're transmitting
 			try {

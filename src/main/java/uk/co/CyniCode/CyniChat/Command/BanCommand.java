@@ -5,7 +5,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import uk.co.CyniCode.CyniChat.CyniChat;
-import uk.co.CyniCode.CyniChat.DataManager;
 import uk.co.CyniCode.CyniChat.objects.Channel;
 
 /**
@@ -28,7 +27,7 @@ public class BanCommand {
 						"cynichat.mod.ban."+channel.getName().toLowerCase() ) )
 				return false;
 		
-		if ( DataManager.getDetails( banee.toLowerCase() ).newBan(player.getName(), channel) == true ) {
+		if ( CyniChat.data.getDetails( banee.toLowerCase() ).newBan(player.getName(), channel) == true ) {
 			player.sendMessage( banee + " has been banned.");
 		} else {
 			player.sendMessage( banee + " is already banned.");
@@ -49,7 +48,7 @@ public class BanCommand {
 						"cynichat.mod.ban."+channel.getName().toLowerCase() ) )
 				return false;
 		
-		if ( DataManager.getDetails( banee.toLowerCase() ).remBan( player.getName(), channel) == true ) {
+		if ( CyniChat.data.getDetails( banee.toLowerCase() ).remBan( player.getName(), channel) == true ) {
 			player.sendMessage("The player has been unbanned.");
 		} else {
 			player.sendMessage("This player was not banned.");
@@ -92,7 +91,7 @@ public class BanCommand {
 						"cynichat.mod.kick."+channel.getName().toLowerCase() ) )
 				return false;
 		
-		if ( DataManager.getDetails( kickee.toLowerCase() ).Kick(player.getName(), channel ) == true ) {
+		if ( CyniChat.data.getDetails( kickee.toLowerCase() ).Kick(player.getName(), channel ) == true ) {
 			player.sendMessage( kickee + " has been kicked from the channel." );
 		} else {
 			player.sendMessage( kickee + " was not in the channel" );

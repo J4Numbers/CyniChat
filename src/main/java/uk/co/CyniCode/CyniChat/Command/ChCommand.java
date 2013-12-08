@@ -7,7 +7,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.ChatColor;
 
 import uk.co.CyniCode.CyniChat.CyniChat;
-import uk.co.CyniCode.CyniChat.DataManager;
 
 /**
  * Class for most of the commands
@@ -97,10 +96,10 @@ public class ChCommand implements CommandExecutor {
 		if ( args[0].equalsIgnoreCase("ban") ) {
 			if ( ( args.length == 2 ) || ( args.length == 3 ) ) {
 				if ( args.length == 3 ) {
-					BanCommand.ban( player, DataManager.getChannel( args[2].toLowerCase() ), args[1] );
+					BanCommand.ban( player, CyniChat.data.getChannel( args[2].toLowerCase() ), args[1] );
 					return true;
 				}
-				BanCommand.ban( player, DataManager.getChannel( DataManager.getDetails( player.getName().toLowerCase() ).getCurrentChannel() ), args[1] );
+				BanCommand.ban( player, CyniChat.data.getChannel( CyniChat.data.getDetails( player.getName().toLowerCase() ).getCurrentChannel() ), args[1] );
 				return true;
 			}
 			BanCommand.banInfo( player );
@@ -113,10 +112,10 @@ public class ChCommand implements CommandExecutor {
 		if ( args[0].equalsIgnoreCase("unban") ) {
 			if ( ( args.length == 2 ) || ( args.length == 3 ) ) {
 				if ( args.length == 3 ) {
-					BanCommand.unban( player, DataManager.getChannel( args[2].toLowerCase() ), args[1] );
+					BanCommand.unban( player, CyniChat.data.getChannel( args[2].toLowerCase() ), args[1] );
 					return true;
 				}
-				BanCommand.unban( player, DataManager.getChannel( DataManager.getDetails( player.getName().toLowerCase() ).getCurrentChannel() ), args[1] );
+				BanCommand.unban( player, CyniChat.data.getChannel( CyniChat.data.getDetails( player.getName().toLowerCase() ).getCurrentChannel() ), args[1] );
 				return true;
 			}
 			BanCommand.unbanInfo( player );
@@ -125,10 +124,10 @@ public class ChCommand implements CommandExecutor {
 		if ( args[0].equalsIgnoreCase("mute") ) {
 			if ( ( args.length == 2 ) || ( args.length == 3 ) ) {
 				if ( args.length == 3 ) {
-					MuteCommand.mute( player, DataManager.getChannel( args[2].toLowerCase() ), args[1] );
+					MuteCommand.mute( player, CyniChat.data.getChannel( args[2].toLowerCase() ), args[1] );
 					return true;
 				}
-				MuteCommand.mute( player, DataManager.getChannel( DataManager.getDetails( player.getName().toLowerCase() ).getCurrentChannel() ), args[1] );
+				MuteCommand.mute( player, CyniChat.data.getChannel( CyniChat.data.getDetails( player.getName().toLowerCase() ).getCurrentChannel() ), args[1] );
 				return true;
 			}
 			MuteCommand.muteInfo( player );
@@ -137,10 +136,10 @@ public class ChCommand implements CommandExecutor {
 		if ( args[0].equalsIgnoreCase("unmute") ) {
 			if ( ( args.length == 2 ) || ( args.length == 3 ) ) {
 				if ( args.length == 3 ) {
-					MuteCommand.unmute( player, DataManager.getChannel( args[2].toLowerCase() ), args[1] );
+					MuteCommand.unmute( player, CyniChat.data.getChannel( args[2].toLowerCase() ), args[1] );
 					return true;
 				}
-				MuteCommand.unmute( player, DataManager.getChannel( DataManager.getDetails( player.getName().toLowerCase() ).getCurrentChannel() ), args[1] );
+				MuteCommand.unmute( player, CyniChat.data.getChannel( CyniChat.data.getDetails( player.getName().toLowerCase() ).getCurrentChannel() ), args[1] );
 				return true;
 			}
 			MuteCommand.unmuteInfo( player );
@@ -224,7 +223,7 @@ public class ChCommand implements CommandExecutor {
 					ModCommand.promote( player, args[2].toLowerCase(), args[1] );
 					return true;
 				}
-				ModCommand.promote( player, DataManager.getDetails( player.getName().toLowerCase() ).getCurrentChannel(), args[1] );
+				ModCommand.promote( player, CyniChat.data.getDetails( player.getName().toLowerCase() ).getCurrentChannel(), args[1] );
 				return true;
 			}
 			ModCommand.promoteInfo( player );
@@ -236,7 +235,7 @@ public class ChCommand implements CommandExecutor {
 					ModCommand.demote( player, args[2].toLowerCase(), args[1] );
 					return true;
 				}
-				ModCommand.demote( player, DataManager.getDetails( player.getName().toLowerCase() ).getCurrentChannel(), args[1] );
+				ModCommand.demote( player, CyniChat.data.getDetails( player.getName().toLowerCase() ).getCurrentChannel(), args[1] );
 				return true;
 			}
 			ModCommand.demoteInfo( player );
@@ -255,7 +254,7 @@ public class ChCommand implements CommandExecutor {
 				GeneralCommand.who( player, args[1] );
 				return true;
 			}
-			GeneralCommand.who( player, DataManager.getDetails( player.getName().toLowerCase() ).getCurrentChannel() );
+			GeneralCommand.who( player, CyniChat.data.getDetails( player.getName().toLowerCase() ).getCurrentChannel() );
 			return true;
 		}
 		if ( args[0].equalsIgnoreCase("info") ){
@@ -263,16 +262,16 @@ public class ChCommand implements CommandExecutor {
 				GeneralCommand.info( player, args[1].toLowerCase() );
 				return true;
 			}
-			GeneralCommand.info( player, DataManager.getDetails( player.getName().toLowerCase() ).getCurrentChannel() );
+			GeneralCommand.info( player, CyniChat.data.getDetails( player.getName().toLowerCase() ).getCurrentChannel() );
 			return true;
 		}
 		if ( args[0].equalsIgnoreCase("kick") ){
 			if ( ( args.length == 2 ) || ( args.length == 3 ) ) {
 				if ( args.length == 3 ) {
-					BanCommand.kick( player, DataManager.getChannel( args[2].toLowerCase() ), args[1] );
+					BanCommand.kick( player, CyniChat.data.getChannel( args[2].toLowerCase() ), args[1] );
 					return true;
 				}
-				BanCommand.kick( player, DataManager.getChannel( DataManager.getDetails( player.getName().toLowerCase() ).getCurrentChannel().toLowerCase() ), args[1] );
+				BanCommand.kick( player, CyniChat.data.getChannel( CyniChat.data.getDetails( player.getName().toLowerCase() ).getCurrentChannel().toLowerCase() ), args[1] );
 				return true;
 			}
 			BanCommand.kickInfo( player );

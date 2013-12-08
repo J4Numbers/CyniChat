@@ -5,7 +5,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import uk.co.CyniCode.CyniChat.CyniChat;
-import uk.co.CyniCode.CyniChat.DataManager;
 import uk.co.CyniCode.CyniChat.objects.Channel;
 
 /**
@@ -23,12 +22,12 @@ public class MuteCommand {
 	 * @return true when complete
 	 */
 	public static boolean ignore( CommandSender player, String ignorer) {
-		if ( DataManager.getDetails(ignorer) == null ) {
+		if ( CyniChat.data.getDetails(ignorer) == null ) {
 			player.sendMessage("This player does not exist");
 			return true;
 		}
 		CyniChat.printDebug( player.getName() + " is now attempting to ignore " + ignorer );
-		DataManager.getDetails( player.getName().toLowerCase() ).addIgnore( ignorer );
+		CyniChat.data.getDetails( player.getName().toLowerCase() ).addIgnore( ignorer );
 		return true;
 	}
 
@@ -39,11 +38,11 @@ public class MuteCommand {
 	 * @return true when complete
 	 */
 	public static boolean hear( CommandSender player, String unignorer) {
-		if ( DataManager.getDetails(unignorer) == null ) {
+		if ( CyniChat.data.getDetails(unignorer) == null ) {
 			player.sendMessage("This player does not exist");
 			return true;
 		}
-		DataManager.getDetails( player.getName().toLowerCase() ).remIgnore( unignorer );
+		CyniChat.data.getDetails( player.getName().toLowerCase() ).remIgnore( unignorer );
 		return true;
 	}
 
@@ -81,11 +80,11 @@ public class MuteCommand {
 			if ( !CyniChat.perms.checkPerm( (Player) player, "cynichat.mod.mute."+channel) )
 				return false;
 		
-		if ( DataManager.getDetails( mutee.toLowerCase() ) == null ) {
+		if ( CyniChat.data.getDetails( mutee.toLowerCase() ) == null ) {
 			player.sendMessage("This player does not exist");
 			return true;
 		}
-		if (DataManager.getDetails(mutee.toLowerCase()).addMute(player.getName(), channel) == true ) {
+		if (CyniChat.data.getDetails(mutee.toLowerCase()).addMute(player.getName(), channel) == true ) {
 			player.sendMessage( mutee + " has been muted");
 		} else {
 			player.sendMessage( mutee + " was already muted");
@@ -104,11 +103,11 @@ public class MuteCommand {
 			if ( !CyniChat.perms.checkPerm( (Player) player, "cynichat.admin.silence" ) )
 				return false;
 		
-		if ( DataManager.getDetails( mutee.toLowerCase() ) == null ) {
+		if ( CyniChat.data.getDetails( mutee.toLowerCase() ) == null ) {
 			player.sendMessage("This player does not exist");
 			return true;
 		}
-		DataManager.getDetails(mutee.toLowerCase()).Silence( player );
+		CyniChat.data.getDetails(mutee.toLowerCase()).Silence( player );
 		return true;
 	}
 
@@ -145,11 +144,11 @@ public class MuteCommand {
 			if ( !CyniChat.perms.checkPerm( (Player) player, "cynichat.admin.silence") )
 				return false;
 		
-		if ( DataManager.getDetails( mutee.toLowerCase() ) == null ) {
+		if ( CyniChat.data.getDetails( mutee.toLowerCase() ) == null ) {
 			player.sendMessage("This player does not exist");
 			return true;
 		}
-		DataManager.getDetails(mutee.toLowerCase()).Listen(player);
+		CyniChat.data.getDetails(mutee.toLowerCase()).Listen(player);
 		return true;
 	}
 
@@ -176,11 +175,11 @@ public class MuteCommand {
 			if ( !CyniChat.perms.checkPerm( (Player) player, "cynichat.mod.mute."+channel) )
 				return false;
 		
-		if ( DataManager.getDetails( mutee.toLowerCase() ) == null ) {
+		if ( CyniChat.data.getDetails( mutee.toLowerCase() ) == null ) {
 			player.sendMessage("This player does not exist");
 			return true;
 		}
-		if ( DataManager.getDetails( mutee.toLowerCase() ).remMute(player.getName(), channel) == true ) {
+		if ( CyniChat.data.getDetails( mutee.toLowerCase() ).remMute(player.getName(), channel) == true ) {
 			player.sendMessage( mutee + " has been unmuted" );
 		} else {
 			player.sendMessage( mutee + " was already unmuted" );

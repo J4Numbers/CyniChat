@@ -6,8 +6,8 @@ import java.util.Set;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import uk.co.CyniCode.CyniChat.CyniChat;
 
-import uk.co.CyniCode.CyniChat.DataManager;
 import uk.co.CyniCode.CyniChat.objects.Channel;
 import uk.co.CyniCode.CyniChat.objects.UserDetails;
 
@@ -57,7 +57,7 @@ public class ChannelChatEvent extends Event {
 	 * @param recipients : The people the event will affect
 	 */
 	public ChannelChatEvent( String player, Channel channel, String message, Set<Player> recipients ) {
-		this.player = DataManager.getDetails(player);
+		this.player = CyniChat.data.getDetails(player);
 		this.channel = channel;
 		this.message = message;
 		this.senderName = player;
@@ -73,7 +73,7 @@ public class ChannelChatEvent extends Event {
 	}
 	
 	public void setSender( Player newSender ) {
-		this.player = DataManager.getOnlineDetails( newSender );
+		this.player = CyniChat.data.getOnlineDetails( newSender );
 	}
 	
 	/**

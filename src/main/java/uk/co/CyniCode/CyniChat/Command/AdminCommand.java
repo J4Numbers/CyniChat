@@ -5,7 +5,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import uk.co.CyniCode.CyniChat.CyniChat;
-import uk.co.CyniCode.CyniChat.DataManager;
 import uk.co.CyniCode.CyniChat.objects.Channel;
 import uk.co.CyniCode.CyniChat.objects.UserDetails;
 
@@ -30,22 +29,22 @@ public class AdminCommand {
 			if ( !CyniChat.perms.checkPerm( (Player) player, "cynichat.admin.create") )
 				return false;
 		
-		if ( DataManager.getChannel(name) != null ) {
+		if ( CyniChat.data.getChannel(name) != null ) {
 			player.sendMessage("This channel is already in existance");
 			return true;
 		}
 		
-		if ( DataManager.hasNick( nick ) == true )
+		if ( CyniChat.data.hasNick( nick ) == true )
 			nick = name.substring(0, 2);
 		
 		Channel newChan = new Channel( name.toLowerCase(), nick.toLowerCase(), protect );
 		
-		DataManager.addChannel( newChan );
+		CyniChat.data.addChannel( newChan );
 		player.sendMessage( "The channel: " + name + " has now been created" );
 		
 		if ( player instanceof Player ) {
 			CyniChat.perms.addChannelPerms( player, newChan, protect );
-			UserDetails current = DataManager.getOnlineDetails( (Player) player);
+			UserDetails current = CyniChat.data.getOnlineDetails( (Player) player);
 			current.joinChannel(newChan, "");
 		}
 		
@@ -63,7 +62,7 @@ public class AdminCommand {
 			if ( CyniChat.perms.checkPerm( (Player) player, "cynichat.admin.remove") )
 				return false;
 		
-		if ( DataManager.deleteChannel( name ) == true ) {
+		if ( CyniChat.data.deleteChannel( name ) == true ) {
 			player.sendMessage("Channel has been removed");
 			return true;
 		}

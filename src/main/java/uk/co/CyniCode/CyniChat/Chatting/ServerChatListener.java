@@ -14,7 +14,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import uk.co.CyniCode.CyniChat.CyniChat;
-import uk.co.CyniCode.CyniChat.DataManager;
 import uk.co.CyniCode.CyniChat.Command.GeneralCommand;
 import uk.co.CyniCode.CyniChat.events.ChannelChatEvent;
 import uk.co.CyniCode.CyniChat.objects.Channel;
@@ -45,7 +44,7 @@ public class ServerChatListener implements Listener, IChatEndpoint {
 		CyniChat.printDebug("Player joined");
 		
 		//Load player details into online users.
-		DataManager.bindPlayer(event.getPlayer());
+		CyniChat.data.bindPlayer(event.getPlayer());
 		
 		//Debug again due to a testing error
 		CyniChat.printDebug( "Player Bound" );
@@ -65,7 +64,7 @@ public class ServerChatListener implements Listener, IChatEndpoint {
 		CyniChat.printDebug("Player Left");
 		
 		//And make the player leave the plugin
-		DataManager.unbindPlayer( event.getPlayer() );
+		CyniChat.data.unbindPlayer( event.getPlayer() );
 		
 		//Some more debug, just in case
 		CyniChat.printDebug( "Player Unbound" );
@@ -103,7 +102,7 @@ public class ServerChatListener implements Listener, IChatEndpoint {
 		if (CyniChat.ifCommandExists(bits[0]) == false) {
 			
 			//Then execute it as a quick message
-			if (DataManager.getChannel(bits[0]) != null) {
+			if (CyniChat.data.getChannel(bits[0]) != null) {
 				
 				GeneralCommand.quickMessage((CommandSender) event.getPlayer(), bits[0], mess);
 				
@@ -141,7 +140,7 @@ public class ServerChatListener implements Listener, IChatEndpoint {
 		
 		//Then register the basics for what we're going to use
 		Player player = event.getPlayer();
-		UserDetails user = DataManager.getOnlineDetails(player);
+		UserDetails user = CyniChat.data.getOnlineDetails(player);
 		
 		//If the user has no current channel...
 		if ( user.getCurrentChannel().equals("") ) {
@@ -160,7 +159,7 @@ public class ServerChatListener implements Listener, IChatEndpoint {
 		
 		//Okay... look at what the channel we're sending a message on
 		// is going to be.
-		Channel current = DataManager.getChannel(user.getCurrentChannel().toLowerCase());
+		Channel current = CyniChat.data.getChannel(user.getCurrentChannel().toLowerCase());
 		
 		//Is the user silenced?
 		if ( user.getSilenced() ) {
@@ -225,7 +224,7 @@ public class ServerChatListener implements Listener, IChatEndpoint {
 		for ( Player currentPlayer : event.getRecipients() ) {
 			
 			//Get the current player's user details
-			UserDetails users = DataManager.getOnlineDetails(currentPlayer);
+			UserDetails users = CyniChat.data.getOnlineDetails(currentPlayer);
 			
 			//Then debug the information about that player
 			CyniChat.printDebug(currentPlayer.getName() + " : " + users.getAllVerboseChannels());
@@ -373,13 +372,13 @@ public class ServerChatListener implements Listener, IChatEndpoint {
 		Player[] online = Bukkit.getServer().getOnlinePlayers();
 		
 		//And the channel object we're dealing with
-		Channel chatChannel = DataManager.getChannel(channel);
+		Channel chatChannel = CyniChat.data.getChannel(channel);
 		
 		//For each and every player on the server...
 		for (Player online1 : online) {
 			
 			//Get their details
-			UserDetails curPl = DataManager.getOnlineDetails(online1);
+			UserDetails curPl = CyniChat.data.getOnlineDetails(online1);
 			
 			//Is the current player joined to this channel?
 			if (curPl.getAllChannels().contains(channel)) {
@@ -408,7 +407,7 @@ public class ServerChatListener implements Listener, IChatEndpoint {
 		CyniChat.printDebug( "Handling a bungee message..." );
 		
 		//Get the channel details
-		Channel chatChannel = DataManager.getChannel(channel);
+		Channel chatChannel = CyniChat.data.getChannel(channel);
 		
 		//Then check if the channel exists on this server
 		if ( chatChannel == null ){
@@ -435,7 +434,7 @@ public class ServerChatListener implements Listener, IChatEndpoint {
 			CyniChat.printDebug( "Checking channel: " + chatChannel.getName() );
 			
 			//Go and ask if they are in the channel
-			if (DataManager.getOnlineDetails(p).getAllChannels().contains( chatChannel.getName() )) {
+			if (CyniChat.data.getOnlineDetails(p).getAllChannels().contains( chatChannel.getName() )) {
 				
 				//They are... send them the message
 				CyniChat.printDebug( "Player was in the channel... sending" );
@@ -449,7 +448,7 @@ public class ServerChatListener implements Listener, IChatEndpoint {
 			}
 			
 			//Finally, just print the debug about them
-			DataManager.getOnlineDetails(p).printAll();
+			CyniChat.data.getOnlineDetails(p).printAll();
 			
 		}
 		

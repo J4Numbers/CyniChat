@@ -5,7 +5,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import uk.co.CyniCode.CyniChat.DataManager;
+import uk.co.CyniCode.CyniChat.CyniChat;
 
 /**
  * Change the state of the player to afk
@@ -27,7 +27,7 @@ public class AfkCommand implements CommandExecutor {
 		if ( !(player instanceof Player) )
 			return false;
 		
-		DataManager.getDetails( player.getName() ).changeAfk();
+		CyniChat.data.getDetails( player.getName() ).changeAfk();
 		return true;
 	}
 
