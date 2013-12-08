@@ -38,4 +38,6 @@ public interface IDataManager {
 	 */
 	public Map<String, Channel> returnChannels();
 	
+	public Runnable getBooster();
+	
 }

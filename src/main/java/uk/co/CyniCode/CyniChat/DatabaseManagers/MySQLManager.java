@@ -432,6 +432,22 @@ public class MySQLManager implements IDataManager {
 		return getChannels();
 	}
 	
+	public Runnable getBooster() {
+		
+		return new boostConnection();
+		
+	}
+	
+	public class boostConnection implements Runnable {
+		
+		public void run() {
+			
+			DataManager.flushData();
+			
+		}
+		
+	};
+	
 	/**
 	 * Check and make all the tables required for this plugin
 	 * @param prefix : The prefix of the tables that you want

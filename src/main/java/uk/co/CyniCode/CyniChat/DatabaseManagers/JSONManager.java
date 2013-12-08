@@ -153,7 +153,11 @@ public class JSONManager implements IDataManager {
 			e.printStackTrace();
 		}
 	}
-
+	
+	public Runnable getBooster() {
+		return null;
+	}
+	
 	/**
 	 * @return the channelFile
 	 */
