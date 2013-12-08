@@ -95,6 +95,21 @@ public class DataManager {
 			setLoadedUsers(getConnection().returnPlayers());
 			
 		}
+		
+		cynichat.getServer().getScheduler()
+			.scheduleSyncRepeatingTask( cynichat,
+				getConnection().getBooster(),
+				21,
+				21);
+	}
+	
+	public static void flushData() {
+		
+		getConnection().saveChannels( getChannels() );
+		getConnection().saveUsers( getActiveUsers() );
+		
+		getActiveUsers().clear();
+		
 	}
 	
 	/**
