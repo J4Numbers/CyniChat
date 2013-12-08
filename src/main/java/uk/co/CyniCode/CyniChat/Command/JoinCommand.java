@@ -4,7 +4,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import uk.co.CyniCode.CyniChat.CyniChat;
-import uk.co.CyniCode.CyniChat.DataManager;
 import uk.co.CyniCode.CyniChat.objects.Channel;
 import uk.co.CyniCode.CyniChat.objects.UserDetails;
 
@@ -23,14 +22,14 @@ public class JoinCommand {
 	 * @return true when complete
 	 */
 	public static boolean join( CommandSender player, String channel, String pass ) {
-		if ( DataManager.getChannel( channel.toLowerCase() ) != null ) {
-			UserDetails user = DataManager.getDetails( player.getName() );
-			Channel NewChan = DataManager.getChannel(channel.toLowerCase());
+		if ( CyniChat.data.getChannel( channel.toLowerCase() ) != null ) {
+			UserDetails user = CyniChat.data.getDetails( player.getName() );
+			Channel NewChan = CyniChat.data.getChannel(channel.toLowerCase());
 			if ( user.getBannedChannels().contains( NewChan.getName() ) ) {
 				player.sendMessage("You are banned from this channel. Tch, tch, tch.");
 				return true;
 			}
-			DataManager.getDetails(player.getName()).joinChannel(NewChan, pass);
+			CyniChat.data.getDetails(player.getName()).joinChannel(NewChan, pass);
 			return true;
 		} else {
 			player.sendMessage("This channel does not exist");

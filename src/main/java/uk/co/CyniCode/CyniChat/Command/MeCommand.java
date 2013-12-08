@@ -8,7 +8,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import uk.co.CyniCode.CyniChat.CyniChat;
-import uk.co.CyniCode.CyniChat.DataManager;
 import uk.co.CyniCode.CyniChat.objects.UserDetails;
 
 /**
@@ -24,11 +23,11 @@ public class MeCommand implements CommandExecutor {
 		CyniChat.printDebug("Initialised a /me command");
 		if ( objects[0] != null ) {
 			String Message = player.getName() + stacker( objects );
-			UserDetails user = DataManager.getOnlineDetails( (Player) player );
+			UserDetails user = CyniChat.data.getOnlineDetails( (Player) player );
 			String curChan = user.getCurrentChannel();
-			String TMessage = DataManager.getChannel(curChan).getColour()+"["
-					+DataManager.getChannel(curChan).getNick()+"] " + Message;
-			for ( Map.Entry<String, UserDetails> entrySet : DataManager.getOnlineUsers().entrySet() ) {
+			String TMessage = CyniChat.data.getChannel(curChan).getColour()+"["
+					+CyniChat.data.getChannel(curChan).getNick()+"] " + Message;
+			for ( Map.Entry<String, UserDetails> entrySet : CyniChat.data.getOnlineUsers().entrySet() ) {
 				UserDetails current = entrySet.getValue();
 				if ( current.getAllChannels().contains(curChan) && 
 						!current.getIgnoring().contains(player.getName().toLowerCase() ) ) {
@@ -36,7 +35,7 @@ public class MeCommand implements CommandExecutor {
 				}
 			}
 			
-			//String linkedChan = DataManager.getChannel(curChan).getIRC();
+			//String linkedChan = CyniChat.data.getChannel(curChan).getIRC();
 			
 			CyniChat.printDebug("End of a /me command");
 			return true;

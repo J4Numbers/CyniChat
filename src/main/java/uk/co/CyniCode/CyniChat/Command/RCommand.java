@@ -6,7 +6,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import uk.co.CyniCode.CyniChat.CyniChat;
-import uk.co.CyniCode.CyniChat.DataManager;
 import uk.co.CyniCode.CyniChat.objects.UserDetails;
 
 /**
@@ -33,11 +32,11 @@ public class RCommand implements CommandExecutor {
 			return true;
 		}
 		if ( objects.length >= 1 ) {
-			UserDetails current = DataManager.getOnlineDetails( (Player) player );
+			UserDetails current = CyniChat.data.getOnlineDetails( (Player) player );
 			if ( current.getLatest() != null ) {
 				String message = stacker( objects );
 				try {
-					UserDetails other = DataManager.getOnlineUsers().get( current.getLatest() );
+					UserDetails other = CyniChat.data.getOnlineUsers().get( current.getLatest() );
 					player.sendMessage("To "+other.getPlayer().getName()+" :"+message);
 					other.getPlayer().sendMessage("From "+player.getName()+" :"+message);
 					other.changeLatest( player.getName().toLowerCase() );

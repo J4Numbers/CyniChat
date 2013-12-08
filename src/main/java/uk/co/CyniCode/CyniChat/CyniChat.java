@@ -31,6 +31,7 @@ public class CyniChat extends JavaPlugin{
 	public static String name;
 	public static String Server;
 	public static CyniChat self = null;
+	public static DataManager data = null;
 	public static PermissionManager perms = null;
 	
 	public static Boolean JSON = false;
@@ -108,8 +109,8 @@ public class CyniChat extends JavaPlugin{
 			printInfo( "Bungee has been disabled" );
 		}
 		
-		DataManager.start( this );
-		DataManager.channelTable();
+		data = new DataManager( this );
+		data.channelTable();
 		
 		//Start the command
 		this.getCommand("ch").setExecutor(new ChCommand(this));
@@ -141,8 +142,8 @@ public class CyniChat extends JavaPlugin{
 	 */
 	@Override
 	public void onDisable() {
-		DataManager.saveChannels();
-		DataManager.saveUsers();
+		data.saveChannels();
+		data.saveUsers();
 		printInfo("CyniChat has been disabled!");
 	}
 

@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.Properties;
 
 import uk.co.CyniCode.CyniChat.CyniChat;
-import uk.co.CyniCode.CyniChat.DataManager;
 import uk.co.CyniCode.CyniChat.objects.Channel;
 import uk.co.CyniCode.CyniChat.objects.UserDetails;
 
@@ -244,13 +243,15 @@ public class MySQLManager implements IDataManager {
 			String username = entrySet.getKey();
 			UserDetails current = entrySet.getValue();
 			try {
-				PreparedStatement ps = getConn().prepareStatement("SELECT COUNT(*) FROM `"+getPrefix()+"players` WHERE `player_id`='"+current.getID()+"'");
+				PreparedStatement ps = getConn().prepareStatement("SELECT COUNT(*) FROM `"
+					+getPrefix()+"players` WHERE `player_id`='"+current.getID()+"'");
 				ResultSet rs = ps.executeQuery();
 				while (rs.next())
 					if (rs.getInt(1) == 0) {
 						getInsertPlayer().setString(1, username );
 						getInsertPlayer().setString(2, username.toLowerCase());
-						getInsertPlayer().setInt(3, DataManager.getChannels().get( current.getCurrentChannel() ).getID());
+						getInsertPlayer().setInt(3, CyniChat.data.getChannels()
+							.get( current.getCurrentChannel() ).getID());
 						getInsertPlayer().execute();
 						
 						ResultSet generatedKeys = getInsertPlayer().getGeneratedKeys();
@@ -260,7 +261,8 @@ public class MySQLManager implements IDataManager {
 						
 						getInsertPlayer().clearParameters();
 					} else {
-						getUpdatePlayer().setInt(1, DataManager.getChannels().get( current.getCurrentChannel() ).getID());
+						getUpdatePlayer().setInt(1, CyniChat.data.getChannels()
+							.get( current.getCurrentChannel() ).getID());
 						getUpdatePlayer().setBoolean(2, current.getSilenced());
 						getUpdatePlayer().setBoolean(3, current.canIgnore());
 						getUpdatePlayer().setInt(4, current.getID() );
@@ -277,43 +279,47 @@ public class MySQLManager implements IDataManager {
 			String username = entrySet.getKey();
 			UserDetails current = entrySet.getValue();
 			try {
-				PreparedStatement ps2 = getConn().prepareStatement("DELETE FROM `"+getPrefix()+"current_channel` WHERE `player_id`='"+current.getID()+"'");
+				PreparedStatement ps2 = getConn().prepareStatement("DELETE FROM `"
+					+getPrefix()+"current_channel` WHERE `player_id`='"+current.getID()+"'");
 				ps2.execute();
 				ps2.close();
 				for ( String curString : current.getAllChannels() ) {
-					Channel curChan = DataManager.getChannel( curString );
+					Channel curChan = CyniChat.data.getChannel( curString );
 					getJoinChannel().setInt(1, current.getID());
 					getJoinChannel().setInt(2, curChan.getID());
 					getJoinChannel().execute();
 					getJoinChannel().clearParameters();
 				}
 				
-				PreparedStatement ps4 = getConn().prepareStatement("DELETE FROM `"+getPrefix()+"ignoring` WHERE `ignorer_id`='"+current.getID()+"'");
+				PreparedStatement ps4 = getConn().prepareStatement("DELETE FROM `"
+					+getPrefix()+"ignoring` WHERE `ignorer_id`='"+current.getID()+"'");
 				ps4.execute();
 				ps4.close();
 				for ( String curString : current.getIgnoring() ) {
 					getAddIgnoring().setInt(1, current.getID());
-					getAddIgnoring().setInt(2, DataManager.getDetails(curString).getID());
+					getAddIgnoring().setInt(2, CyniChat.data.getDetails(curString).getID());
 					getAddIgnoring().execute();
 					getAddIgnoring().clearParameters();
 				}
 				
-				PreparedStatement ps5 = getConn().prepareStatement("DELETE FROM `"+getPrefix()+"muted` WHERE `mutee_id`='"+current.getID()+"'");
+				PreparedStatement ps5 = getConn().prepareStatement("DELETE FROM `"
+					+getPrefix()+"muted` WHERE `mutee_id`='"+current.getID()+"'");
 				ps5.execute();
 				ps5.close();
 				for ( String curString : current.getMutedChannels() ) {
 					getAddMute().setInt( 1, current.getID() );
-					getAddMute().setInt( 2, DataManager.getChannel( curString ).getID() );
+					getAddMute().setInt( 2, CyniChat.data.getChannel( curString ).getID() );
 					getAddMute().execute();
 					getAddMute().clearParameters();
 				}
 				
-				PreparedStatement ps6 = getConn().prepareStatement("DELETE FROM `"+getPrefix()+"banned` WHERE `bannee_id`='"+current.getID()+"'");
+				PreparedStatement ps6 = getConn().prepareStatement("DELETE FROM `"
+					+getPrefix()+"banned` WHERE `bannee_id`='"+current.getID()+"'");
 				ps6.execute();
 				ps6.close();
 				for ( String curString : current.getBannedChannels() ) {
 					getAddBan().setInt( 1, current.getID() );
-					getAddBan().setInt( 2, DataManager.getChannel( curString ).getID() );
+					getAddBan().setInt( 2, CyniChat.data.getChannel( curString ).getID() );
 					getAddBan().execute();
 					getAddBan().clearParameters();
 				}
@@ -332,8 +338,12 @@ public class MySQLManager implements IDataManager {
 	public Map<String, UserDetails> returnPlayers() {
 		try {
 			PreparedStatement ps = getConn().prepareStatement(
-					  "SELECT `player_id`,`player_name`,`channel_name`,`player_silenced`,`can_ignore` FROM `"+getPrefix()+"players` "
-					+ "INNER JOIN `"+getPrefix()+"channels` ON "+getPrefix()+"channels.`channel_id`="+getPrefix()+"players.`active_channel`" );
+					  "SELECT `player_id`,`player_name`,`channel_name`,"
+						  + "`player_silenced`,`can_ignore` FROM `"
+						  +getPrefix()+"players` INNER JOIN `"
+						  +getPrefix()+"channels` ON `"+getPrefix()
+						  +"channels`.`channel_id`=`"+getPrefix()
+						  +"players`.`active_channel`" );
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
 				String name;
@@ -349,9 +359,12 @@ public class MySQLManager implements IDataManager {
 				silenced = rs.getBoolean(4);
 				canIgnore = rs.getBoolean(5);
 				
-				PreparedStatement ps2 = getConn().prepareStatement("SELECT `channel_name` FROM `"+getPrefix()+"current_channel` "
-						+ "INNER JOIN `"+getPrefix()+"channels` ON "+getPrefix()+"channels.channel_id="+getPrefix()+"current_channel.channel_id "
-						+ "WHERE "+getPrefix()+"current_channel.player_id='"+rs.getInt(1)+"'");
+				PreparedStatement ps2 = getConn().prepareStatement(
+					  "SELECT `channel_name` FROM `"+getPrefix()+"current_channel` "
+						  + "INNER JOIN `"+getPrefix()+"channels` ON "+getPrefix()
+						  +"channels.channel_id="+getPrefix()+"current_channel.channel_id "
+						  + "WHERE "+getPrefix()+"current_channel.player_id='"+rs.getInt(1)
+						  +"'");
 				ResultSet rs2 = ps2.executeQuery();
 				while (rs2.next()) {
 					JoinedChannels.add( rs2.getString(1) );
@@ -359,27 +372,33 @@ public class MySQLManager implements IDataManager {
 				rs2.close();
 				ps2.close();
 				
-				PreparedStatement ps3 = getConn().prepareStatement("SELECT `player_name` FROM `"+getPrefix()+"ignoring` "
-						+ "INNER JOIN `"+getPrefix()+"players` ON "+getPrefix()+"players.player_id="+getPrefix()+"ignoring.ignoree_id "
-						+ "WHERE "+getPrefix()+"ignoring.ignorer_id='"+rs.getInt(1)+"'");
+				PreparedStatement ps3 = getConn().prepareStatement(
+					  "SELECT `player_name` FROM `"+getPrefix()+"ignoring` "
+						  + "INNER JOIN `"+getPrefix()+"players` ON "+getPrefix()
+						  +"players.player_id="+getPrefix()+"ignoring.ignoree_id "
+						  + "WHERE "+getPrefix()+"ignoring.ignorer_id='"+rs.getInt(1)+"'");
 				ResultSet rs3 = ps3.executeQuery();
 				while ( rs3.next() )
 					Ignoring.add( rs3.getString(1) );
 				rs3.close();
 				ps3.close();
 				
-				PreparedStatement ps4 = getConn().prepareStatement("SELECT `channel_name` FROM `"+getPrefix()+"banned` "
-						+ "INNER JOIN `"+getPrefix()+"channels` ON "+getPrefix()+"channels.`channel_id`="+getPrefix()+"banned.`channel_id` "
-						+ "WHERE "+getPrefix()+"banned.bannee_id='"+rs.getInt(1)+"'");
+				PreparedStatement ps4 = getConn().prepareStatement(
+					  "SELECT `channel_name` FROM `"+getPrefix()+"banned` "
+						  + "INNER JOIN `"+getPrefix()+"channels` ON "+getPrefix()
+						  + "channels.`channel_id`="+getPrefix()+"banned.`channel_id` "
+						  + "WHERE "+getPrefix()+"banned.bannee_id='"+rs.getInt(1)+"'");
 				ResultSet rs4 = ps4.executeQuery();
 				while ( rs4.next() )
 					BannedFrom.add( rs4.getString(1) );
 				ps4.close();
 				rs4.close();
 				
-				PreparedStatement ps5 = getConn().prepareStatement( "SELECT `channel_name` FROM `"+getPrefix()+"muted` "
-						+ "INNER JOIN `"+getPrefix()+"channels` ON "+getPrefix()+"channels.channel_id="+getPrefix()+"muted.channel_id "
-						+ "WHERE "+getPrefix()+"muted.`mutee_id`='"+rs.getInt(1)+"'");
+				PreparedStatement ps5 = getConn().prepareStatement(
+					  "SELECT `channel_name` FROM `"+getPrefix()+"muted` "
+						  + "INNER JOIN `"+getPrefix()+"channels` ON "+getPrefix()
+						  +"channels.channel_id="+getPrefix()+"muted.channel_id "
+						  + "WHERE "+getPrefix()+"muted.`mutee_id`='"+rs.getInt(1)+"'");
 				ResultSet rs5 = ps5.executeQuery();
 				while ( rs5.next() )
 					MutedIn.add( rs5.getString(1) );
@@ -402,7 +421,8 @@ public class MySQLManager implements IDataManager {
 	 */
 	public Map<String, Channel> returnChannels() {
 		try {
-			PreparedStatement ps = getConn().prepareStatement("SELECT * FROM `"+getPrefix()+"channels`");
+			PreparedStatement ps = getConn().prepareStatement(
+				"SELECT * FROM `"+getPrefix()+"channels`");
 			ResultSet rs = ps.executeQuery();
 			while ( rs.next() ) {
 				int ID = rs.getInt(1);
@@ -442,7 +462,7 @@ public class MySQLManager implements IDataManager {
 		
 		public void run() {
 			
-			DataManager.flushData();
+			CyniChat.data.flushData();
 			
 		}
 		
