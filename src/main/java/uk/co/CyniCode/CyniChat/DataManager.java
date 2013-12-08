@@ -13,9 +13,9 @@ import uk.co.CyniCode.CyniChat.objects.UserDetails;
 
 /**
  * A sane way to load channel and user data.
- * @author Tehbeard
- * @author Matthew Ball
  * 
+ * @author Tehbeard
+ * @author CyniCode
  */
 public class DataManager {
 	
@@ -96,16 +96,16 @@ public class DataManager {
 		cynichat.getServer().getScheduler()
 			.scheduleSyncRepeatingTask( cynichat,
 				this.connection.getBooster(),
-				21,
-				21);
+				6000L,
+				6000L);
 	}
 	
+	/**
+	 * Clear the active users map to those that are still using it
+	 */
 	public void flushData() {
 		
-		getConnection().saveChannels( getChannels() );
-		getConnection().saveUsers( getActiveUsers() );
-		
-		getActiveUsers().clear();
+		setActiveUsers( getOnlineUsers() );
 		
 	}
 	
@@ -201,14 +201,22 @@ public class DataManager {
 	 */
 	public final void setIRCChans( Map<String, Channel> chans ) {
 		
+		//Let's start up a new map for all the channels
 		Map<String, String> linkedChannels = new HashMap<String, String>();
 		
+		//Then for all the channels that we've been given...
 		for ( Map.Entry< String, Channel > entrySet : chans.entrySet() ) {
+			
+			//debug out the basic channel and the irc channel
 			CyniChat.printDebug( "IRC name : "+ entrySet.getValue().getIRC() );
 			CyniChat.printDebug( "CC name : "+ entrySet.getKey() );
+			
+			//then put it into the map as <irc>:<cynichat>
 			linkedChannels.put( entrySet.getValue().getIRC(), entrySet.getKey() );
+			
 		}
 		
+		//Finally, set the linked channels as this
 		setLinkedChans(linkedChannels);
 		
 	}
@@ -220,13 +228,27 @@ public class DataManager {
 	 * @return
 	 */
 	public UserDetails getDetails(String player){
+		
+		//Alright... let's firstly put the name to lowercase
 		String uName = player.toLowerCase();
+		
+		//before we check it against the loaded users
 		UserDetails details = getLoadedUsers().get(uName);
+		
+		//If they're not in the loaded users...
 		if(details == null){
+			
+			//Then make a new UserDetails thing
 			details = new UserDetails(); 
-			getLoadedUsers().put(uName, details);
+			
+			//And put it as a new entry into the loaded users
+			getLoadedUsers().put( uName, details );
+			
 		}
+		
+		//Finally, return whatever details there are to collect
 		return details;
+		
 	}
 	
 	/**
@@ -234,13 +256,24 @@ public class DataManager {
 	 * @param player
 	 */
 	public void bindPlayer(Player player){
+		
+		//Firstly, get the lowercase name of the player from the object
 		String playerName = player.getName().toLowerCase();
+		
+		//then get the player from all our details
 		UserDetails details = getDetails(playerName);
+		
+		//Bind the player to the object
 		details.bindPlayer(player);
-		getOnlineUsers().put(playerName,details);
+		
+		//Then bind them to the maps of players
+		getOnlineUsers().put(playerName, details);
 		getActiveUsers().put(playerName, details);
+		
+		//And put out some debug just in case
 		details.printAll();
 		printAllUsers();
+		
 	}
 	
 	/**
@@ -248,7 +281,17 @@ public class DataManager {
 	 * @param player
 	 */
 	public void unbindPlayer(Player player){
-		getOnlineUsers().remove(player.getName().toLowerCase()).bindPlayer(null);
+		
+		//Get the details of the player in question
+		UserDetails details = getOnlineUsers().get( player.getName().toLowerCase() );
+		
+		//Unbind the player object from the details
+		details.unbindPlayer();
+		
+		//Then remove the player from our list of people on the server
+		// at the current time.
+		getOnlineUsers().remove( player.getName().toLowerCase() );
+		
 	}
 	
 	/**
@@ -265,43 +308,69 @@ public class DataManager {
 	 * (Only visible if you have debug on)
 	 */
 	public void printAllUsers() {
+		
+		//Alright, let's check the online user map first
 		if ( !getOnlineUsers().isEmpty() ) {
+			
+			//For everyone who is online...
 			for ( Map.Entry< String, UserDetails > entrySet : getOnlineUsers().entrySet() ) {
+				
+				//Print out all the debug!
 				CyniChat.printDebug( "Person : " + entrySet.getKey() );
 				entrySet.getValue().printAll();
+				
 			}
+			
 		} else
+			//Otherwise, announce that no-one is online
 			CyniChat.printDebug("No online users");
 		
+		//Now check the loaded users map...
 		if ( !getLoadedUsers().isEmpty() ) {
+			
+			//And for every one of them...
 			for ( Map.Entry< String, UserDetails> entrySet : getLoadedUsers().entrySet() ) {
+				
+				//Add them to the debug pile!
 				CyniChat.printDebug( "Person : " + entrySet.getKey() );
 				entrySet.getValue().printAll();
+				
 			}
+			
 		} else
+			//And otherwise, say that no-one is loaded in
 			CyniChat.printDebug( "No loaded users" );
+		
 	}
-
+	
 	/**
 	 * Delete an existing channel
 	 * @param name : The name of the channel we're trying to delete
-	 * @return : True when complete, false otherwise
+	 * @return : True when complete, false if the channel did not exist
 	 */
 	public boolean deleteChannel(String name) {
+		
 		try {
 			
-			for ( Map.Entry< String, UserDetails > entrySet : getLoadedUsers().entrySet() ) {
-				UserDetails current = entrySet.getValue();
-				if ( current.clearChannel(name) == true )
-					getActiveUsers().put(entrySet.getKey(), current);
-			}
+			//Iterate through everyone on the server...
+			for ( Map.Entry< String, UserDetails > entrySet : getLoadedUsers().entrySet() )
+				
+				//And wipe the channel from their records
+				entrySet.getValue().clearChannel(name);
 			
+			//Then remove the channel itself from the matching
+			// map and then again from the usual channel map  
 			getMatching().remove( getChannel( name.toLowerCase() ).getNick() );
 			getChannels().remove( name.toLowerCase() );
+			
+			//Then return true to say we were successful
 			return true;
 			
 		} catch (NullPointerException e) {
+			
+			//Or false if we were not...
 			return false;
+			
 		}
 		
 	}

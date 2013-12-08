@@ -6,6 +6,7 @@ import uk.co.CyniCode.CyniChat.routing.ChatRouter.EndpointType;
  * Represents a destination for chat messages to go to.
  * This can be to players on a server (filtered by channel), an IRC bot, BungeeCord proxy, or logging utilities
  * Each endpoint is responsible for messages to itself from itself, these will not be sent to it by ChatRouter
+ * 
  * @author James
  */
 public interface IChatEndpoint {

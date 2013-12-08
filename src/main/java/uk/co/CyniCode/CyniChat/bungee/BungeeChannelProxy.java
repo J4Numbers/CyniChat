@@ -17,7 +17,8 @@ import uk.co.CyniCode.CyniChat.routing.IChatEndpoint;
 
 /**
  * Class for handling all the bungee nonsense
- * @author Cynical
+ * 
+ * @author CyniCode
  */
 public class BungeeChannelProxy implements PluginMessageListener, IChatEndpoint {
 

@@ -7,7 +7,8 @@ import uk.co.CyniCode.CyniChat.CyniChat;
 
 /**
  * The class which defines all the things for any channel created.
- * @author Matthew Ball
+ * 
+ * @author CyniCode
  *
  */
 public class Channel {
@@ -70,7 +71,7 @@ public class Channel {
 	 * Public constructor for gson
 	 * Doubles as default constructor for global channel
 	 */
-	public Channel(){
+	public Channel() {
 		this.ID = 1;
 		this.name = "global";
 		this.nick = "g";
@@ -87,19 +88,22 @@ public class Channel {
 	 * @param protect : Whether or not this channel is protected
 	 */
 	public Channel(String name, String nick, Boolean protect ) {
+		
 		this.ID = 0;
 		this.name = name;
 		this.nick = nick;
 		this.protect = protect;
 		this.desc = "";
 		this.pass = "";
+		
 	}
 	
 	/**
 	 * Print data about the selected object.
-	 * @return ALL THE DEBUG
 	 */
-	public boolean printAll() {
+	public void printAll() {
+		
+		//Debug everything
 		CyniChat.printDebug("ID: " + getID() );
 		CyniChat.printDebug("Name: " + getName() );
 		CyniChat.printDebug("Nick: " + getNick() );
@@ -109,7 +113,7 @@ public class Channel {
 		CyniChat.printDebug("Pass: " + getPass() );
 		CyniChat.printDebug("Color: " + getColour().toString() );
 		CyniChat.printDebug("Protected: " + isProtected() );
-		return true;
+		
 	}
 	
 	/**
@@ -123,9 +127,12 @@ public class Channel {
 	 * @param newPass : The password of the channel
 	 * @param newColour : The channel's colour
 	 * @param newProtect : Whether or not the channel is protected
-	 * @return true when complete
 	 */
-	public Boolean loadChannel( int id, String newName, String newNick, String ircChan, String ircPass, String newDesc, String newPass, String newColour, boolean newProtect ) {
+	public void loadChannel( int id, String newName, String newNick, 
+			String ircChan, String ircPass, String newDesc, String newPass, 
+			String newColour, boolean newProtect ) {
+		
+		//Set all the information about the channel we're looking at
 		setId( id );
 		setName( newName );
 		setNick( newNick );
@@ -135,7 +142,7 @@ public class Channel {
 		setIrcName( ircChan.toLowerCase() );
 		setIrcPass( ircPass );
 		setProtected( newProtect );
-		return true;
+		
 	}
 	
 	/**
@@ -274,13 +281,11 @@ public class Channel {
 	public boolean equalsPass( String checkPass ) {
 		
 		//If the password has been initialised
-		if ( getPass() != null ) {
+		if ( getPass() != null )
 			
 			//Return the check of whether it is equal to the 
 			// password we're checking off
 			return getPass().equals( checkPass );
-			
-		}
 		
 		//Otherwise, we can join the channel regardless
 		return true;

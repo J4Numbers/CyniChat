@@ -14,8 +14,8 @@ import uk.co.CyniCode.CyniChat.objects.UserDetails;
 /**
  * We're making a chat event
  * =D
- * @author Matthew Ball
  * 
+ * @author CyniCode
  */
 public class ChannelChatEvent extends Event {
 	
@@ -66,19 +66,23 @@ public class ChannelChatEvent extends Event {
 	
 	/**
 	 * Get the sender of the event
-	 * @return
+	 * @return the sender of the message
 	 */
 	public UserDetails getSender() {
 		return player;
 	}
 	
+	/**
+	 * Set the new sender to a person of some shape or form
+	 * @param newSender : The new player that is sending the event
+	 */
 	public void setSender( Player newSender ) {
 		this.player = CyniChat.data.getOnlineDetails( newSender );
 	}
 	
 	/**
 	 * Get the sender's actual name
-	 * @return
+	 * @return the name of the sender of the message
 	 */
 	public String getSenderName() {
 		return senderName;
@@ -94,7 +98,7 @@ public class ChannelChatEvent extends Event {
 	
 	/**
 	 * Get the channel of the event
-	 * @return
+	 * @return the channel which this message is being sent on
 	 */
 	public Channel getChannel() {
 		return channel;
@@ -110,7 +114,7 @@ public class ChannelChatEvent extends Event {
 	
 	/**
 	 * Get the message the event contained
-	 * @return
+	 * @return the message of the event
 	 */
 	public String getMessage() {
 		return message;
@@ -124,10 +128,18 @@ public class ChannelChatEvent extends Event {
 		this.message = newMessage;
 	}
 	
+	/**
+	 * Retrieve all those that are going to see this message
+	 * @return a list of all the players that will see this message
+	 */
 	public Set<Player> getRecipients() {
 		return this.recipients;
 	}
 	
+	/**
+	 * Set a new list of people that will see this message
+	 * @param newSet : A new set of people to see the message
+	 */
 	public void setRecipients( Set<Player> newSet ) {
 		this.recipients = newSet;
 	}
@@ -154,6 +166,7 @@ public class ChannelChatEvent extends Event {
 		
 		//And return what we must
 		return out;
+		
 	}
 	
 	/**

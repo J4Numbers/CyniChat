@@ -13,8 +13,8 @@ import uk.co.CyniCode.CyniChat.objects.Channel;
  * Class to get all the relevant information about permissions
  * and to grant/remove them where applicable
  * (Basically a vault interface class)
- * @author Matthew Ball
- *
+ * 
+ * @author CyniCode
  */
 public class PermissionManager {
 	
@@ -116,7 +116,7 @@ public class PermissionManager {
 		return getPerms().has( player, node );
 		
 	}
-
+	
 	/**
 	 * Create a channel, and with it, the perms
 	 * @param player : The creator of the channel that we're giving the perms to
@@ -185,7 +185,7 @@ public class PermissionManager {
 					"cynichat.mod.kick."+channel.getName().toLowerCase() );
 		
 	}
-
+	
 	/**
 	 * Currently unused
 	 * The plan is to use this to completely eradicate all perms connected
@@ -196,7 +196,7 @@ public class PermissionManager {
 	public void remChannelPerms( Channel channel ) {
 		
 	}
-
+	
 	/**
 	 * Return a player's full name in [PREFIX]player[SUFFIX] form
 	 * @param player : The player we want to check

@@ -11,12 +11,22 @@ import uk.co.CyniCode.CyniChat.CyniChat;
 /**
  * Class for most of the commands
  * (Everything beginning with /ch)
- * @author Matthew Ball
- *
+ * TODO: Comment through all of these commands
+ * 
+ * @author CyniCode
  */
 public class ChCommand implements CommandExecutor {
-
+	
+	/**
+	 * An instance of the plugin, kept around for some
+	 * reason or another
+	 */
 	public CyniChat plugin;
+	
+	/**
+	 * Let's make a new ChCommand
+	 * @param plugin with the plugin as an argument
+	 */
 	public ChCommand(CyniChat plugin) {
 		this.plugin = plugin;
 	}
@@ -24,21 +34,23 @@ public class ChCommand implements CommandExecutor {
 	/**
 	 * Wrap a string in necessary tags
 	 * @param option : This is what we're wrapping
+	 * @param sentenceColour : This is the colour of the rest of the 
+	 *  sentence after this formatted part
 	 * @return the new string
 	 */
-	public static String necessary( String option ) {
-		String coloured = ChatColor.DARK_AQUA+"<"+option+">"+ChatColor.WHITE;
-		return coloured;
+	public static String necessary( String option, ChatColor sentenceColour ) {
+		return ChatColor.DARK_AQUA+"<"+option+">"+sentenceColour;
 	}
 	
 	/**
 	 * Wrap a string in optional tags
 	 * @param option : This is what we're wrapping
+	 * @param sentenceColour : This is the colour of the rest of the
+	 *  sentence after this formatted part
 	 * @return the new string
 	 */
-	public static String optional( String option ) {
-		String coloured = ChatColor.GRAY+"["+option+"]"+ChatColor.WHITE;
-		return coloured;
+	public static String optional( String option, ChatColor sentenceColour ) {
+		return ChatColor.GRAY+"["+option+"]"+sentenceColour;
 	}
 	
 	/**
@@ -50,34 +62,69 @@ public class ChCommand implements CommandExecutor {
 	 * @return 
 	 */
 	public boolean onCommand(CommandSender player, Command comm, String Label, String[] args) {
-		//CyniChat.printDebug(player.getName() + " -> " + comm.getLabel() + " -> " + Label );
+		
+		//If the length of the array is zero...
 		if ( args.length == 0 ) {
+			
+			//Then give the player a helping hand and return
 			HelpCommand.info( player );
 			return true;
+			
 		}
+		
+		//Now... if the first argument is help, then give them help
 		if ( args[0].equalsIgnoreCase("help") ) {
+			
+			//And if they have defined an area of help, give
+			// them the specifics
 			if ( args.length == 2 ) {
 				HelpCommand.Command( player, args[1] );
 				return true;
 			}
+			
+			//Otherwise, the general help should suffice
 			HelpCommand.Command( player, "" );
 			return true;
+			
 		}
+		
+		//If the player is wanting to join a channel...
 		if ( args[0].equalsIgnoreCase("join") ) {
-			if ( !( player instanceof Player ) ) return true;
+			
+			//Let's ask if the player is actually a player first
+			if ( !( player instanceof Player ) ) 
+				//Because we'll have to refuse them if they're not
+				return true;
+			
+			//Now... if they have too many or not enough arguments, 
+			// give them the help command
 			if ( args.length < 2 || args.length > 3 ) {
+				
 				JoinCommand.info( player );
 				return true;
+				
 			} else {
+				
+				//Otherwise, if they've provided a password...
 				if ( args.length == 3 ) {
+					
+					//Then use it in the join commmand
 					JoinCommand.join( player, args[1], args[2] );
 					return true;
+					
 				} else {
+					
+					//Otherwise, provide no password
 					JoinCommand.join( player, args[1], "");
 					return true;
+					
 				}
+				
 			}
+			
 		}
+		
+		//On the other hand... they might want to leave a channel.
 		if ( args[0].equalsIgnoreCase("leave") ) {
 			if ( !( player instanceof Player ) ) return true;
 			if ( args.length != 2 ) {
@@ -88,11 +135,8 @@ public class ChCommand implements CommandExecutor {
 				return true;
 			}
 		}
-		/*if ( args[0].equalsIgnoreCase("bot") ) {
-			if ( args.length > 1 ) {
-				CyniChat.PBot.sendMessage( , sender, message)
-			}
-		}*/
+		
+		//There could be an attempted ban.
 		if ( args[0].equalsIgnoreCase("ban") ) {
 			if ( ( args.length == 2 ) || ( args.length == 3 ) ) {
 				if ( args.length == 3 ) {
@@ -105,10 +149,14 @@ public class ChCommand implements CommandExecutor {
 			BanCommand.banInfo( player );
 			return true;
 		}
+		
+		//Or an attempted setting of data
 		if ( args[0].equalsIgnoreCase("set") ) {
 			ModCommand.set( player, args );
 			return true;
 		}
+		
+		//Maybe even a potential unban
 		if ( args[0].equalsIgnoreCase("unban") ) {
 			if ( ( args.length == 2 ) || ( args.length == 3 ) ) {
 				if ( args.length == 3 ) {
@@ -121,6 +169,8 @@ public class ChCommand implements CommandExecutor {
 			BanCommand.unbanInfo( player );
 			return true;
 		}
+		
+		//Or a muting
 		if ( args[0].equalsIgnoreCase("mute") ) {
 			if ( ( args.length == 2 ) || ( args.length == 3 ) ) {
 				if ( args.length == 3 ) {
@@ -133,6 +183,8 @@ public class ChCommand implements CommandExecutor {
 			MuteCommand.muteInfo( player );
 			return true;
 		}
+		
+		//Or unmuting... I suppose
 		if ( args[0].equalsIgnoreCase("unmute") ) {
 			if ( ( args.length == 2 ) || ( args.length == 3 ) ) {
 				if ( args.length == 3 ) {
@@ -265,26 +317,52 @@ public class ChCommand implements CommandExecutor {
 			GeneralCommand.info( player, CyniChat.data.getDetails( player.getName().toLowerCase() ).getCurrentChannel() );
 			return true;
 		}
+		
+		//It could be someone trying to kick someone else
 		if ( args[0].equalsIgnoreCase("kick") ){
+			
+			//So let's make sure they have all the arguments needed
+			// for said kicking
 			if ( ( args.length == 2 ) || ( args.length == 3 ) ) {
+				
 				if ( args.length == 3 ) {
-					BanCommand.kick( player, CyniChat.data.getChannel( args[2].toLowerCase() ), args[1] );
+					
+					//They apparently want to kick someone
+					// in a specific channel
+					BanCommand.kick( player, CyniChat.data.getChannel(
+						args[2].toLowerCase() ),args[1] );
 					return true;
+					
 				}
+				
+				//Or a kick in this channel right here
 				BanCommand.kick( player, CyniChat.data.getChannel( CyniChat.data.getDetails( player.getName().toLowerCase() ).getCurrentChannel().toLowerCase() ), args[1] );
 				return true;
+				
 			}
+			
+			//Otherwise, show them the info and scarper
 			BanCommand.kickInfo( player );
 			return true;
+			
 		}
+		
+		//Some people might want to save
 		if ( args[0].equalsIgnoreCase("save") ){
+			
+			//So save things
 			GeneralCommand.save( player );
 			return true;
+			
 		}
+		
+		//They might want to join a channel in the short-hand way
 		if ( args.length < 1 || args.length > 2 ) {
 			JoinCommand.info( player );
 			return true;
 		} else {
+			
+			//So give them a password or not...
 			if ( args.length == 2 ) {
 				JoinCommand.join( player, args[0], args[1] );
 				return true;

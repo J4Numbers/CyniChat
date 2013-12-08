@@ -11,7 +11,8 @@ import uk.co.CyniCode.CyniChat.CyniChat;
 
 /**
  * UserDetails class and object which stores all of the relevant information for each and every player
- * @author Matthew Ball
+ * 
+ * @author CyniCode
  *
  */
 public class UserDetails {
@@ -183,7 +184,7 @@ public class UserDetails {
 	 * Toggle the afk status
 	 */
 	public void changeAfk() {
-	    this.afk = ( this.afk != true );
+		this.afk = ( this.afk != true );
 	}
 	
 	/**
@@ -419,7 +420,7 @@ public class UserDetails {
 	 * @param channel : The channel the player is being kicked from
 	 * @return true when kicked, false if the player was never in the channel in the first place
 	 */
-	public boolean Kick( String kicker, Channel channel ) {
+	public boolean kick( String kicker, Channel channel ) {
 		
 		//Tell the nice console what is going on
 		CyniChat.printDebug( kicker +" attempted to kick "+ getName() + " from " + channel.getName() );
@@ -464,7 +465,7 @@ public class UserDetails {
 	 * @param silencer : this is the person silencing the player
 	 * @return true when complete
 	 */
-	public boolean Silence( CommandSender silencer ) {
+	public boolean silence( CommandSender silencer ) {
 		
 		//Is the player already silenced?
 		if ( getSilenced() == false ) {
@@ -498,7 +499,7 @@ public class UserDetails {
 	 * @param listener : This is the person who unmuted the player
 	 * @return true when complete
 	 */
-	public boolean Listen( CommandSender listener ) {
+	public boolean listen( CommandSender listener ) {
 		
 		//Is the player already muted?
 		if ( getSilenced() == true ) {
@@ -543,9 +544,8 @@ public class UserDetails {
 		
 	/**
 	 * Iterate through all the values we store in here and return them as debug
-	 * @return ALL THE DEBUG
 	 */
-	public boolean printAll() {
+	public void printAll() {
 		
 		//Their name
 		CyniChat.printDebug("Name: "+ getName() );
@@ -571,7 +571,6 @@ public class UserDetails {
 		//All the people that they are ignoring
 		CyniChat.printDebug("Muted Players: "+ getVerboseIgnoring() );
 		
-		return true;
 	}
 	
 	/**
@@ -587,7 +586,7 @@ public class UserDetails {
 			
 			//Apparently so... does the player have the permission to join every channel?
 			if ( CyniChat.perms.checkPerm( getPlayer(), "cynichat.basic.join.all") || 
-				
+					
 					//Or... this specific channel and the password to join it too?
 					( CyniChat.perms.checkPerm( getPlayer(), 
 							"cynichat.basic.join."+newChan.getName().toLowerCase() ) 
@@ -946,9 +945,8 @@ public class UserDetails {
 	 * @param muted : All the channels this player has been muted in
 	 * @param banned : All the channels this player has been banned in
 	 * @param ignoring : All the players this player is ignoring
-	 * @return true when complete
 	 */
-	public Boolean loadData( int id, String active, Boolean silence, Boolean canIgnore, 
+	public void loadData( int id, String active, Boolean silence, Boolean canIgnore, 
 			List<String> joined, List<String> muted, List<String> banned, List<String> ignoring ) {
 		
 		//Set the ID
@@ -978,7 +976,6 @@ public class UserDetails {
 		//Set all the people that the player is ignoring
 		setIgnoring( ignoring );
 		
-		return true;
 	}
 
 }

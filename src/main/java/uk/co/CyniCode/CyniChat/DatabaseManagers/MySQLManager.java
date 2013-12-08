@@ -18,38 +18,10 @@ import uk.co.CyniCode.CyniChat.objects.UserDetails;
 
 /**
  * Deal with all things MySQL'y
- * @author Matthew Ball
- *
+ * 
+ * @author CyniCode
  */
 public class MySQLManager implements IDataManager {
-
-	/**
-	 * @return the Players
-	 */
-	public static Map<String,UserDetails> getPlayers() {
-		return Players;
-	}
-
-	/**
-	 * @param aPlayers the Players to set
-	 */
-	public static void setPlayers(Map<String,UserDetails> aPlayers) {
-		Players = aPlayers;
-	}
-
-	/**
-	 * @return the channels
-	 */
-	public static Map<String,Channel> getChannels() {
-		return channels;
-	}
-
-	/**
-	 * @param aChannels the channels to set
-	 */
-	public static void setChannels(Map<String,Channel> aChannels) {
-		channels = aChannels;
-	}
 	
 	/**
 	 * The hostname of the mysql server
@@ -64,39 +36,39 @@ public class MySQLManager implements IDataManager {
 	/**
 	 * The username we're using to connect to the mysql server
 	 */
-	private String Username;
+	private String username;
 	
 	/**
 	 * The password of the username
 	 */
-	private String Password;
+	private String password;
 	
 	/**
 	 * The database name we're connecting to
 	 */
-	private String Database;
+	private String database;
 	
 	/**
 	 * The prefix of the tables
 	 */
-	private String Prefix;
+	private String prefix;
 	
 	/**
 	 * The connection instance
 	 */
 	private Connection conn;
 	
-	private static Map<String,UserDetails> Players = new HashMap<String, UserDetails>();
-	private static Map<String,Channel> channels = new HashMap<String, Channel>();
+	private Map<String,UserDetails> players = new HashMap<String, UserDetails>();
+	private Map<String,Channel> channels = new HashMap<String, Channel>();
 	
-	private PreparedStatement InsertChannel;
-	private PreparedStatement InsertPlayer;
-	private PreparedStatement AddBan;
-	private PreparedStatement AddMute;
-	private PreparedStatement JoinChannel;
-	private PreparedStatement UpdateChannel;
-	private PreparedStatement UpdatePlayer;
-	private PreparedStatement AddIgnoring;
+	private PreparedStatement insertChannel;
+	private PreparedStatement insertPlayer;
+	private PreparedStatement addBan;
+	private PreparedStatement addMute;
+	private PreparedStatement joinChannel;
+	private PreparedStatement updateChannel;
+	private PreparedStatement updatePlayer;
+	private PreparedStatement addIgnoring;
 	
 	/**
 	 * Boot up the plugin and do all the connecting bullshit.
@@ -462,6 +434,9 @@ public class MySQLManager implements IDataManager {
 		
 		public void run() {
 			
+			saveChannels( CyniChat.data.getChannels() );
+			saveUsers( CyniChat.data.getActiveUsers() );
+			
 			CyniChat.data.flushData();
 			
 		}
@@ -626,7 +601,35 @@ public class MySQLManager implements IDataManager {
 		}
 		return true;
 	}
+	
+	/**
+	 * @return the Players
+	 */
+	public Map<String,UserDetails> getPlayers() {
+		return players;
+	}
 
+	/**
+	 * @param players the Players to set
+	 */
+	public void setPlayers(Map<String,UserDetails> players) {
+		this.players = players;
+	}
+
+	/**
+	 * @return the channels
+	 */
+	public Map<String,Channel> getChannels() {
+		return channels;
+	}
+
+	/**
+	 * @param channels the channels to set
+	 */
+	public void setChannels(Map<String,Channel> channels) {
+		this.channels = channels;
+	}
+	
 	/**
 	 * @return the hostname
 	 */
@@ -659,56 +662,56 @@ public class MySQLManager implements IDataManager {
 	 * @return the Username
 	 */
 	public String getUsername() {
-		return Username;
+		return username;
 	}
 
 	/**
-	 * @param Username the Username to set
+	 * @param username the Username to set
 	 */
-	public void setUsername(String Username) {
-		this.Username = Username;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	/**
 	 * @return the Password
 	 */
 	public String getPassword() {
-		return Password;
+		return password;
 	}
 
 	/**
-	 * @param Password the Password to set
+	 * @param password the Password to set
 	 */
-	public void setPassword(String Password) {
-		this.Password = Password;
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	/**
 	 * @return the Database
 	 */
 	public String getDatabase() {
-		return Database;
+		return database;
 	}
 
 	/**
-	 * @param Database the Database to set
+	 * @param database the Database to set
 	 */
-	public void setDatabase(String Database) {
-		this.Database = Database;
+	public void setDatabase(String database) {
+		this.database = database;
 	}
 
 	/**
-	 * @return the Prefix
+	 * @return the prefix
 	 */
 	public String getPrefix() {
-		return Prefix;
+		return prefix;
 	}
 
 	/**
-	 * @param Prefix the Prefix to set
+	 * @param prefix the prefix to set
 	 */
-	public void setPrefix(String Prefix) {
-		this.Prefix = Prefix;
+	public void setPrefix(String prefix) {
+		this.prefix = prefix;
 	}
 
 	/**
@@ -726,115 +729,115 @@ public class MySQLManager implements IDataManager {
 	}
 
 	/**
-	 * @return the InsertChannel
+	 * @return the insertChannel
 	 */
 	public PreparedStatement getInsertChannel() {
-		return InsertChannel;
+		return insertChannel;
 	}
 
 	/**
-	 * @param InsertChannel the InsertChannel to set
+	 * @param insertChannel the InsertChannel to set
 	 */
-	public void setInsertChannel(PreparedStatement InsertChannel) {
-		this.InsertChannel = InsertChannel;
+	public void setInsertChannel(PreparedStatement insertChannel) {
+		this.insertChannel = insertChannel;
 	}
 
 	/**
-	 * @return the InsertPlayer
+	 * @return the insertPlayer
 	 */
 	public PreparedStatement getInsertPlayer() {
-		return InsertPlayer;
+		return insertPlayer;
 	}
 
 	/**
-	 * @param InsertPlayer the InsertPlayer to set
+	 * @param insertPlayer the insertPlayer to set
 	 */
-	public void setInsertPlayer(PreparedStatement InsertPlayer) {
-		this.InsertPlayer = InsertPlayer;
+	public void setInsertPlayer(PreparedStatement insertPlayer) {
+		this.insertPlayer = insertPlayer;
 	}
 
 	/**
-	 * @return the AddBan
+	 * @return the addBan
 	 */
 	public PreparedStatement getAddBan() {
-		return AddBan;
+		return addBan;
 	}
 
 	/**
-	 * @param AddBan the AddBan to set
+	 * @param addBan the addBan to set
 	 */
-	public void setAddBan(PreparedStatement AddBan) {
-		this.AddBan = AddBan;
+	public void setAddBan(PreparedStatement addBan) {
+		this.addBan = addBan;
 	}
 
 	/**
-	 * @return the AddMute
+	 * @return the addMute
 	 */
 	public PreparedStatement getAddMute() {
-		return AddMute;
+		return addMute;
 	}
 	
 	/**
-	 * @param AddMute the AddMute to set
+	 * @param addMute the addMute to set
 	 */
-	public void setAddMute(PreparedStatement AddMute) {
-		this.AddMute = AddMute;
+	public void setAddMute(PreparedStatement addMute) {
+		this.addMute = addMute;
 	}
 	
 	/**
-	 * @return the JoinChannel
+	 * @return the joinChannel
 	 */
 	public PreparedStatement getJoinChannel() {
-		return JoinChannel;
+		return joinChannel;
 	}
 	
 	/**
-	 * @param JoinChannel the JoinChannel to set
+	 * @param joinChannel the joinChannel to set
 	 */
-	public void setJoinChannel(PreparedStatement JoinChannel) {
-		this.JoinChannel = JoinChannel;
+	public void setJoinChannel(PreparedStatement joinChannel) {
+		this.joinChannel = joinChannel;
 	}
 	
 	/**
-	 * @return the UpdateChannel
+	 * @return the updateChannel
 	 */
 	public PreparedStatement getUpdateChannel() {
-		return UpdateChannel;
+		return updateChannel;
 	}
 	
 	/**
-	 * @param UpdateChannel the UpdateChannel to set
+	 * @param updateChannel the updateChannel to set
 	 */
-	public void setUpdateChannel(PreparedStatement UpdateChannel) {
-		this.UpdateChannel = UpdateChannel;
+	public void setUpdateChannel(PreparedStatement updateChannel) {
+		this.updateChannel = updateChannel;
 	}
 	
 	/**
-	 * @return the UpdatePlayer
+	 * @return the updatePlayer
 	 */
 	public PreparedStatement getUpdatePlayer() {
-		return UpdatePlayer;
+		return updatePlayer;
 	}
 	
 	/**
-	 * @param UpdatePlayer the UpdatePlayer to set
+	 * @param updatePlayer the updatePlayer to set
 	 */
-	public void setUpdatePlayer(PreparedStatement UpdatePlayer) {
-		this.UpdatePlayer = UpdatePlayer;
+	public void setUpdatePlayer(PreparedStatement updatePlayer) {
+		this.updatePlayer = updatePlayer;
 	}
 	
 	/**
-	 * @return the AddIgnoring
+	 * @return the addIgnoring
 	 */
 	public PreparedStatement getAddIgnoring() {
-		return AddIgnoring;
+		return addIgnoring;
 	}
 	
 	/**
-	 * @param AddIgnoring the AddIgnoring to set
+	 * @param addIgnoring the addIgnoring to set
 	 */
-	public void setAddIgnoring(PreparedStatement AddIgnoring) {
-		this.AddIgnoring = AddIgnoring;
+	public void setAddIgnoring(PreparedStatement addIgnoring) {
+		this.addIgnoring = addIgnoring;
 	}
 	
 }

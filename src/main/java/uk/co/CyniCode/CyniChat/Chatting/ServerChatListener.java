@@ -25,7 +25,7 @@ import uk.co.CyniCode.CyniChat.routing.IChatEndpoint;
  * A listener class for everything
  * Three parts: Log in, Log out, and speak
  *
- * @author Matthew Ball
+ * @author CyniCode
  */
 public class ServerChatListener implements Listener, IChatEndpoint {
 	
@@ -289,9 +289,9 @@ public class ServerChatListener implements Listener, IChatEndpoint {
 	public static String getCompleteMessage( ChannelChatEvent event ) {
 		//Make the format string
 		return String.format( "%s %s : %s ", event.getChannel().getColour() + 
-								"[" + event.getChannel().getNick() + "]",
-								CyniChat.perms.getPlayerFull( event.getSender().getPlayer() ),
-								event.getChannel().getColour() + event.getMessage() );
+						"[" + event.getChannel().getNick() + "]",
+					CyniChat.perms.getPlayerFull( event.getSender().getPlayer() ),
+					event.getChannel().getColour() + event.getMessage() );
 	}
 	
 	/**

@@ -9,8 +9,8 @@ import uk.co.CyniCode.CyniChat.CyniChat;
 
 /**
  * Change the state of the player to afk
- * @author Matthew Ball
- *
+ * 
+ * @author CyniCode
  */
 public class AfkCommand implements CommandExecutor {
 
@@ -24,11 +24,17 @@ public class AfkCommand implements CommandExecutor {
 	 */
 	public boolean onCommand(CommandSender player, Command command, String key, String[] objects) {
 		
+		//If the player is not a player...
 		if ( !(player instanceof Player) )
+			//Return false
 			return false;
 		
+		//Otherwise, switch the status of their afk-ness
 		CyniChat.data.getDetails( player.getName() ).changeAfk();
+		
+		//and return.
 		return true;
+		
 	}
 
 }
