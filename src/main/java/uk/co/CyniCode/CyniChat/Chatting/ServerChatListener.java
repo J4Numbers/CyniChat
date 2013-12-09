@@ -1,11 +1,10 @@
 package uk.co.CyniCode.CyniChat.Chatting;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -16,7 +15,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import uk.co.CyniCode.CyniChat.CyniChat;
-import uk.co.CyniCode.CyniChat.Command.GeneralCommand;
 import uk.co.CyniCode.CyniChat.events.ChannelChatEvent;
 import uk.co.CyniCode.CyniChat.objects.Channel;
 import uk.co.CyniCode.CyniChat.objects.UserDetails;
@@ -30,8 +28,6 @@ import uk.co.CyniCode.CyniChat.routing.IChatEndpoint;
  * @author CyniCode
  */
 public class ServerChatListener implements Listener, IChatEndpoint {
-	
-	public static CyniChat plugin;
 	
 	/**
 	 * Listen for any people joining the server so we can load in their
@@ -81,6 +77,8 @@ public class ServerChatListener implements Listener, IChatEndpoint {
 	@EventHandler(priority = EventPriority.MONITOR)
 	public static void commandEvent(PlayerCommandPreprocessEvent event) {
 		
+		CyniChat.printDebug( "Command event called..." );
+		
 		//Okay... so remove the slash from the event so we have a 
 		// command to play with
 		String comm = event.getMessage().replaceFirst("/", "");
@@ -92,21 +90,36 @@ public class ServerChatListener implements Listener, IChatEndpoint {
 		String mess = comm.substring(bits[0].length() + 1, comm.length());
 		
 		//Print the full command
-		CyniChat.printDebug(comm);
+		CyniChat.printDebug( "Command : " + comm);
 		
 		//Print the first key word
-		CyniChat.printDebug(bits[0]);
+		CyniChat.printDebug( "Key word: " + bits[0]);
 		
 		//Print everything else
-		CyniChat.printDebug(mess);
+		CyniChat.printDebug( "Message: " + mess);
 		
 		//If the command is not registered to anything...
 		if (CyniChat.ifCommandExists(bits[0]) == false) {
 			
+			CyniChat.printDebug( "No command existed with this name" );
+			
 			//Then execute it as a quick message
 			if (CyniChat.data.getChannel(bits[0]) != null) {
 				
-				GeneralCommand.quickMessage((CommandSender) event.getPlayer(), bits[0], mess);
+				CyniChat.printDebug( "Sending a message..." );
+				
+				ChannelChatEvent newChat = new ChannelChatEvent(
+						event.getPlayer().getDisplayName(),
+						CyniChat.data.getChannel( bits[0] ),
+						mess,
+						getRecipients( bits[0] ),
+						" :"
+					);
+				
+				//Call the event and let it be dealt with from there
+				Bukkit.getServer().getPluginManager().callEvent( newChat );
+				
+				CyniChat.printDebug( "Cancelling the event..." );
 				
 				//Also... cancel the event
 				event.setCancelled(true);
@@ -217,65 +230,12 @@ public class ServerChatListener implements Listener, IChatEndpoint {
 			
 		}
 		
-		//And prepare to look at everyone who is going to get the
-		// message.
-		List<Player> all = new ArrayList<Player>();
-		int count = 0;
-		
-		//While there is someone else that can get the message...
-		for ( Player currentPlayer : event.getRecipients() ) {
-			
-			//Get the current player's user details
-			UserDetails users = CyniChat.data.getOnlineDetails(currentPlayer);
-			
-			//Then debug the information about that player
-			CyniChat.printDebug(currentPlayer.getName() + " : " + users.getAllVerboseChannels());
-			
-			//And ask if they are joined to this channel
-			if (!users.getAllChannels().contains(current.getName().toLowerCase())) {
-				
-				//If they are not, then add the player to an array
-				// of all those we're going to remove from the original
-				// sending set
-				CyniChat.printDebug( "Adding " + currentPlayer.getDisplayName() 
-					+ " to the list" );
-				all.add( currentPlayer );
-				++count;
-				
-			} else 
-				
-				//Otherwise... if the player is ignoring this person
-				// and are in the channel that has a message,
-				// remove them from the set too
-				if ((users.getIgnoring().contains(user.getName())) && 
-						(users.getAllChannels().contains(
-							current.getName().toLowerCase()))) {
-					CyniChat.printDebug( "Adding " + currentPlayer.getDisplayName() 
-						+ " to the list" );
-					all.add( currentPlayer );
-					++count;
-				}
-			
-		}
-		
-		//If the count has been incremented
-		if (count > 0) {
-			
-			//Iterate through the count and strike anyone who
-			// lies within
-			for ( Player removal : all ) {
-				CyniChat.printDebug("Removed " + removal.getDisplayName());
-				event.getRecipients().remove( removal );
-				CyniChat.printDebug( "Removal successful..." );
-			}
-			
-		}
-		
 		CyniChat.printDebug( "Generating new chat event..." );
 		
 		//Make the chat event and let anyone access it for a moment or two
 		ChannelChatEvent newChatter = new ChannelChatEvent(player.getDisplayName(),
-				current, event.getMessage(), event.getRecipients());
+				current, event.getMessage(), getRecipients( current.getName() ),
+				" :" );
 		
 		CyniChat.printDebug( "And sending it onwards" );
 		
@@ -297,9 +257,10 @@ public class ServerChatListener implements Listener, IChatEndpoint {
 	 */
 	public static String getCompleteMessage( ChannelChatEvent event ) {
 		//Make the format string
-		return String.format( "%s %s : %s ", event.getChannel().getColour() + 
+		return String.format( "%s %s%s %s ", event.getChannel().getColour() + 
 						"[" + event.getChannel().getNick() + "]",
 					CyniChat.perms.getPlayerFull( event.getSender().getPlayer() ),
+					event.getConnector(),
 					event.getChannel().getColour() + event.getMessage() );
 	}
 	
@@ -309,7 +270,7 @@ public class ServerChatListener implements Listener, IChatEndpoint {
 	 * @param event : The event we're listening to (Only visible if debug is on)
 	 */
 	@EventHandler(priority = EventPriority.MONITOR)
-	public static void testingRegister(ChannelChatEvent event) {
+	public static void hearMessage(ChannelChatEvent event) {
 		
 		CyniChat.printDebug( "Event heard..." );
 		
@@ -327,6 +288,36 @@ public class ServerChatListener implements Listener, IChatEndpoint {
 		// given instructions
 		ChatRouter.routeMessage( ChatRouter.EndpointType.PLAYER, event.getSenderName(),
 					event.getChannel().getName(), event.getMessage());
+		
+	}
+	
+	public static Set<Player> getRecipients( String curChan ) {
+		
+		Set<Player> players = new HashSet<Player>();
+		
+		for ( Map.Entry< String, UserDetails > entrySet : 
+				CyniChat.data.getOnlineUsers().entrySet() ) {
+			
+			//Logging their details in the process...
+			UserDetails current = entrySet.getValue();
+			
+			//And adding them to a list of debugs
+			CyniChat.printDebug( "Current player: "+ entrySet.getKey() );
+			
+			//Ask if they are in this channel
+			if ( current.getAllChannels().contains( curChan ) ) {
+				
+				//Since they are, debug that fact
+				CyniChat.printDebug( entrySet.getKey() + " added to the list..." );
+				
+				//So actually add them to the list
+				players.add( current.getPlayer() );
+				
+			}
+			
+		}
+		
+		return players;
 		
 	}
 	
@@ -442,6 +433,13 @@ public class ServerChatListener implements Listener, IChatEndpoint {
 			return;
 			
 		}
+		
+		//ChannelChatEvent newChat = new ChannelChatEvent(
+		//		player,
+		//		chatChannel,
+		//		message,
+		//		getRecipients( channel )
+		//	);
 		
 		//Make the message
 		String formattedMsg = chatChannel.getColour() + "[" + chatChannel.getNick() + "] " 

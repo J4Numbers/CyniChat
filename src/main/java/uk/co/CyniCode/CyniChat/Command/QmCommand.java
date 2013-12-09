@@ -1,8 +1,13 @@
 package uk.co.CyniCode.CyniChat.Command;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+
+import uk.co.CyniCode.CyniChat.Chatting.ServerChatListener;
+import uk.co.CyniCode.CyniChat.CyniChat;
+import uk.co.CyniCode.CyniChat.events.ChannelChatEvent;
 
 /**
  * Quick Message class to deal with all commands that start with /qm
@@ -24,8 +29,20 @@ public class QmCommand implements CommandExecutor {
 		
 		//Is there a message to be quicked?
 		if ( args.length >= 2 ) {
-			//Yep, pass it on
-			GeneralCommand.quickMessage( player, args[0], stacker( args ) );
+			
+			//Yep. Let's make it into an event...
+			ChannelChatEvent newChat = new ChannelChatEvent(
+					player.getName(),
+					CyniChat.data.getChannel( args[0] ),
+					stacker( args, 1, args.length ),
+					ServerChatListener.getRecipients( args[0] ),
+					" :"
+				);
+			
+			//Then call the event to save us a job
+			Bukkit.getServer().getPluginManager().callEvent( newChat );
+			
+			//And then run.
 			return true;
 		}
 		
@@ -39,21 +56,21 @@ public class QmCommand implements CommandExecutor {
 	 * You again? I should really just get a single instance of you for all the
 	 * methods that need it.
 	 * @param args : The set of words we're putting into a sentence
+	 * @param min : The first element of the array we'll look at
+	 * @param max : The length of the array (one more than the one we'll
+	 *  look at
 	 * @return finalString : The sentence that is created
 	 */
-	public String stacker( String[] args ) {
-		
-		//TODO: Make sure that the first array value is not
-		// the channel.
+	public String stacker( String[] args, int min, int max ) {
 		
 		//Make more string bases
 		String finalString = "";
 		String connect = "";
 		
 		//And for every word in the array...
-		for ( String arg : args ) {
+		for ( int i = min; i < max; i++ ) {
 			//Add it to the string
-			finalString += connect + arg;
+			finalString += connect + args[i];
 			connect = " ";
 		}
 		

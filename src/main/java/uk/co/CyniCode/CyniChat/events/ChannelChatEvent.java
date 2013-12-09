@@ -45,6 +45,11 @@ public class ChannelChatEvent extends Event {
 	private String senderName;
 	
 	/**
+	 * Create a string for the possible event of it being a /me message
+	 */
+	private String connector;
+	
+	/**
 	 * Needed to make bukkit play nice
 	 */
 	private static final HandlerList handlers = new HandlerList();
@@ -55,10 +60,13 @@ public class ChannelChatEvent extends Event {
 	 * @param channel : The channel that the event was in
 	 * @param message : The message that the event contained
 	 * @param recipients : The people the event will affect
+	 * @param connector : The thing that joins the two halves together
 	 */
-	public ChannelChatEvent( String player, Channel channel, String message, Set<Player> recipients ) {
+	public ChannelChatEvent( String player, Channel channel, String message, 
+			Set<Player> recipients, String connector ) {
 		this.player = CyniChat.data.getDetails(player);
 		this.channel = channel;
+		this.connector = connector;
 		this.message = message;
 		this.senderName = player;
 		this.recipients = recipients;
@@ -126,6 +134,22 @@ public class ChannelChatEvent extends Event {
 	 */
 	public void setMessage( String newMessage ) {
 		this.message = newMessage;
+	}
+	
+	/**
+	 * We want to see what's connecting the two...
+	 * @return the connector
+	 */
+	public String getConnector() {
+		return connector;
+	}
+	
+	/**
+	 * Okay... they didn't like what we're using...
+	 * @param connector : Set it to this instead
+	 */
+	public void setConnector( String connector ) {
+		this.connector = connector;
 	}
 	
 	/**

@@ -3,12 +3,15 @@ package uk.co.CyniCode.CyniChat.Command;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.bukkit.Bukkit;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import uk.co.CyniCode.CyniChat.Chatting.ServerChatListener;
 
 import uk.co.CyniCode.CyniChat.CyniChat;
+import uk.co.CyniCode.CyniChat.events.ChannelChatEvent;
 import uk.co.CyniCode.CyniChat.objects.Channel;
 import uk.co.CyniCode.CyniChat.objects.UserDetails;
 
@@ -193,10 +196,10 @@ public class GeneralCommand {
 	 * Send a quick one-line-message to another channel
 	 * @param player : The player who's sending
 	 * @param channel : The channel that's receiving
-	 * @param Message : The message that's being passed along
+	 * @param message : The message that's being passed along
 	 * @return true when complete
 	 */
-	public static boolean quickMessage( CommandSender player, String channel, String Message ) {
+	public static boolean quickMessage( CommandSender player, String channel, String message ) {
 		
 		//Is the player a player?
 		if ( player instanceof Player ) {
@@ -234,31 +237,18 @@ public class GeneralCommand {
 			//And ask if the sender is already in this channel
 			if ( sender.getAllChannels().contains( curChan.getName() ) ) {
 				
-				//Since they are... go through all those online...
-				for ( Map.Entry< String, UserDetails > entrySet : 
-						CyniChat.data.getOnlineUsers().entrySet() ) {
-					
-					//Logging their details in the process...
-					UserDetails current = entrySet.getValue();
-					
-					//And adding them to a list of debugs
-					CyniChat.printDebug( "Current player: "+ entrySet.getKey() );
-					
-					//Ask if they are in this channel
-					if ( current.getAllChannels().contains( curChan.getName() ) ) {
-						
-						//Since they are, debug that fact
-						CyniChat.printDebug( entrySet.getKey() + " added to the list..." );
-						
-						//And send the message to them
-						current.getPlayer().sendMessage(curChan.getColour()
-								+"["+curChan.getNick()+"] <"
-								+current.getPlayer().getDisplayName()+"> "
-								+ Message );
-						
-					}
-					
-				}
+				//Make an event with all the details inside
+				ChannelChatEvent newChat = new ChannelChatEvent(
+						sender.getName(),
+						curChan,
+						message,
+						ServerChatListener
+							.getRecipients( curChan.getName() ),
+						" :"
+					);
+				
+				//And call it so we don't have to do anything
+				Bukkit.getServer().getPluginManager().callEvent( newChat );
 				
 				//Finally, return after this
 				return true;
