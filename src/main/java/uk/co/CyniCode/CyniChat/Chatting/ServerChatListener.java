@@ -1,5 +1,7 @@
 package uk.co.CyniCode.CyniChat.Chatting;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
@@ -217,7 +219,7 @@ public class ServerChatListener implements Listener, IChatEndpoint {
 		
 		//And prepare to look at everyone who is going to get the
 		// message.
-		Player[] all = new Player[event.getRecipients().size()];
+		List<Player> all = new ArrayList<Player>();
 		int count = 0;
 		
 		//While there is someone else that can get the message...
@@ -235,7 +237,9 @@ public class ServerChatListener implements Listener, IChatEndpoint {
 				//If they are not, then add the player to an array
 				// of all those we're going to remove from the original
 				// sending set
-				all[count] = currentPlayer;
+				CyniChat.printDebug( "Adding " + currentPlayer.getDisplayName() 
+					+ " to the list" );
+				all.add( currentPlayer );
 				++count;
 				
 			} else 
@@ -243,8 +247,12 @@ public class ServerChatListener implements Listener, IChatEndpoint {
 				//Otherwise... if the player is ignoring this person
 				// and are in the channel that has a message,
 				// remove them from the set too
-				if ((users.getIgnoring().contains(user.getName())) && (users.getAllChannels().contains(current.getName().toLowerCase()))) {
-					all[count] = currentPlayer;
+				if ((users.getIgnoring().contains(user.getName())) && 
+						(users.getAllChannels().contains(
+							current.getName().toLowerCase()))) {
+					CyniChat.printDebug( "Adding " + currentPlayer.getDisplayName() 
+						+ " to the list" );
+					all.add( currentPlayer );
 					++count;
 				}
 			
@@ -258,26 +266,27 @@ public class ServerChatListener implements Listener, IChatEndpoint {
 			for ( Player removal : all ) {
 				CyniChat.printDebug("Removed " + removal.getDisplayName());
 				event.getRecipients().remove( removal );
+				CyniChat.printDebug( "Removal successful..." );
 			}
 			
 		}
 		
+		CyniChat.printDebug( "Generating new chat event..." );
+		
 		//Make the chat event and let anyone access it for a moment or two
 		ChannelChatEvent newChatter = new ChannelChatEvent(player.getDisplayName(),
 				current, event.getMessage(), event.getRecipients());
+		
+		CyniChat.printDebug( "And sending it onwards" );
+		
 		Bukkit.getServer().getPluginManager().callEvent(newChatter);
+		
+		CyniChat.printDebug( "Cancelling the event..." );
 		
 		//Cancel the original event
 		event.setCancelled( true );
 		
-		//And replace it with our own
-		for ( Player forAllPlayers : newChatter.getRecipients() )
-			forAllPlayers.sendMessage( getCompleteMessage( newChatter ) );
-		
-		//Finally having done that... route the message according to any
-		// given instructions
-		ChatRouter.routeMessage( ChatRouter.EndpointType.PLAYER, newChatter.getSenderName(),
-					newChatter.getChannel().getName(), newChatter.getMessage());
+		CyniChat.printDebug( "Event has been cancelled..." );
 		
 	}
 	
@@ -295,14 +304,30 @@ public class ServerChatListener implements Listener, IChatEndpoint {
 	}
 	
 	/**
-	 * Currently used as a testing thing for the event that is registered here
+	 * Catch our event and play it to the server
 	 *
 	 * @param event : The event we're listening to (Only visible if debug is on)
 	 */
 	@EventHandler(priority = EventPriority.MONITOR)
 	public static void testingRegister(ChannelChatEvent event) {
-		CyniChat.printDebug(event.getSenderName() + " said " + event.getMessage() + " in " + event.getChannel().getName());
-		CyniChat.printDebug(event.printVerboseRecip());
+		
+		CyniChat.printDebug( "Event heard..." );
+		
+		//Since we're listening for our own event... take nothing for
+		// granted and take all the values from this
+		for ( Player forAllPlayers : event.getRecipients() ) {
+			CyniChat.printDebug( "Sending message to "+forAllPlayers.getDisplayName() );
+			forAllPlayers.sendMessage( getCompleteMessage( event ) );
+			CyniChat.printDebug( "Message sent to "+forAllPlayers.getDisplayName() );
+		}
+		
+		CyniChat.printDebug( "Sent messages..." );
+		
+		//Finally having done that... route the message according to any
+		// given instructions
+		ChatRouter.routeMessage( ChatRouter.EndpointType.PLAYER, event.getSenderName(),
+					event.getChannel().getName(), event.getMessage());
+		
 	}
 	
 	/**
