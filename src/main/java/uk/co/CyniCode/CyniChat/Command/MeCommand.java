@@ -1,14 +1,14 @@
 package uk.co.CyniCode.CyniChat.Command;
 
-import java.util.Map;
-
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import uk.co.CyniCode.CyniChat.Chatting.ServerChatListener;
 import uk.co.CyniCode.CyniChat.CyniChat;
-import uk.co.CyniCode.CyniChat.objects.UserDetails;
+import uk.co.CyniCode.CyniChat.events.ChannelChatEvent;
 
 /**
  * As much as this is playing with fire... this is for the /me command
@@ -36,31 +36,19 @@ public class MeCommand implements CommandExecutor {
 		if ( objects[0] != null ) {
 			
 			//Now... create a message from the parts
-			String message = player.getName() + stacker( objects );
+			ChannelChatEvent newChat = new ChannelChatEvent(
+					player.getName(),
+					CyniChat.data.getChannel( CyniChat.data
+						.getOnlineDetails( (Player) player )
+						.getCurrentChannel() ),
+					stacker( objects ),
+					ServerChatListener.getRecipients( 
+						CyniChat.data.getOnlineDetails( (Player) player )
+						.getCurrentChannel() ),
+					""
+				);
 			
-			//And gather information about the channel and the user
-			UserDetails user = CyniChat.data.getOnlineDetails( (Player) player );
-			String curChan = user.getCurrentChannel();
-			
-			//Then create the fully-formatted message from those parts
-			String tMessage = CyniChat.data.getChannel(curChan).getColour()+"["
-					+CyniChat.data.getChannel(curChan).getNick()+"] " + message;
-			
-			//Now, for everyone who is online...
-			for ( Map.Entry<String, UserDetails> entrySet : CyniChat.data.getOnlineUsers().entrySet() ) {
-				
-				//Get their current details
-				UserDetails current = entrySet.getValue();
-				
-				//Ask if they're in the channel and are not ignoring
-				// this nutcase
-				if ( current.getAllChannels().contains(curChan) && 
-						!current.getIgnoring().contains(player.getName().toLowerCase() ) )
-					
-					//Then send them a message
-					current.getPlayer().sendMessage(tMessage);
-				
-			}
+			Bukkit.getServer().getPluginManager().callEvent( newChat );
 			
 			//String linkedChan = CyniChat.data.getChannel(curChan).getIRC();
 			
@@ -87,7 +75,7 @@ public class MeCommand implements CommandExecutor {
 		
 		//And for each object, add it to that string
 		for (String message1 : message)
-			stackedMessage += " " + message1;
+			stackedMessage +=  message1 + " ";
 		
 		//Then return the final string
 		return stackedMessage;
