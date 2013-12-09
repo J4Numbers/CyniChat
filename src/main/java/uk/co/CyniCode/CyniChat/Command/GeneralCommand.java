@@ -62,6 +62,8 @@ public class GeneralCommand {
 		//Reload it all!
 		CyniChat.reload();
 		
+		CyniChat.data.reloadPlayers();
+		
 		return true;
 		
 	}

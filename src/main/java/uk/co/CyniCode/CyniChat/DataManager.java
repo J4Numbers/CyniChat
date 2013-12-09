@@ -106,6 +106,20 @@ public class DataManager {
 	public void flushData() {
 		
 		setActiveUsers( getOnlineUsers() );
+		CyniChat.printInfo( "CyniChat has saved..." );
+		
+	}
+	
+	/**
+	 * Reload all the players on the server into the plugin
+	 * just in case we had a derp at some point or another.
+	 */
+	public void reloadPlayers() {
+		
+		for ( Player thisPlayer : CyniChat.self.getServer().getOnlinePlayers() ) {
+			bindPlayer( thisPlayer );
+			CyniChat.printDebug( "Rebound player " + thisPlayer.getDisplayName() );
+		}
 		
 	}
 	

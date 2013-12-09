@@ -1,6 +1,5 @@
 package uk.co.CyniCode.CyniChat;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.bukkit.plugin.PluginManager;
@@ -147,8 +146,7 @@ public class CyniChat extends JavaPlugin{
 		version = this.getDescription().getVersion();
 		name = this.getDescription().getName();
 		self = this;
-		log.log( Level.INFO, "{0} version {1} has started...", 
-				new Object[]{name, version} );
+		log.info( name + " version " + version + " has started..." );
 		
 		//Start up the managers and the configs and all that
 		pm = getServer().getPluginManager();
