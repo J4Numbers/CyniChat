@@ -9,6 +9,8 @@ import org.bukkit.entity.Player;
 import uk.co.CyniCode.CyniChat.Chatting.ServerChatListener;
 import uk.co.CyniCode.CyniChat.CyniChat;
 import uk.co.CyniCode.CyniChat.events.ChannelChatEvent;
+import uk.co.CyniCode.CyniChat.objects.Channel;
+import uk.co.CyniCode.CyniChat.objects.UserDetails;
 
 /**
  * As much as this is playing with fire... this is for the /me command
@@ -32,6 +34,30 @@ public class MeCommand implements CommandExecutor {
 		//Tell the console that shit is happening
 		CyniChat.printDebug("Initialised a /me command");
 		
+		UserDetails thisUser = CyniChat.data.getOnlineDetails( (Player) player );
+		Channel thisChan = CyniChat.data.getChannel( thisUser.getCurrentChannel() );
+		
+		if ( thisUser.getSilenced() ) {
+			
+			player.sendMessage( "You are silenced. You cannot speak." );
+			return true;
+			
+		}
+		
+		if ( !thisUser.getAllChannels().contains( thisChan.getName() ) ) {
+			
+			player.sendMessage( "You are not in this channel." );
+			return true;
+			
+		}
+		
+		if ( thisUser.getMutedChannels().contains( thisChan.getName() ) ) {
+			
+			player.sendMessage( "You are muted in this channel." );
+			return true;
+			
+		}
+		
 		//And check to see if there is anything to put in the syntax of
 		if ( objects[0] != null ) {
 			
@@ -44,7 +70,7 @@ public class MeCommand implements CommandExecutor {
 					stacker( objects ),
 					ServerChatListener.getRecipients( 
 						CyniChat.data.getOnlineDetails( (Player) player )
-						.getCurrentChannel() ),
+						.getCurrentChannel(), player.getName() ),
 					""
 				);
 			

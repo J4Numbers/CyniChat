@@ -41,15 +41,23 @@ public class LeaveCommand {
 	 */
 	public static void leave( CommandSender player, String oldChan ) {
 		
+		CyniChat.printDebug( String.format( "%s is trying to leave %s",
+				player.getName(),
+				oldChan ) );
+		
 		//Does the channel exist first of all?
 		if ( CyniChat.data.getChannel(oldChan) != null ) {
 			
 			//Yes? Leave it.
+			CyniChat.printDebug( String.format( "%s exists... leaving.",
+					oldChan ) );
 			CyniChat.data.getDetails(player.getName()).leaveChannel( oldChan );
 			
 		} else {
 			
 			//No... try anyway.
+			CyniChat.printDebug( String.format( "%s did not exist.",
+					oldChan ) );
 			player.sendMessage("This channel does not exist");
 			
 		}

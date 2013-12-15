@@ -4,10 +4,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import uk.co.CyniCode.CyniChat.Chatting.ServerChatListener;
 import uk.co.CyniCode.CyniChat.CyniChat;
 import uk.co.CyniCode.CyniChat.events.ChannelChatEvent;
+import uk.co.CyniCode.CyniChat.objects.Channel;
+import uk.co.CyniCode.CyniChat.objects.UserDetails;
 
 /**
  * Quick Message class to deal with all commands that start with /qm
@@ -27,6 +30,30 @@ public class QmCommand implements CommandExecutor {
 	 */
 	public boolean onCommand(CommandSender player, Command command, String key, String[] args) {
 		
+		Channel thisChan = CyniChat.data.getChannel( args[0] );
+		UserDetails thisUser = CyniChat.data.getOnlineDetails( (Player) player );
+		
+		if ( thisUser.getSilenced() ) {
+			
+			player.sendMessage( "You are silenced. You cannot speak." );
+			return true;
+			
+		}
+		
+		if ( !thisUser.getAllChannels().contains( thisChan.getName() ) ) {
+			
+			player.sendMessage( "You are not in this channel." );
+			return true;
+			
+		}
+		
+		if ( thisUser.getMutedChannels().contains( thisChan.getName() ) ) {
+			
+			player.sendMessage( "You are muted in this channel." );
+			return true;
+			
+		}
+		
 		//Is there a message to be quicked?
 		if ( args.length >= 2 ) {
 			
@@ -35,7 +62,7 @@ public class QmCommand implements CommandExecutor {
 					player.getName(),
 					CyniChat.data.getChannel( args[0] ),
 					stacker( args, 1, args.length ),
-					ServerChatListener.getRecipients( args[0] ),
+					ServerChatListener.getRecipients( args[0], player.getName() ),
 					" :"
 				);
 			

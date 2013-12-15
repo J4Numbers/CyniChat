@@ -127,8 +127,9 @@ public class ChCommand implements CommandExecutor {
 		//On the other hand... they might want to leave a channel.
 		if ( args[0].equalsIgnoreCase("leave") ) {
 			if ( !( player instanceof Player ) ) return true;
-			if ( args.length != 2 ) {
-				LeaveCommand.info( player );
+			if ( args.length < 2 ) {
+				LeaveCommand.leave( player, CyniChat.data.getOnlineDetails( 
+						(Player) player ).getCurrentChannel() );
 				return true;
 			} else {
 				LeaveCommand.leave( player, args[1] );
@@ -260,6 +261,10 @@ public class ChCommand implements CommandExecutor {
 		if ( args[0].equalsIgnoreCase("remove") ) {
 			if ( args.length == 2 ) {
 				AdminCommand.remove( player, args[1] );
+				return true;
+			} else if ( args.length == 1 ) {
+				AdminCommand.remove( player, CyniChat.data
+						.getOnlineDetails( (Player) player ).getCurrentChannel() );
 				return true;
 			}
 			AdminCommand.removeInfo( player );
