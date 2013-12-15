@@ -12,6 +12,7 @@ import uk.co.CyniCode.CyniChat.Command.MeCommand;
 import uk.co.CyniCode.CyniChat.Command.MsgCommand;
 import uk.co.CyniCode.CyniChat.Command.QmCommand;
 import uk.co.CyniCode.CyniChat.Command.RCommand;
+import uk.co.CyniCode.CyniChat.bungee.BungeeChannelProxy;
 import uk.co.CyniCode.CyniChat.routing.ChatRouter;
 
 /**

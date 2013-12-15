@@ -431,7 +431,6 @@ public class DataManager {
 	 */
 	public Map<String, String> getMatching() {
 		return matching;
-<<<<<<< HEAD
 	}
 	
 	/**
