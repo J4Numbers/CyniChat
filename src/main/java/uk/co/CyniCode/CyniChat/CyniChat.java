@@ -16,8 +16,8 @@ import uk.co.CyniCode.CyniChat.routing.ChatRouter;
 
 /**
  * Base class for CyniChat. Main parts are the onEnable(), onDisable(), and the print areas at the moment.
- * @author Matthew Ball
- *
+ * 
+ * @author CyniCode
  */
 public class CyniChat extends JavaPlugin{
 	

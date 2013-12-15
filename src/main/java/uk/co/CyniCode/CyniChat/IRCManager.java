@@ -19,8 +19,7 @@ import org.pircbotx.exception.NickAlreadyInUseException;
 /**
  * An instantiation of a PircBotX bot
  *
- * @author Matthew Ball
- *
+ * @author CyniCode
  */
 public class IRCManager implements IChatEndpoint {
 	
@@ -92,15 +91,12 @@ public class IRCManager implements IChatEndpoint {
 		Iterator<String> iter = keys.iterator();
 		
 		try {
-			while (iter.hasNext()) {
+			for ( Map.Entry<String, uk.co.CyniCode.CyniChat.objects.Channel> thisChan
+					: allChans.entrySet() ) {
 				
-				String thisChan = iter.next();
-				
-				uk.co.CyniCode.CyniChat.objects.Channel current = allChans.get(thisChan);
-				
-				if ( !"".equals( current.getIRC() ) ) {
-					bot.joinChannel(current.getIRC().toLowerCase(), current.getIRCPass());
-					actingChans.put(current.getIRC().toLowerCase(), thisChan);
+				if ( !thisChan.getValue().getIRC().equals( "" ) ) {
+					bot.joinChannel(thisChan.getValue().getIRC().toLowerCase(), thisChan.getValue().getIRCPass());
+					actingChans.put(thisChan.getValue().getIRC().toLowerCase(), thisChan.getKey() );
 				}
 			}
 			

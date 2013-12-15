@@ -14,8 +14,8 @@ import org.pircbotx.exception.IrcException;
 
 /**
  * A class for all the responses that are going to be given by the IRC bot
- * @author Matthew Ball
  * 
+ * @author CyniCode
  */
 public class IrcResponses {
 	
