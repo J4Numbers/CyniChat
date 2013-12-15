@@ -13,7 +13,7 @@ import org.pircbotx.hooks.events.PrivateMessageEvent;
 /**
  * Deal with all the output that the bot can see
  * 
- * @author J4Numbers
+ * @author CyniCode
  */
 public class IrcChatListener extends ListenerAdapter {
 	

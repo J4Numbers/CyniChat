@@ -12,7 +12,6 @@ CyniChat:
     data: "json"
     debug: "true"
     irc: "false"
-    bungee: "true"
   irc:
     hostname: "127.0.0.1"
     port: 6667
