@@ -123,10 +123,13 @@ public class BanCommand {
 		
 		//If the player is a player...
 		if ( player instanceof Player )
-			//Check whether they have the permissions to kick in
-			// this channel.
-			if ( !CyniChat.perms.checkPerm( (Player) player, 
-						"cynichat.mod.kick."+channel.getName().toLowerCase() ) )
+			
+			//If they do not have the permission to kick globally or kick
+			// locally, then laugh at them.
+			if ( !( CyniChat.perms.checkPerm( (Player) player,
+						"cynichat.mod.kick" ) ) && 
+					!( CyniChat.perms.checkPerm( (Player) player, 
+						"cynichat.mod.kick."+channel.getName().toLowerCase() ) ) )
 				//Apparently not...
 				return false;
 		

@@ -117,9 +117,25 @@ public class DataManager {
 	public void reloadPlayers() {
 		
 		for ( Player thisPlayer : CyniChat.self.getServer().getOnlinePlayers() ) {
-			bindPlayer( thisPlayer );
-			CyniChat.printDebug( "Rebound player " + thisPlayer.getDisplayName() );
+			
+			try {
+				
+				CyniChat.printDebug( "Found player: " + thisPlayer.getDisplayName() );
+				
+				CyniChat.printDebug( "Binding..." );
+				bindPlayer( thisPlayer );
+				
+				CyniChat.printDebug( "Rebound player " + thisPlayer.getDisplayName() );
+				
+			} catch ( Exception e ) {
+				
+				CyniChat.printDebug( "Data failed for player: " + thisPlayer.getDisplayName() );
+				e.printStackTrace();
+				
+			}
 		}
+		
+		
 		
 	}
 	
@@ -180,12 +196,12 @@ public class DataManager {
 	public Channel getChannel(String name){
 		
 		//Do a basic ask on the all channels
-		Channel cn = getChannels().get(name);
+		Channel cn = getChannels().get(name.toLowerCase());
 		
 		//If it's still null...
 		if ( cn == null )
 			//Check the nickname
-			cn = getChannels().get( getMatching().get(name) );
+			cn = getChannels().get( getMatching().get(name.toLowerCase()) );
 		
 		//Return what is left
 		return cn;
