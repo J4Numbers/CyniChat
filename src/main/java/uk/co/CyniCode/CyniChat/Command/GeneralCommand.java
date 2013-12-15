@@ -62,10 +62,16 @@ public class GeneralCommand {
 				//Phew... just as well we checked.
 				return false;
 		
+		CyniChat.printDebug( "Performing a basic reload..." );
+		
 		//Reload it all!
 		CyniChat.reload();
 		
+		CyniChat.printDebug( "Basic reload completed... moving onto the players." );
+		
 		CyniChat.data.reloadPlayers();
+		
+		CyniChat.printDebug( "Player reload completed" );
 		
 		return true;
 		
@@ -80,11 +86,31 @@ public class GeneralCommand {
 	public static boolean info( CommandSender player, String channel ) {
 		
 		//Is the player actually a player?
-		if ( player instanceof Player )
+		if ( player instanceof Player ) {
+			
+			if ( CyniChat.data.getOnlineDetails( (Player) player )
+					.getCurrentChannel().equals("") ) {
+				
+				player.sendMessage( "You are not in a channel." );
+				return false;
+				
+			}
+			
+			if ( !CyniChat.perms.checkPerm( (Player) player,
+					"cynichat.basic.info" ) )
+				
+				return false;
+				
+			
 			//And do they have permission to ask about the channel?
-			if ( !CyniChat.perms.checkPerm( (Player) player, "cynichat.basic.info."+channel) )
+			if ( CyniChat.data.getChannel(channel).isProtected() && 
+					!CyniChat.perms.checkPerm(
+							(Player) player, "cynichat.basic.info."+channel) )
+				
 				//Yeeah... no
 				return false;
+		
+		}
 		
 		//Let's make sure such a channel exists
 		if ( CyniChat.data.getChannel(channel) == null ) {
@@ -134,12 +160,20 @@ public class GeneralCommand {
 		//Now... up to the size of the list, get two items at a time
 		for ( int i = 0; i < allChans.size(); i = i + 2 )
 			
-			//And print them, side-by-side in a message
-			player.sendMessage( String.format( "%s\t\t%s", 
-				allChans.get(i).getColour()+"["+allChans.get(i).getNick()+"] "
-					+allChans.get(i).getName(),
-				allChans.get(i+1).getColour()+"["+allChans.get(i+1).getNick()+"] "
-					+allChans.get(i+1).getName()) );
+			if ( i == allChans.size() - 1 ) {
+				
+				player.sendMessage( String.format( "%s",
+					allChans.get(i).getColour()+"["+allChans.get(i).getNick()+"] "
+						+allChans.get(i).getName() ) );
+				
+			} else {
+				//And print them, side-by-side in a message
+				player.sendMessage( String.format( "%s\t\t%s", 
+					allChans.get(i).getColour()+"["+allChans.get(i).getNick()+"] "
+						+allChans.get(i).getName(),
+					allChans.get(i+1).getColour()+"["+allChans.get(i+1).getNick()+"] "
+						+allChans.get(i+1).getName()) );
+			}
 		
 		//Then return
 		return true;
@@ -154,18 +188,26 @@ public class GeneralCommand {
 	 */
 	public static boolean who( CommandSender player, String channel ) {
 		
-		//Let's just make sure they are a player first
-		if ( player instanceof Player )
-			//Then if they have the permission to do this
-			if ( !CyniChat.perms.checkPerm( (Player) player, "cynichat.basic.who."+channel) )
-				//And if not, kill em
-				return false;
-		
 		//Is there a channel by this name?
 		if ( CyniChat.data.getChannel(channel) == null ) {
 			player.sendMessage( "There is no such channel" );
 			return true;
 		}
+		
+		Channel thisChan = CyniChat.data.getChannel( channel );
+		
+		//Let's just make sure they are a player first
+		if ( player instanceof Player )
+			//Then if they have the permission to do this
+			if ( thisChan.isProtected() && 
+					!CyniChat.perms.checkPerm( (Player) player,
+							"cynichat.basic.who."+channel) )
+				//And if not, kill em
+				return false;
+			else if ( !CyniChat.perms.checkPerm( (Player) player,
+					"cyniChat.basic.who" ) )
+				//And if not, kill em
+				return false;
 		
 		//Initiate a string by this name
 		String players = "";
@@ -180,7 +222,7 @@ public class GeneralCommand {
 			if ( current.getAllChannels().contains(channel) )
 				
 				//If they are... add them to the list.
-				players = players + current.getName()+" ";
+				players = players + CyniChat.perms.getPlayerFull( current.getPlayer() )+" ";
 			
 		}
 		
@@ -206,7 +248,7 @@ public class GeneralCommand {
 			
 			//And do they have the basic permission to transmit
 			// a general quick-message?
-			if ( !CyniChat.perms.checkPerm( (Player) player, "cynichat.basic.qm") ) {
+			if ( !CyniChat.perms.checkPerm( (Player) player, "cynichat.basic.qm" ) ) {
 				player.sendMessage( "You do not have the necessary permissions for this." );
 				return false;
 			}
@@ -243,7 +285,7 @@ public class GeneralCommand {
 						curChan,
 						message,
 						ServerChatListener
-							.getRecipients( curChan.getName() ),
+							.getRecipients( curChan.getName(), sender.getName() ),
 						" :"
 					);
 				

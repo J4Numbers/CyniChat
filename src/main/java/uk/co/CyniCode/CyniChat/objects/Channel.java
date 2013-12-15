@@ -95,6 +95,7 @@ public class Channel {
 		this.protect = protect;
 		this.desc = "";
 		this.pass = "";
+		this.colour = ChatColor.GRAY;
 		
 	}
 	

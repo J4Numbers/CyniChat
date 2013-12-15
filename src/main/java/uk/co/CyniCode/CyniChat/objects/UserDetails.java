@@ -654,60 +654,76 @@ public class UserDetails {
 	 */
 	public boolean leaveChannel( String chan ) {
 		
+		CyniChat.printDebug( String.format( "%s is trying to leave %s...",
+				getName(),
+				chan ) );
+		
 		//Is the channel contained in our joined channels?
 		if ( getAllChannels().contains( chan.toLowerCase() )) {
 			
-			//Aye-aye! Now... are we allowed to leave it?
-			if ( CyniChat.perms.checkPerm( getPlayer(), "cynichat.basic.leave."+chan.toLowerCase()) ) {
-				
-				//Also, yes. Let us leave.
-				getAllChannels().remove( chan.toLowerCase() );
-				
-				//Is the current channel the one that we're leaving?
-				if ( getCurrentChannel().equals(chan.toLowerCase()) ) {
+			CyniChat.printDebug( "Player was in the channel" );
+			
+			Channel channel = CyniChat.data.getChannel( chan );
+			
+			if ( channel.isProtected() ) {
+				if ( !CyniChat.perms.checkPerm( getPlayer(), "cynichat.basic.leave."+chan.toLowerCase()) ) {
+					//Stay a while...
+					//Don't worry... your soul will be safe...
+					if ( getPlayer() != null )
+						getPlayer().sendMessage("You cannot leave "+ chan);
 					
-					//Yep, now are we joined to any other channels?
-					if ( getAllChannels().isEmpty() ) { 
-						
-						//Nope. We are in no channels
-						setCurrentChannel( "" );
-						
-						//Tell the player that they are all alone
-						if ( getPlayer() != null )
-							getPlayer().sendMessage( "You have left all channels. Join one to talk." );
-						
-					} else {
-						
-						//Set the channel to the next onoe available
-						setCurrentChannel( getAllChannels().get(0) );
-						
-						//Tell the player that tehy are in a strange and
-						// unfamiliar world... or a new channel. That works too
-						if ( getPlayer() != null ) 
-							getPlayer().sendMessage("You are now in " + getAllChannels().get(0));
-						
-					}
+					return true;
 				}
-				
-				//Let them know that they HAVE actually left the channel
-				if ( getPlayer() != null )
-					getPlayer().sendMessage("You have left "+ chan);
-				
-				//Drop the console a note
-				CyniChat.printDebug( getName() + " has left " + chan );
-				
-				return true;
-				
 			} else {
-				
-				//Stay a while...
-				//Don't worry... your soul will be safe...
-				if ( getPlayer() != null )
-					getPlayer().sendMessage("You cannot leave "+ chan);
-				
-				return true;
-				
+				if ( ! CyniChat.perms.checkPerm( getPlayer(), "cynichat.basic.leave" ) ) {
+					//Stay a while...
+					//Don't worry... your soul will be safe...
+					if ( getPlayer() != null )
+						getPlayer().sendMessage("You cannot leave "+ chan);
+					
+					return true;
+				}
 			}
+			
+			CyniChat.printDebug( "Player is allowed to leave it" );
+			
+			//Also, yes. Let us leave.
+			getAllChannels().remove( chan.toLowerCase() );
+			
+			//Is the current channel the one that we're leaving?
+			if ( getCurrentChannel().equals(chan.toLowerCase()) ) {
+				
+				//Yep, now are we joined to any other channels?
+				if ( getAllChannels().isEmpty() ) { 
+					
+					//Nope. We are in no channels
+					setCurrentChannel( "" );
+					
+					//Tell the player that they are all alone
+					if ( getPlayer() != null )
+						getPlayer().sendMessage( "You have left all channels. Join one to talk." );
+					
+				} else {
+					
+					//Set the channel to the next onoe available
+					setCurrentChannel( getAllChannels().get(0) );
+					
+					//Tell the player that tehy are in a strange and
+					// unfamiliar world... or a new channel. That works too
+					if ( getPlayer() != null ) 
+						getPlayer().sendMessage("You are now in " + getAllChannels().get(0));
+					
+				}
+			}
+			
+			//Let them know that they HAVE actually left the channel
+			if ( getPlayer() != null )
+				getPlayer().sendMessage("You have left "+ chan);
+			
+			//Drop the console a note
+			CyniChat.printDebug( getName() + " has left " + chan );
+			
+			return true;
 			
 		}
 		
@@ -977,5 +993,5 @@ public class UserDetails {
 		setIgnoring( ignoring );
 		
 	}
-
+	
 }

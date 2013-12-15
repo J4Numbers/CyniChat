@@ -49,7 +49,7 @@ public class BanCommand {
 		return true;
 		
 	}
-
+	
 	/**
 	 * Unban a player from a channel
 	 * @param player : The player doing the unbanning
@@ -81,7 +81,7 @@ public class BanCommand {
 		//And return to wherever we came from
 		return true;
 	}
-
+	
 	/**
 	 * Return the information about the ban command
 	 * @param player : The person we're giving the information
@@ -96,7 +96,7 @@ public class BanCommand {
 			+" "+ChCommand.optional( "channel", ChatColor.RED ) );
 		
 	}
-
+	
 	/**
 	 * Return the information about the unban command
 	 * @param player : The player we're giving the information to
@@ -111,7 +111,7 @@ public class BanCommand {
 			+" "+ChCommand.optional( "channel", ChatColor.RED ) );
 		
 	}
-
+	
 	/**
 	 * Kick the player from the channel
 	 * @param player : The player trying to kick someone else
@@ -123,10 +123,14 @@ public class BanCommand {
 		
 		//If the player is a player...
 		if ( player instanceof Player )
-			//Check whether they have the permissions to kick in
-			// this channel.
-			if ( !CyniChat.perms.checkPerm( (Player) player, 
-						"cynichat.mod.kick."+channel.getName().toLowerCase() ) )
+			
+			//If they do not have the permission to kick globally or kick
+			// locally, then laugh at them.
+			if ( !( CyniChat.perms.checkPerm( (Player) player,
+						"cynichat.mod.kick" ) ) && 
+					!( CyniChat.perms.checkPerm( (Player) player, 
+						"cynichat.mod.kick."+channel.getName().toLowerCase() ) ) )
+				
 				//Apparently not...
 				return false;
 		
@@ -146,7 +150,7 @@ public class BanCommand {
 		return true;
 		
 	}
-
+	
 	/**
 	 * Return the information on how to kick a player
 	 * @param player : Firstly, you should pick them up
@@ -161,5 +165,5 @@ public class BanCommand {
 			" "+ChCommand.optional("channel", ChatColor.RED) );
 		
 	}
-
+	
 }

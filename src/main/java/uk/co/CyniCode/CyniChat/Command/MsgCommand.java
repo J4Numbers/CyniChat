@@ -43,6 +43,14 @@ public class MsgCommand implements CommandExecutor {
 				UserDetails person = CyniChat.data.getOnlineUsers()
 					.get( objects[0].toLowerCase() );
 				
+				UserDetails user = CyniChat.data.
+						getOnlineDetails( (Player) player );
+				
+				if ( person == user ) {
+					player.sendMessage( "You cannot send a message to yourself" );
+					return false;
+				}
+				
 				//Print out a bit of debug
 				person.printAll();
 				
@@ -58,19 +66,19 @@ public class MsgCommand implements CommandExecutor {
 				person.getPlayer().sendMessage( "From "+player.getName()+" :"+Message );
 				
 				//Change the latest of that player to this player
-				person.changeLatest( player.getName() );
+				person.changeLatest( user.getName() );
 				
 				//And show that it worked
-				CyniChat.printDebug( person.getLatest() );
+				CyniChat.printDebug( person.getName() + " will reply to " + person.getLatest() );
 				
 				//Now... if we're a player...
 				if ( player instanceof Player ) {
 					
 					//Then set our own latest to them
-					UserDetails user = CyniChat.data.getOnlineDetails( (Player) player );
 					user.changeLatest( person.getName() );
+					
 					//And show it worked
-					CyniChat.printDebug( user.getLatest() );
+					CyniChat.printDebug( user.getName() + " will reply to " + user.getLatest() );
 					
 				}
 				
@@ -107,8 +115,8 @@ public class MsgCommand implements CommandExecutor {
 			
 			//And for each word in the array, add it to the
 			// string we'll return
-			for ( String stack : stacking ) 
-				finalStack += " "+stack;
+			for ( int i = 1; i < stacking.length; i++ ) 
+				finalStack += " "+stacking[i];
 			
 			//Right now...
 			return finalStack;

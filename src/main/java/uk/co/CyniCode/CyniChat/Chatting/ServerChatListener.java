@@ -112,7 +112,7 @@ public class ServerChatListener implements Listener, IChatEndpoint {
 						event.getPlayer().getDisplayName(),
 						CyniChat.data.getChannel( bits[0] ),
 						mess,
-						getRecipients( bits[0] ),
+						getRecipients( bits[0], event.getPlayer().getDisplayName() ),
 						" :"
 					);
 				
@@ -233,9 +233,9 @@ public class ServerChatListener implements Listener, IChatEndpoint {
 		CyniChat.printDebug( "Generating new chat event..." );
 		
 		//Make the chat event and let anyone access it for a moment or two
-		ChannelChatEvent newChatter = new ChannelChatEvent(player.getDisplayName(),
-				current, event.getMessage(), getRecipients( current.getName() ),
-				" :" );
+		ChannelChatEvent newChatter = new ChannelChatEvent(
+				player.getDisplayName(), current, event.getMessage(), 
+				getRecipients( current.getName(), player.getDisplayName() ), " :" );
 		
 		CyniChat.printDebug( "And sending it onwards" );
 		
@@ -291,7 +291,7 @@ public class ServerChatListener implements Listener, IChatEndpoint {
 		
 	}
 	
-	public static Set<Player> getRecipients( String curChan ) {
+	public static Set<Player> getRecipients( String curChan, String sender ) {
 		
 		Set<Player> players = new HashSet<Player>();
 		
@@ -308,10 +308,18 @@ public class ServerChatListener implements Listener, IChatEndpoint {
 			if ( current.getAllChannels().contains( curChan ) ) {
 				
 				//Since they are, debug that fact
-				CyniChat.printDebug( entrySet.getKey() + " added to the list..." );
+				CyniChat.printDebug( entrySet.getKey() + " is in the channel..." );
 				
-				//So actually add them to the list
-				players.add( current.getPlayer() );
+				if ( !current.getIgnoring().contains( sender.toLowerCase() ) ) {
+					
+					CyniChat.printDebug( current.getName() + " was not ignoring " + sender );
+					
+					current.getVerboseIgnoring();
+					
+					//So actually add them to the list
+					players.add( current.getPlayer() );
+					
+				}
 				
 			}
 			

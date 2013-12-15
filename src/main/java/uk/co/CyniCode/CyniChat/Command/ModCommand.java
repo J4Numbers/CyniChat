@@ -33,6 +33,9 @@ public class ModCommand {
 		
 		//Or promote the player... that too
 		CyniChat.perms.promotePlayer( newMod, CyniChat.data.getChannel( channel ) );
+		
+		player.sendMessage( newMod + " has been promoted in " + channel );
+		
 		return true;
 		
 	}
@@ -55,6 +58,9 @@ public class ModCommand {
 		
 		//Demote the player that is being asked for
 		CyniChat.perms.demotePlayer( oldMod, CyniChat.data.getChannel( channel ) );
+		
+		player.sendMessage( oldMod + " has been demoted in " + channel );
+		
 		return true;
 		
 	}
@@ -224,11 +230,15 @@ public class ModCommand {
 		//Tell the player they were in the wrong
 		player.sendMessage(ChatColor.RED+"Invalid Syntax!");
 		
+		String message = String.format(
+				ChatColor.RED + "/ch set %s %s %s",
+					ChCommand.necessary("channel", ChatColor.RED ),
+					ChCommand.necessary("option", ChatColor.RED ),
+					ChCommand.necessary("new value", ChatColor.RED )
+			);
+		
 		//And how to set it right
-		player.sendMessage( ChatColor.RED + "/ch set "
-			+ChCommand.necessary("channel", ChatColor.RED )+" "
-			+ChCommand.necessary("option", ChatColor.RED )+" "
-			+ChCommand.necessary("new value", ChatColor.RED ) );
+		player.sendMessage( message );
 		
 	}
 }

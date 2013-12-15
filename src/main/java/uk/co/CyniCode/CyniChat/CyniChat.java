@@ -12,7 +12,6 @@ import uk.co.CyniCode.CyniChat.Command.MeCommand;
 import uk.co.CyniCode.CyniChat.Command.MsgCommand;
 import uk.co.CyniCode.CyniChat.Command.QmCommand;
 import uk.co.CyniCode.CyniChat.Command.RCommand;
-import uk.co.CyniCode.CyniChat.bungee.BungeeChannelProxy;
 import uk.co.CyniCode.CyniChat.routing.ChatRouter;
 
 /**
@@ -137,7 +136,9 @@ public class CyniChat extends JavaPlugin{
 	}
 	
 	/**
-	 * This is the onEnable class for when the plugin starts up. Basic checks are run for the version, name and information of the plugin, then startup occurs.
+	 * This is the onEnable class for when the plugin starts up.
+	 * Basic checks are run for the version, name and information 
+	 * of the plugin, then startup occurs.
 	 */
 	@Override
 	public void onEnable(){
@@ -240,6 +241,7 @@ public class CyniChat extends JavaPlugin{
 		//Save all the data
 		data.saveChannels();
 		data.saveUsers();
+		
 		printInfo("CyniChat has been disabled!");
 		
 	}
@@ -281,6 +283,7 @@ public class CyniChat extends JavaPlugin{
 	 * Reload the plugin completely, disabling it before re-enabling it
 	 */
 	public static void reload() {
+		
 		try {
 			self.onDisable();
 			self.onEnable();
@@ -288,6 +291,7 @@ public class CyniChat extends JavaPlugin{
 			printSevere("Failiure of epic proportions!");
 			e.printStackTrace();
 		}
+		
 	}
 
 	/**
@@ -296,6 +300,7 @@ public class CyniChat extends JavaPlugin{
 	public static void killPlugin() {
 		printSevere("Fatal error has occured...");
 		printSevere("Killing...");
+		
 		pm.disablePlugin( self );
 	}
 }
