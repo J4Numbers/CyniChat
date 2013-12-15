@@ -251,12 +251,7 @@ public class ServerChatListener implements Listener, IChatEndpoint {
 		
 		CyniChat.printDebug( "Event has been cancelled..." );
 		
-				ChatRouter.routeMessage(ChatRouter.EndpointType.PLAYER, player.getName(), current.getName(), event.getMessage());
-				/*if (CyniChat.IRC == true) {
-				CyniChat.PBot.sendMessage(current.getIRC(), player.getDisplayName(), event.getMessage());
-	 }*/
-				
-		}
+	}
 
 	/**
 	 * Make a method for returning formatted output for a chat event
