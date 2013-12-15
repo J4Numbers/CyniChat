@@ -9,6 +9,11 @@ import org.bukkit.entity.Player;
 import uk.co.CyniCode.CyniChat.Chatting.ServerChatListener;
 import uk.co.CyniCode.CyniChat.CyniChat;
 import uk.co.CyniCode.CyniChat.events.ChannelChatEvent;
+<<<<<<< HEAD
+=======
+import uk.co.CyniCode.CyniChat.objects.Channel;
+import uk.co.CyniCode.CyniChat.objects.UserDetails;
+>>>>>>> ircReleases
 
 /**
  * As much as this is playing with fire... this is for the /me command
@@ -32,6 +37,7 @@ public class MeCommand implements CommandExecutor {
 		//Tell the console that shit is happening
 		CyniChat.printDebug("Initialised a /me command");
 		
+<<<<<<< HEAD
 		//And check to see if there is anything to put in the syntax of
 		if ( objects[0] != null ) {
 			
@@ -50,6 +56,50 @@ public class MeCommand implements CommandExecutor {
 			
 			Bukkit.getServer().getPluginManager().callEvent( newChat );
 			
+=======
+		UserDetails thisUser = CyniChat.data.getOnlineDetails( (Player) player );
+		Channel thisChan = CyniChat.data.getChannel( thisUser.getCurrentChannel() );
+		
+		if ( thisUser.getSilenced() ) {
+			
+			player.sendMessage( "You are silenced. You cannot speak." );
+			return true;
+			
+		}
+		
+		if ( !thisUser.getAllChannels().contains( thisChan.getName() ) ) {
+			
+			player.sendMessage( "You are not in this channel." );
+			return true;
+			
+		}
+		
+		if ( thisUser.getMutedChannels().contains( thisChan.getName() ) ) {
+			
+			player.sendMessage( "You are muted in this channel." );
+			return true;
+			
+		}
+		
+		//And check to see if there is anything to put in the syntax of
+		if ( objects[0] != null ) {
+			
+			//Now... create a message from the parts
+			ChannelChatEvent newChat = new ChannelChatEvent(
+					player.getName(),
+					CyniChat.data.getChannel( CyniChat.data
+						.getOnlineDetails( (Player) player )
+						.getCurrentChannel() ),
+					stacker( objects ),
+					ServerChatListener.getRecipients( 
+						CyniChat.data.getOnlineDetails( (Player) player )
+						.getCurrentChannel(), player.getName() ),
+					""
+				);
+			
+			Bukkit.getServer().getPluginManager().callEvent( newChat );
+			
+>>>>>>> ircReleases
 			//String linkedChan = CyniChat.data.getChannel(curChan).getIRC();
 			
 			//Tell the console that it's over

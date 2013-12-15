@@ -13,7 +13,7 @@ import uk.co.CyniCode.CyniChat.CyniChat;
  * @author CyniCode
  */
 public class AfkCommand implements CommandExecutor {
-
+	
 	/**
 	 * When we get the command, simply switch the player from state to state
 	 * @param player
@@ -36,5 +36,5 @@ public class AfkCommand implements CommandExecutor {
 		return true;
 		
 	}
-
+	
 }

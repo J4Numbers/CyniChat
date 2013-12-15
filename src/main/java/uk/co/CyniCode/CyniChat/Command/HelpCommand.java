@@ -67,7 +67,7 @@ public class HelpCommand {
 		//Print out some basic headers first of all
 		player.sendMessage( ChatColor.LIGHT_PURPLE + "===============CyniChat===============");
 		player.sendMessage("");
-		player.sendMessage( ChatColor.LIGHT_PURPLE + "/ch help          -> This screen");
+		player.sendMessage( ChatColor.LIGHT_PURPLE + "/ch help   -> This screen");
 		player.sendMessage( ChatColor.LIGHT_PURPLE + "/ch help channels -> Channel help menu");
 		player.sendMessage( ChatColor.LIGHT_PURPLE + "/ch help users    -> Users help menu");
 		
@@ -84,7 +84,7 @@ public class HelpCommand {
 		//And finally the admin reload option...
 		if ( !( player instanceof Player ) || 
 				(CyniChat.perms.checkPerm( (Player) player, "cynichat.admin.reload")) )
-			player.sendMessage( ChatColor.LIGHT_PURPLE + "/ch reload        -> Reload the config");
+			player.sendMessage( ChatColor.LIGHT_PURPLE + "/ch reload    -> Reload the config");
 		
 		//Now we've done... return
 		return true;
@@ -172,7 +172,7 @@ public class HelpCommand {
 			+ChCommand.necessary("option", ChatColor.LIGHT_PURPLE)+" "
 			+ChCommand.necessary("new value", ChatColor.LIGHT_PURPLE) );
 		player.sendMessage( ChatColor.LIGHT_PURPLE + " "
-			+ " --> Change the color, password or description of a channel");
+			+ " --> Change the color, password, description, ircchan or ircpass of a channel");
 		return true;
 	}
 	
@@ -235,4 +235,5 @@ public class HelpCommand {
 		
 	}
 	
+>>>>>>> ircReleases
 }

@@ -83,7 +83,7 @@ public class AdminCommand {
 		//If the player is actually a player...
 		if ( player instanceof Player )
 			//Then ask if they have the permissions to remove a channel
-			if ( CyniChat.perms.checkPerm( (Player) player, "cynichat.admin.remove") )
+			if ( !CyniChat.perms.checkPerm( (Player) player, "cynichat.admin.remove") )
 				//Nope? Fuck them.
 				return false;
 		
