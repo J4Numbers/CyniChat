@@ -2,11 +2,9 @@ package uk.co.CyniCode.CyniChat.irc;
 
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import uk.co.CyniCode.CyniChat.CyniChat;
-import uk.co.CyniCode.CyniChat.DataManager;
 import uk.co.CyniCode.CyniChat.objects.Channel;
 import uk.co.CyniCode.CyniChat.objects.UserDetails;
 
@@ -19,7 +17,7 @@ import org.pircbotx.exception.IrcException;
  * @author Matthew Ball
  * 
  */
-public class ircResponses {
+public class IrcResponses {
 	
 	/**
 	 * Show all the help text
@@ -64,9 +62,9 @@ public class ircResponses {
 		
 		if ( all != true ) {
 			
-			Channel listChan = DataManager.getChannel( DataManager.getLinkedChannels().get( channel ) );
+			Channel listChan = CyniChat.data.getChannel( CyniChat.data.getLinkedChans().get( channel ) );
 			
-			Map<String, UserDetails> users = DataManager.returnAllOnline();
+			Map<String, UserDetails> users = CyniChat.data.getOnlineUsers();
 			
 			Set<String> keys = users.keySet();
 			Iterator<String> iter = keys.iterator();
@@ -93,7 +91,7 @@ public class ircResponses {
 			
 		} else {
 			
-			Map<String, UserDetails> users = DataManager.returnAllOnline();
+			Map<String, UserDetails> users = CyniChat.data.getOnlineUsers();
 			Set<String> players = users.keySet();
 			Iterator<String> everyone = players.iterator();
 			String allPlayers = "Players online : ";
@@ -121,14 +119,14 @@ public class ircResponses {
 		
 		CyniChat.printDebug( "Kicking part 2..." );
 		
-		UserDetails kicking = DataManager.getDetails( player );
+		UserDetails kicking = CyniChat.data.getDetails( player );
 		
 		if ( kicking == null ) {
 			bot.sendMessage( channel, "No-one found with the name of "+player+"..." );
 			return false;
 		}
 		
-		Channel kickChan = DataManager.getChannel( DataManager.getLinkedChannels().get( channel ) );
+		Channel kickChan = CyniChat.data.getChannel( CyniChat.data.getLinkedChans().get( channel ) );
 		
 		if ( kickChan == null ) {
 			CyniChat.printDebug( "This channel of "+channel+" doesn't exist... wtf?" );
@@ -137,7 +135,7 @@ public class ircResponses {
 		
 		if ( kicking.getPlayer() != null ) {
 			CyniChat.printDebug( "Kicking part three..." );
-			if ( kicking.Kick( user.getNick(), kickChan ) == true ) { 
+			if ( kicking.kick( user.getNick(), kickChan ) == true ) { 
 				bot.sendMessage( channel, "The player has been kicked..." );
 			} else {
 				bot.sendMessage( channel, "The player was not in the channel..." );
@@ -160,14 +158,14 @@ public class ircResponses {
 	 */
 	public static boolean muteOutput( User user, PircBotX bot, String player, String channel, Boolean undo ) {
 		
-		UserDetails muting = DataManager.getDetails( player );
+		UserDetails muting = CyniChat.data.getDetails( player );
 		
 		if ( muting == null ) {
 			bot.sendMessage( channel, "There is no such player as "+player+"..." );
 			return false;
 		}
 		
-		Channel muteChan = DataManager.getChannel( DataManager.getLinkedChannels().get( channel ) );
+		Channel muteChan = CyniChat.data.getChannel( CyniChat.data.getLinkedChans().get( channel ) );
 		
 		if ( muteChan == null )
 			return false;
@@ -201,14 +199,14 @@ public class ircResponses {
 	 */
 	public static boolean banOutput( User user, PircBotX bot, String player, String channel, Boolean undo ) {
 		
-		UserDetails banning = DataManager.getDetails( player );
+		UserDetails banning = CyniChat.data.getDetails( player );
 		
 		if ( banning == null ) {
 			bot.sendMessage( channel, "There is no such person as "+player+"..." );
 			return false;
 		}
 		
-		Channel banChan = DataManager.getChannel( DataManager.getLinkedChannels().get( channel ) );
+		Channel banChan = CyniChat.data.getChannel( CyniChat.data.getLinkedChans().get( channel ) );
 		
 		if ( banChan == null )
 			return false;
@@ -244,13 +242,13 @@ public class ircResponses {
 		
 		CyniChat.printDebug( "Trying to TALK in: " + chan );
 		
-		if ( DataManager.getChannel( chan ) != null ) {
+		if ( CyniChat.data.getChannel( chan ) != null ) {
 			
 			CyniChat.printDebug( chan + " exists" );
 			
-			Channel thisChan = DataManager.getChannel( chan );
+			Channel thisChan = CyniChat.data.getChannel( chan );
 			
-			Map<String, UserDetails> online = DataManager.returnAllOnline();
+			Map<String, UserDetails> online = CyniChat.data.getOnlineUsers();
 			
 			Set<String> onSet = online.keySet();
 			Iterator<String> onIter = onSet.iterator();

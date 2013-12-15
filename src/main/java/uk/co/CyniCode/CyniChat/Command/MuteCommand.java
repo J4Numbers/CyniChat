@@ -5,15 +5,13 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import uk.co.CyniCode.CyniChat.CyniChat;
-import uk.co.CyniCode.CyniChat.DataManager;
-import uk.co.CyniCode.CyniChat.PermissionManager;
 import uk.co.CyniCode.CyniChat.objects.Channel;
 
 /**
  * Class for making another player be quiet... damn,
  * That's a lot of things to shut them up.
- * @author Matthew Ball
- *
+ * 
+ * @author CyniCode
  */
 public class MuteCommand {
 	
@@ -21,55 +19,71 @@ public class MuteCommand {
 	 * Ignore a player
 	 * @param player : The player who wants to ignore someone
 	 * @param ignorer : The annoying person
-	 * @return true when complete
 	 */
-	public static boolean ignore( CommandSender player, String ignorer) {
-		if ( DataManager.getDetails(ignorer) == null ) {
+	public static void ignore( CommandSender player, String ignorer) {
+		
+		//Ask if the person is even here
+		if ( CyniChat.data.getDetails(ignorer) == null ) {
 			player.sendMessage("This player does not exist");
-			return true;
+			return;
 		}
+		
+		//Then tell the console what is going on
 		CyniChat.printDebug( player.getName() + " is now attempting to ignore " + ignorer );
-		DataManager.getDetails( player.getName().toLowerCase() ).addIgnore( ignorer );
-		return true;
+		
+		//And try to ignore them
+		CyniChat.data.getDetails( player.getName().toLowerCase() ).addIgnore( ignorer );
+		
 	}
-
+	
 	/**
 	 * Un-ignore (hear) a player
 	 * @param player : The player who has a conscience
 	 * @param unignorer : The player who wasn't as annoying as thought
-	 * @return true when complete
 	 */
-	public static boolean hear( CommandSender player, String unignorer) {
-		if ( DataManager.getDetails(unignorer) == null ) {
+	public static void hear( CommandSender player, String unignorer) {
+		
+		//Ask if the player exists
+		if ( CyniChat.data.getDetails(unignorer) == null ) {
 			player.sendMessage("This player does not exist");
-			return true;
+			return;
 		}
-		DataManager.getDetails( player.getName().toLowerCase() ).remIgnore( unignorer );
-		return true;
+		
+		//And if they do... unignore them
+		CyniChat.data.getDetails( player.getName().toLowerCase() ).remIgnore( unignorer );
+		
 	}
-
+	
 	/**
 	 * Return information about the ignore command
 	 * @param player : The person who wants to know
-	 * @return true when complete
 	 */
-	public static boolean ignoreInfo(CommandSender player) {
+	public static void ignoreInfo(CommandSender player) {
+		
+		//The player has a problem
 		player.sendMessage(ChatColor.RED+"Invalid Syntax!");
-		player.sendMessage("/ch ignore "+ChCommand.necessary("player"));
-		return true;
+		
+		//Tell the player how to solve it
+		player.sendMessage( ChatColor.RED + "/ch ignore "
+			+ChCommand.necessary("player", ChatColor.RED ));
+		
 	}
-
+	
 	/**
 	 * Return information about the hear command
 	 * @param player : the person who wants to know
-	 * @return true when complete
 	 */
-	public static boolean hearInfo( CommandSender player ) {
+	public static void hearInfo( CommandSender player ) {
+		
+		//The player failed
 		player.sendMessage(ChatColor.RED+"Invalid Syntax!");
-		player.sendMessage("/ch hear "+ChCommand.necessary("player"));
-		return true;
+		
+		//Make them succeed
+		player.sendMessage( ChatColor.RED + "/ch hear "
+			+ChCommand.necessary("player", ChatColor.RED));
+		
 	}
-
+	
 	/**
 	 * Mute a player in one channel
 	 * @param player : The person doing the muting
@@ -78,22 +92,36 @@ public class MuteCommand {
 	 * @return true when complete
 	 */
 	public static boolean mute( CommandSender player, Channel channel, String mutee ) {
+		
+		//Is the player a player?
 		if ( player instanceof Player )
-			if ( !PermissionManager.checkPerm( (Player) player, "cynichat.mod.mute."+channel) )
+			//And can they mute people in this channel?
+			if ( !CyniChat.perms.checkPerm( (Player) player, "cynichat.mod.mute."+channel) )
 				return false;
 		
-		if ( DataManager.getDetails( mutee.toLowerCase() ) == null ) {
+		//Does the player exist?
+		if ( CyniChat.data.getDetails( mutee.toLowerCase() ) == null ) {
 			player.sendMessage("This player does not exist");
 			return true;
 		}
-		if (DataManager.getDetails(mutee.toLowerCase()).addMute(player.getName(), channel) == true ) {
+		
+		//And can we mute them?
+		if (CyniChat.data.getDetails(mutee.toLowerCase()).addMute(player.getName(), channel) ) {
+			
+			//Yep... we just did so
 			player.sendMessage( mutee + " has been muted");
+			
 		} else {
+			
+			//Nope... they're already muted
 			player.sendMessage( mutee + " was already muted");
+			
 		}
+		
 		return true;
+		
 	}
-
+	
 	/**
 	 * Completely mute a player across all channels
 	 * @param player : The annoyed person
@@ -101,40 +129,57 @@ public class MuteCommand {
 	 * @return true when complete
 	 */
 	public static boolean gmute( CommandSender player, String mutee ) {
+		
+		//Is the player a player?
 		if ( player instanceof Player )
-			if ( !PermissionManager.checkPerm( (Player) player, "cynichat.admin.silence" ) )
+			//And can they completely silence someone?
+			if ( !CyniChat.perms.checkPerm( (Player) player, "cynichat.admin.silence" ) )
 				return false;
 		
-		if ( DataManager.getDetails( mutee.toLowerCase() ) == null ) {
+		//Does the person exist?
+		if ( CyniChat.data.getDetails( mutee.toLowerCase() ) == null ) {
 			player.sendMessage("This player does not exist");
 			return true;
 		}
-		DataManager.getDetails(mutee.toLowerCase()).Silence( player );
+		
+		//Silence them.
+		CyniChat.data.getDetails(mutee.toLowerCase()).silence( player );
+		
 		return true;
+		
 	}
 
 	/**
-	 * Give a person infomation about global mutation
+	 * Give a person information about global mutation
 	 * @param player : Wait... mutation?
-	 * @return No, no! Muting!
 	 */
-	public static boolean gmuteInfo( CommandSender player ) {
+	public static void gmuteInfo( CommandSender player ) {
+		
+		//The player dun goofed
 		player.sendMessage(ChatColor.RED+"Invalid Syntax!");
-		player.sendMessage("/ch gmute "+ChCommand.necessary("player"));
-		return true;
+		
+		//Perform ungoof
+		player.sendMessage(ChatColor.RED+"/ch gmute "
+			+ChCommand.necessary("player", ChatColor.RED) );
+		
 	}
-
+	
 	/**
 	 * Show a player information about muting
 	 * @param player : The person wanting to know
-	 * @return true when complete
 	 */
-	public static boolean muteInfo( CommandSender player) {
+	public static void muteInfo( CommandSender player) {
+		
+		//Incorrect
 		player.sendMessage(ChatColor.RED+"Invalid Syntax!");
-		player.sendMessage("/ch mute "+ChCommand.necessary("player")+" "+ChCommand.optional("channel") );
-		return true;
+		
+		//Correct
+		player.sendMessage(ChatColor.RED+"/ch mute "
+			+ChCommand.necessary("player", ChatColor.RED)+" "
+			+ChCommand.optional("channel", ChatColor.RED) );
+		
 	}
-
+	
 	/**
 	 * Globally unmute someone
 	 * @param player : The person who has a kind heart
@@ -142,29 +187,41 @@ public class MuteCommand {
 	 * @return true when complete
 	 */
 	public static boolean gUnMute( CommandSender player, String mutee) {
+		
+		//Is the player a player?
 		if ( player instanceof Player )
-			if ( !PermissionManager.checkPerm( (Player) player, "cynichat.admin.silence") )
+			//Can they silence someone?
+			if ( !CyniChat.perms.checkPerm( (Player) player, "cynichat.admin.silence") )
 				return false;
 		
-		if ( DataManager.getDetails( mutee.toLowerCase() ) == null ) {
+		//Does the player exist?
+		if ( CyniChat.data.getDetails( mutee.toLowerCase() ) == null ) {
 			player.sendMessage("This player does not exist");
 			return true;
 		}
-		DataManager.getDetails(mutee.toLowerCase()).Listen(player);
+		
+		//Make them speak again!
+		CyniChat.data.getDetails(mutee.toLowerCase()).listen(player);
+		
 		return true;
+		
 	}
-
+	
 	/**
 	 * Show information about global unmuting
 	 * @param player : The person who wants to know
-	 * @return true when complete
 	 */
-	public static boolean gUnMuteInfo( CommandSender player ) {
+	public static void gUnMuteInfo( CommandSender player ) {
+		
+		//Player was incorrect
 		player.sendMessage(ChatColor.RED+"Invalid Syntax!");
-		player.sendMessage("/ch gunmute "+ChCommand.necessary("player"));
-		return true;
+		
+		//Make that a negative negative
+		player.sendMessage( ChatColor.RED+"/ch gunmute "
+			+ChCommand.necessary("player", ChatColor.RED) );
+		
 	}
-
+	
 	/**
 	 * Unmute a player in one channel
 	 * @param player : The player doing the unmuting
@@ -173,31 +230,49 @@ public class MuteCommand {
 	 * @return true when complete
 	 */
 	public static boolean unmute( CommandSender player, Channel channel, String mutee ) {
+		
+		//Ask if the player is a player
 		if ( player instanceof Player )
-			if ( !PermissionManager.checkPerm( (Player) player, "cynichat.mod.mute."+channel) )
+			//And if they can perform an unmute for this channel
+			if ( !CyniChat.perms.checkPerm( (Player) player, "cynichat.mod.mute."+channel) )
 				return false;
 		
-		if ( DataManager.getDetails( mutee.toLowerCase() ) == null ) {
+		//Does the player even exist that we're unmuting?
+		if ( CyniChat.data.getDetails( mutee.toLowerCase() ) == null ) {
 			player.sendMessage("This player does not exist");
 			return true;
 		}
-		if ( DataManager.getDetails( mutee.toLowerCase() ).remMute(player.getName(), channel) == true ) {
+		
+		//And are they already unmuted or not?
+		if ( CyniChat.data.getDetails( mutee.toLowerCase() ).remMute(player.getName(), channel) ) {
+			
+			//Apparently they're now unmuted
 			player.sendMessage( mutee + " has been unmuted" );
+			
 		} else {
+			
+			//Or they already were...
 			player.sendMessage( mutee + " was already unmuted" );
+			
 		}
+		
 		return true;
+		
 	}
-
+	
 	/**
 	 * Show information about the unmute command
 	 * @param player : The person who wants to know
-	 * @return true when complete
 	 */
-	public static boolean unmuteInfo( CommandSender player ) {
+	public static void unmuteInfo( CommandSender player ) {
+		
+		//The player has it wrong
 		player.sendMessage(ChatColor.RED+"Invalid Syntax!");
-		player.sendMessage("/ch unmute "+ChCommand.necessary("player")+" "+ChCommand.optional("channel") );
-		return true;
+		
+		//Show them how to make it right
+		player.sendMessage(ChatColor.RED+"/ch unmute "
+			+ChCommand.necessary("player", ChatColor.RED)+" "
+			+ChCommand.optional("channel", ChatColor.RED) );
 	}
-
+	
 }

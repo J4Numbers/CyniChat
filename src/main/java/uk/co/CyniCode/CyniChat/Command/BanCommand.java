@@ -4,17 +4,16 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import uk.co.CyniCode.CyniChat.DataManager;
-import uk.co.CyniCode.CyniChat.PermissionManager;
+import uk.co.CyniCode.CyniChat.CyniChat;
 import uk.co.CyniCode.CyniChat.objects.Channel;
 
 /**
  * All the relevant snippits on banning/kicking etc.
- * @author Matthew Ball
- *
+ * 
+ * @author CyniCode
  */
 public class BanCommand {
-
+	
 	/**
 	 * Ban a player from a channel
 	 * @param player : The player doing the banning
@@ -23,18 +22,34 @@ public class BanCommand {
 	 * @return true when complete
 	 */
 	public static boolean ban(CommandSender player, Channel channel, String banee) {
+		
+		//Is the player a player?
 		if ( player instanceof Player )
-			if ( !PermissionManager.checkPerm( (Player) player, "cynichat.mod.ban."+channel.getName().toLowerCase() ) )
+			//Do they have the permissions to ban a person in this channel?
+			if ( !CyniChat.perms.checkPerm( (Player) player, 
+						"cynichat.mod.ban."+channel.getName().toLowerCase() ) )
+				//Nope? Boom!
 				return false;
 		
-		if ( DataManager.getDetails( banee.toLowerCase() ).newBan(player.getName(), channel) == true ) {
+		//Now try to ban the player
+		if ( CyniChat.data.getDetails( banee.toLowerCase() )
+				.newBan(player.getName(), channel) )
+			
+			//If it was successful, tell the player so
 			player.sendMessage( banee + " has been banned.");
-		} else {
+			
+		else 
+			
+			//Otherwise, tell the player so, just so they know
 			player.sendMessage( banee + " is already banned.");
-		}
+			
+		
+		
+		//Then return
 		return true;
+		
 	}
-
+	
 	/**
 	 * Unban a player from a channel
 	 * @param player : The player doing the unbanning
@@ -43,40 +58,60 @@ public class BanCommand {
 	 * @return true when complete
 	 */
 	public static boolean unban(CommandSender player, Channel channel, String banee) {
+		
+		//Is the player actually a player?
 		if ( player instanceof Player )
-			if ( !PermissionManager.checkPerm( (Player) player, "cynichat.mod.ban."+channel.getName().toLowerCase() ) )
+			//Yep. Can they unban the person?
+			if ( !CyniChat.perms.checkPerm( (Player) player, 
+						"cynichat.mod.ban."+channel.getName().toLowerCase() ) )
+				//Nooooo... kill it!
 				return false;
 		
-		if ( DataManager.getDetails( banee.toLowerCase() ).remBan( player.getName(), channel) == true ) {
+		//Try to unban the player...
+		if ( CyniChat.data.getDetails( banee.toLowerCase() ).remBan( player.getName(), channel) )
+			
+			//Now they're unbanned, celebrate!
 			player.sendMessage("The player has been unbanned.");
-		} else {
+			
+		else
+			
+			//Tell the player that we were unsuccessful
 			player.sendMessage("This player was not banned.");
-		}
+		
+		//And return to wherever we came from
 		return true;
 	}
-
+	
 	/**
 	 * Return the information about the ban command
 	 * @param player : The person we're giving the information
-	 * @return true when complete
 	 */
-	public static boolean banInfo( CommandSender player ) {
-		player.sendMessage(ChatColor.RED+"Invalid Syntax!");
-		player.sendMessage("/ch ban "+ChCommand.necessary("player")+" "+ChCommand.optional("channel"));
-		return true;
+	public static void banInfo( CommandSender player ) {
+		
+		//Tell the player that their command was invalid
+		player.sendMessage( ChatColor.RED+"Invalid Syntax!" );
+		
+		//And give them the correct one to work with
+		player.sendMessage( ChatColor.RED + "/ch ban "+ChCommand.necessary( "player", ChatColor.RED )
+			+" "+ChCommand.optional( "channel", ChatColor.RED ) );
+		
 	}
-
+	
 	/**
 	 * Return the information about the unban command
 	 * @param player : The player we're giving the information to
-	 * @return true when complete
 	 */
-	public static boolean unbanInfo( CommandSender player ) {
-		player.sendMessage(ChatColor.RED+"Invalid Syntax!");
-		player.sendMessage("/ch unban "+ChCommand.necessary("player")+" "+ChCommand.optional("channel"));
-		return true;
+	public static void unbanInfo( CommandSender player ) {
+		
+		//Tell the player their command was wrong
+		player.sendMessage( ChatColor.RED+"Invalid Syntax!" );
+		
+		//And give them the right command instead
+		player.sendMessage( ChatColor.RED + "/ch unban "+ChCommand.necessary( "player", ChatColor.RED )
+			+" "+ChCommand.optional( "channel", ChatColor.RED ) );
+		
 	}
-
+	
 	/**
 	 * Kick the player from the channel
 	 * @param player : The player trying to kick someone else
@@ -85,28 +120,46 @@ public class BanCommand {
 	 * @return true when complete
 	 */
 	public static boolean kick(CommandSender player, Channel channel, String kickee) {
+		
+		//If the player is a player...
 		if ( player instanceof Player )
-			if ( !PermissionManager.checkPerm( (Player) player, "cynichat.mod.kick."+channel.getName().toLowerCase() ) )
+			//Check whether they have the permissions to kick in
+			// this channel.
+			if ( !CyniChat.perms.checkPerm( (Player) player, 
+						"cynichat.mod.kick."+channel.getName().toLowerCase() ) )
+				//Apparently not...
 				return false;
 		
-		if ( DataManager.getDetails( kickee.toLowerCase() ).Kick(player.getName(), channel ) == true ) {
+		//Try to kick the player from the channel
+		if ( CyniChat.data.getDetails( kickee.toLowerCase() )
+			.kick(player.getName(), channel ) )
+			
+			//If we kicked em, tell the player
 			player.sendMessage( kickee + " has been kicked from the channel." );
-		} else {
+			
+		else 
+			
+			//And if we didn't, tell 'em that too
 			player.sendMessage( kickee + " was not in the channel" );
-		}
+		
+		//Now return
 		return true;
 		
 	}
-
+	
 	/**
 	 * Return the information on how to kick a player
 	 * @param player : Firstly, you should pick them up
-	 * @return And then boot them out
 	 */
-	public static boolean kickInfo(CommandSender player) {
+	public static void kickInfo(CommandSender player) {
+		
+		//Tell the player their command was wrong
 		player.sendMessage(ChatColor.RED+"Invalid Syntax!");
-		player.sendMessage("/ch kick "+ChCommand.necessary("player")+" "+ChCommand.optional("channel"));
-		return true;
+		
+		//Then give them the right command
+		player.sendMessage( ChatColor.RED + "/ch kick "+ChCommand.necessary("player", ChatColor.RED)+
+			" "+ChCommand.optional("channel", ChatColor.RED) );
+		
 	}
-
+	
 }

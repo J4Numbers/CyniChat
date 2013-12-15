@@ -2,8 +2,6 @@ package uk.co.CyniCode.CyniChat;
 
 import java.util.logging.Logger;
 
-import net.milkbowl.vault.permission.Permission;
-
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -28,9 +26,11 @@ public class CyniChat extends JavaPlugin{
 	
 	public static String version;
 	public static String name;
-	public static String Server;
+	public static String server;
+	
 	public static CyniChat self = null;
-	public static Permission perms = null;
+	public static PermissionManager perms = null;
+	public static DataManager data = null;
 	
 	public static Boolean JSON = false;
 	public static Boolean SQL = false;
@@ -55,13 +55,13 @@ public class CyniChat extends JavaPlugin{
 	 * @return true if it does exist, false if it doesn't
 	 */
 	public static boolean ifCommandExists( String comm ) {
-		if ( self.getServer().getPluginCommand( comm ) == null ) 
-			return false;
-		return true;
+		return self.getServer().getPluginCommand( comm ) != null;
 	}
 	
 	/**
-	 * This is the onEnable class for when the plugin starts up. Basic checks are run for the version, name and information of the plugin, then startup occurs.
+	 * This is the onEnable class for when the plugin starts up.
+	 * Basic checks are run for the version, name and information 
+	 * of the plugin, then startup occurs.
 	 */
 	@Override
 	public void onEnable(){
@@ -79,6 +79,7 @@ public class CyniChat extends JavaPlugin{
 		
 		//Collect config data
 		def_chan = getConfig().getString("CyniChat.channels.default").toLowerCase();
+		
 		if ( getConfig().getString("CyniChat.other.debug").equalsIgnoreCase("true") ) {
 			debug = true;
 			printInfo("Debugging enabled!");
@@ -86,6 +87,7 @@ public class CyniChat extends JavaPlugin{
 			debug = false;
 			printInfo("Debugging disabled!");
 		}
+		
 		if ( getConfig().getString("CyniChat.other.data").equalsIgnoreCase("mysql") ) {
 			SQL = true;
 			printInfo("MySQL storage enabled!");
@@ -93,14 +95,15 @@ public class CyniChat extends JavaPlugin{
 			JSON = true;
 			printInfo("JSON storage enabled!");
 		}
-		DataManager.start( this );
-		DataManager.channelTable();
+		
+		data = new DataManager( this );
+		data.channelTable();
 		
 		if ( getConfig().getString("CyniChat.other.irc").equalsIgnoreCase("true") ) {
 			printInfo( "Starting IRC..." );
 			try {
 				PBot = new IRCManager( this );
-				PBot.loadChannels( DataManager.returnAllChannels() );
+				PBot.loadChannels( data.getChannels() );
 				IRC = true;
 				ChatRouter.addRouter(ChatRouter.EndpointType.IRC,PBot);
 				printInfo( "IRC has started." );
@@ -119,10 +122,12 @@ public class CyniChat extends JavaPlugin{
 		this.getCommand("r").setExecutor(new RCommand() );
 		counter = 1;
 		
-		if ( PermissionManager.setupPermissions( this ) == false ) {
+		try {
+			perms = new PermissionManager( this );
+		} catch ( ClassNotFoundException e ) {
 			killPlugin();
-			return;
 		}
+		
 		//Register the listeners.
 		ServerChatListener listener = new ServerChatListener();
 		ChatRouter.addRouter(ChatRouter.EndpointType.PLAYER,listener);
@@ -138,10 +143,14 @@ public class CyniChat extends JavaPlugin{
 	 */
 	@Override
 	public void onDisable() {
-		DataManager.saveChannels();
-		DataManager.saveUsers();
+		
+		data.saveChannels();
+		data.saveUsers();
+		
 		if ( IRC == true ) PBot.stop();
+		
 		printInfo("CyniChat has been disabled!");
+		
 	}
 
 	/**
@@ -149,7 +158,7 @@ public class CyniChat extends JavaPlugin{
 	 * @param line : This is the error message
 	 */
 	public static void printSevere(String line) {
-		self.log.severe("[CyniChat] " + line);
+		self.log.severe( String.format( "[CyniChat] %s", line ) );
 	}
 
 	/**
@@ -157,7 +166,7 @@ public class CyniChat extends JavaPlugin{
 	 * @param line : This is the error message
 	 */
 	public static void printWarning(String line) {
-		self.log.warning("[CyniChat] " + line);
+		self.log.warning( String.format( "[CyniChat] %s", line ) );
 	}
 
 	/**
@@ -165,7 +174,7 @@ public class CyniChat extends JavaPlugin{
 	 * @param line : This is the information
 	 */
 	public static void printInfo(String line) {
-		self.log.info("[CyniChat] " + line);
+		self.log.info( String.format( "[CyniChat] %s", line ) );
 	}
 
 	/**
@@ -173,15 +182,16 @@ public class CyniChat extends JavaPlugin{
 	 * @param line : This contains the information to be outputted
 	 */
 	public static void printDebug(String line) {
-		if ( debug == true ) {
-			self.log.info("[CyniChat DEBUG] " + line);
-		}
+		if ( debug == true )
+			self.log.info( String.format( "[CyniChat DEBUG] %s", line ) );
+		
 	}
 
 	/**
 	 * Reload the plugin completely, disabling it before re-enabling it
 	 */
 	public static void reload() {
+		
 		try {
 			self.onDisable();
 			self.onEnable();
@@ -189,6 +199,7 @@ public class CyniChat extends JavaPlugin{
 			printSevere("Failiure of epic proportions!");
 			e.printStackTrace();
 		}
+		
 	}
 
 	/**
@@ -197,7 +208,9 @@ public class CyniChat extends JavaPlugin{
 	public static void killPlugin() {
 		printSevere("Fatal error has occured...");
 		printSevere("Killing...");
+		
 		if ( IRC == true ) PBot.stop();
+		
 		pm.disablePlugin( self );
 	}
 }

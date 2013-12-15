@@ -6,6 +6,12 @@ import uk.co.CyniCode.CyniChat.CyniChat;
 import uk.co.CyniCode.CyniChat.objects.Channel;
 import uk.co.CyniCode.CyniChat.objects.UserDetails;
 
+/**
+ * An interface for all the potential types of data that we're going
+ * to handle at some point or another.
+ * 
+ * @author CyniCode
+ */
 public interface IDataManager {
 	/**
 	 * We have to start each instance of the data methods
@@ -37,5 +43,13 @@ public interface IDataManager {
 	 * @return Channel objects of every single channel
 	 */
 	public Map<String, Channel> returnChannels();
+	
+	/**
+	 * At some point, we're going to want to boost the connections
+	 * so that they don't get tired out and cancel on us.
+	 * @return the runnable object that we want to give to bukkit
+	 *  for it to schedule
+	 */
+	public Runnable getBooster();
 	
 }
