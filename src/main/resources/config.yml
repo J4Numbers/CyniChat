@@ -16,3 +16,5 @@ CyniChat:
     hostname: "127.0.0.1"
     port: 6667
     nickname: "CyniBot"
+    admin_channel: "#master"
+    admin_password: ""

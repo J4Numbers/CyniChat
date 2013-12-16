@@ -21,11 +21,11 @@ public class IrcResponses {
 	
 	/**
 	 * Show all the help text
+	 * 
 	 * @param bot : The bot that originally got pinged
 	 * @param user : The user that pinged the bot
-	 * @return true when complete
 	 */
-	public static boolean helpOutput( PircBotX bot, User user ) {
+	public static void helpOutput( PircBotX bot, User user ) {
 		
 		bot.setMessageDelay(10);
 		bot.sendMessage( user, "You wanted some help?" );
@@ -45,70 +45,97 @@ public class IrcResponses {
 		bot.sendMessage( user, " " );
 		bot.sendMessage( user, "If this didn't help you, then you're kinda screwed :P" );
 		
-		return true;
 	}
 	
 	/**
 	 * List all the players on the server or in the channel
+	 * 
 	 * @param user : The user that originally asked
 	 * @param bot : The bot that was pinged
 	 * @param channel : The channel we're returning the information into
 	 * @param all : A boolean of whether it's a single channel or the whole server
-	 * @return true when complete
 	 */
-	public static boolean listOutput( User user, PircBotX bot, String channel, boolean all ) {
+	public static void listOutput( User user, PircBotX bot, String channel, boolean all ) {
 		
+		//Let's debug all the parameters
 		CyniChat.printDebug( user.getNick() + " : " + channel + " : " + all );
 		
-		if ( all != true ) {
+		//And if it's just this channel we're checking...
+		if ( !all ) {
 			
-			Channel listChan = CyniChat.data.getChannel( CyniChat.data.getLinkedChans().get( channel ) );
+			//Let's get the channel that we're listing out
+			Channel listChan = CyniChat.data.getChannel( 
+					CyniChat.data.getLinkedChans().get( channel ) );
 			
+			//And all the users online to be in said channel
 			Map<String, UserDetails> users = CyniChat.data.getOnlineUsers();
 			
-			Set<String> keys = users.keySet();
-			Iterator<String> iter = keys.iterator();
-			
+			//Make a nice template for the bot's output
 			String allPlayers = "Players online in "+listChan.getName()+" : ";
 			
-			while ( iter.hasNext() ) {
-				String thisOne = iter.next();
+			//Then for everyone who is online...
+			for ( Map.Entry< String, UserDetails > thisOne 
+					: users.entrySet() ) {
 				
-				CyniChat.printDebug( thisOne + " is online... checking channel : "+listChan.getName() );
+				//Tell the console that they are online
+				CyniChat.printDebug( thisOne.getKey() 
+						+ " is online... checking channel : "
+						+ listChan.getName() );
 				
-				UserDetails thisPlayer = users.get( thisOne );
-				CyniChat.printDebug( thisPlayer.getAllVerboseChannels() );
+				//And what channels they are in
+				CyniChat.printDebug( thisOne.getValue().getAllVerboseChannels() );
 				
-				if ( thisPlayer.getAllChannels().contains( listChan.getName() ) ) {
+				//Then, if they are in this channel...
+				if ( thisOne.getValue().getAllChannels().contains( listChan.getName() ) ) {
+					
+					//Debug that fact
 					CyniChat.printDebug( "They're in the channel... adding to string" );
-					allPlayers += thisOne + ", ";
+					
+					//And add them to the final message
+					allPlayers += thisOne.getValue() + ", ";
+					
 				}
+				
 			}
 			
+			//Once that has been done, debug what we've gathered
+			// out to the console
 			CyniChat.printDebug( allPlayers );
 			
+			//Then sent it too
 			bot.sendMessage( channel, allPlayers );
 			
 		} else {
 			
+			//Otherwise, it's all the players that are on the
+			// server full stop.
 			Map<String, UserDetails> users = CyniChat.data.getOnlineUsers();
+			
+			//Get the set of their names
 			Set<String> players = users.keySet();
-			Iterator<String> everyone = players.iterator();
+			
+			//And, once again, make a template of the output
 			String allPlayers = "Players online : ";
 			
-			while ( everyone.hasNext() ) {
-				allPlayers += everyone.next() + ", ";
-			}
+			//Then, for everyone who is online,
+			for ( String thisOne : players )
+				
+				//Add them to that template's output
+				allPlayers += thisOne + ", ";
 			
+			//Debug out that message
+			CyniChat.printDebug( allPlayers );
+			
+			//Then actually send that message
 			bot.sendMessage( channel, allPlayers );
 			
 		}
 		
-		return true;
 	}
-
+	
 	/**
 	 * Kick a player in the MC channel from inside IRC
+	 * 
 	 * @param user : The user that kicked 'im
 	 * @param bot : The bot that was pinged
 	 * @param player : The player who got kicked
@@ -117,38 +144,68 @@ public class IrcResponses {
 	 */
 	public static boolean kickOutput( User user, PircBotX bot, String player, String channel ) {
 		
+		//Tell them that we've reached the method
 		CyniChat.printDebug( "Kicking part 2..." );
 		
+		//And get the details of the person we're kicking
 		UserDetails kicking = CyniChat.data.getDetails( player );
 		
+		//If they're even there that is...
 		if ( kicking == null ) {
+			
+			//Since they're not, tell the person that no-one with
+			// that name was online.
 			bot.sendMessage( channel, "No-one found with the name of "+player+"..." );
 			return false;
+			
 		}
 		
-		Channel kickChan = CyniChat.data.getChannel( CyniChat.data.getLinkedChans().get( channel ) );
+		//Then get the channel that we're going to try and kick them from
+		Channel kickChan = CyniChat.data.getChannel( 
+				CyniChat.data.getLinkedChans().get( channel ) );
 		
+		//If that doesn't exist...
 		if ( kickChan == null ) {
+			
+			//Then something is kinda fecked
 			CyniChat.printDebug( "This channel of "+channel+" doesn't exist... wtf?" );
 			return false;
+			
 		}
 		
+		//Is the player online?
 		if ( kicking.getPlayer() != null ) {
+			
+			//Apparently so.
 			CyniChat.printDebug( "Kicking part three..." );
-			if ( kicking.kick( user.getNick(), kickChan ) == true ) { 
+			
+			//Actually kick them from the channel
+			if ( kicking.kick( user.getNick(), kickChan ) ) { 
+				
+				//Then celebrate by saying that they've been kicked
 				bot.sendMessage( channel, "The player has been kicked..." );
+				
 			} else {
+				
+				//The player wasn't in the channel... crafty bugger
 				bot.sendMessage( channel, "The player was not in the channel..." );
+				
 			}
+			
 		} else {
+			
+			//The player wasn't even online
 			bot.sendMessage( channel, "This player is not online..." );
+			
 		}
 		
 		return true;
+		
 	}
 	
 	/**
 	 * Un/Mute a player inside a channel from the safety of IRC
+	 * 
 	 * @param user : The user who's doing the un/muting
 	 * @param bot : The bot who heard about the un/mute
 	 * @param player : The player who will be un/muted
@@ -158,38 +215,71 @@ public class IrcResponses {
 	 */
 	public static boolean muteOutput( User user, PircBotX bot, String player, String channel, Boolean undo ) {
 		
+		//Get the person that we're meant to be un/muting
 		UserDetails muting = CyniChat.data.getDetails( player );
 		
+		//Then ask if they even exist
 		if ( muting == null ) {
+			
+			//If they don't, tell the bot that they don't
 			bot.sendMessage( channel, "There is no such player as "+player+"..." );
 			return false;
+			
 		}
 		
+		//Then get the channel that they are being freed from
 		Channel muteChan = CyniChat.data.getChannel( CyniChat.data.getLinkedChans().get( channel ) );
 		
+		//If the channel doesn't exist...
 		if ( muteChan == null )
+			
+			//Feck.
 			return false;
 		
+		//Okay, then we ask if the player was online
 		if ( muting.getPlayer() != null )
-			if ( undo == true ) {
-				if ( muting.remMute( user.getNick(), muteChan ) == true ) {
+			
+			//And if we're muting or unmuting
+			if ( undo ) {
+				
+				//Since we're unmuting, try to remove the mute
+				if ( muting.remMute( user.getNick(), muteChan ) ) {
+					
+					//And be successful
 					bot.sendMessage( channel, "The player has been unmuted in the channel..." );
+					
 				} else {
+					
+					//Or not so
 					bot.sendMessage( channel, "The player was not muted in the first place..." );
+					
 				}
+				
+			//Otherwise, they're being muted.
 			} else {
-				if ( muting.addMute( user.getNick(), muteChan ) == true ) {
+				
+				//And try to do so,
+				if ( muting.addMute( user.getNick(), muteChan ) ) {
+					
+					//Succeed, and celebrate.
 					bot.sendMessage( channel, "The player has been muted in this channel..." );
+					
 				} else {
+					
+					//Or fail miserably and cry.
 					bot.sendMessage( channel, "The player was already muted in this channel..." );
+					
 				}
+				
 			}
 		
 		return true;
+		
 	}
 	
 	/**
 	 * A method to un/ban a player in the MC channels from IRC
+	 * 
 	 * @param user : The user that's doing the un/banning
 	 * @param bot : The bot that heard about it
 	 * @param player : The player that's being un/banned
@@ -199,84 +289,140 @@ public class IrcResponses {
 	 */
 	public static boolean banOutput( User user, PircBotX bot, String player, String channel, Boolean undo ) {
 		
+		//Get the person that this is happening to
 		UserDetails banning = CyniChat.data.getDetails( player );
 		
+		//And if they even exist
 		if ( banning == null ) {
+			
+			//Since they don't say so
 			bot.sendMessage( channel, "There is no such person as "+player+"..." );
 			return false;
+			
 		}
 		
+		//Then get the channel we're banning in
 		Channel banChan = CyniChat.data.getChannel( CyniChat.data.getLinkedChans().get( channel ) );
 		
+		//And ask if that is there
 		if ( banChan == null )
+			//If not... cry
 			return false;
 		
+		//Then we ask if they are online
 		if ( banning.getPlayer() != null )
-			if ( undo == true ) {
-				if ( banning.remBan( user.getNick(), banChan ) == true ) {
+			
+			//And if we're banning or unbanning
+			if ( undo ) {
+				
+				//Since we're unbanning, remove the ban
+				// in this channel
+				if ( banning.remBan( user.getNick(), banChan ) ) {
+					
+					//And let the player rejoice
 					bot.sendMessage( channel, "The player has been unbanned from the channel..." );
+					
 				} else {
+					
+					//Or fail miserably and cry
 					bot.sendMessage( channel, "The player was already unbanned in the channel..." );
+					
 				}
+				
 			} else {
-				if ( banning.newBan( user.getNick(), banChan ) == true ) {
+				
+				//Well... sorry mate, you're being banned
+				if ( banning.newBan( user.getNick(), banChan ) ) {
+					
+					//Yeah... sorry.
 					bot.sendMessage( channel, "The player has been banned in the channel..." );
+					
 				} else {
+					
+					//Or not... apparently you get to speak another day
 					bot.sendMessage( channel, "The player was aready banned in the channel..." );
+					
 				}
+				
 			}
 		
 		return true;
+		
 	}
 	
 	/**
 	 * Direct a single message to this bot and relay it to a given channel
 	 * in terms of the bot.
+	 * 
 	 * @param bot : This is who is going to send the message
 	 * @param chan : This is the channel we're going to send it over
 	 * @param message : This is the message we're carrying
 	 * @return true if the channel exists and we were successful...
-	 * False if the channel didn't actually exist in the first place.
+	 *  false if the channel didn't actually exist in the first place.
 	 */
 	public static boolean talkOutput( PircBotX bot, String chan, String message ) {
 		
+		//Tell the console what's happening
 		CyniChat.printDebug( "Trying to TALK in: " + chan );
 		
+		//Then ask if the channel exists
 		if ( CyniChat.data.getChannel( chan ) != null ) {
 			
+			//Since it does...
 			CyniChat.printDebug( chan + " exists" );
 			
+			//Get this channel
 			Channel thisChan = CyniChat.data.getChannel( chan );
 			
+			//And all those online
 			Map<String, UserDetails> online = CyniChat.data.getOnlineUsers();
 			
-			Set<String> onSet = online.keySet();
-			Iterator<String> onIter = onSet.iterator();
-			
-			while ( onIter.hasNext() ) {
-				String cur = onIter.next();
+			//Then, for all those people...
+			for ( Map.Entry<String,UserDetails> thisPlayer
+					: online.entrySet() ) {
 				
-				CyniChat.printDebug( cur + " is the next player in line" );
+				//Get each of them
+				CyniChat.printDebug( thisPlayer.getKey() + " is the next player in line" );
 				
-				UserDetails thisPlayer = online.get( cur );
-				if ( thisPlayer.getAllChannels().contains( thisChan.getName() ) ) {
+				//And ask if they are in this channel
+				if ( thisPlayer.getValue().getAllChannels().contains( thisChan.getName() ) ) {
+					
 					try {
+						
+						//If they are...
 						CyniChat.printDebug( "Player found... trying to send message" );
-						thisPlayer.getPlayer().sendMessage( thisChan.getColour()+"[IRC] ["+thisChan.getNick()+"] "+bot.getNick()+" : "+message );
+						
+						//Send the message to them
+						thisPlayer.getValue().getPlayer().sendMessage( 
+								thisChan.getColour()+"[IRC] ["
+										+thisChan.getNick()+"] "
+										+bot.getNick()+" : "+message );
+						
 					} catch ( NullPointerException e ) {
+						
+						//Or fail miserably and cry...
 						CyniChat.printDebug( "Player not found... erroring" );
 						e.printStackTrace();
+						
 					}
+					
 				}
+				
 			}
 			
+			//Once we've done that, send the message into IRC to echo
+			// things
 			CyniChat.printDebug( "Trying to send message to IRC..." );
 			bot.sendMessage( thisChan.getIRC(), message );
 			
 			return true;
+			
 		}
 		
+		//Or the channel simply doesn't exist...
 		CyniChat.printDebug( "Channel doesn't exist." );
 		return false;
+		
 	}
+	
 }
