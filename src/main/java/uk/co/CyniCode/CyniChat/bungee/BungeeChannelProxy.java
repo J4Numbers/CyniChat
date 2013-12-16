@@ -263,4 +263,5 @@ public class BungeeChannelProxy implements PluginMessageListener, IChatEndpoint 
 			ex.printStackTrace();
 		}
 	}
+	
 }
