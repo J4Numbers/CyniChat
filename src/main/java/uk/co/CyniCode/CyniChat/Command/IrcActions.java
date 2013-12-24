@@ -45,7 +45,11 @@ public class IrcActions {
 
 		if ( instruct.equals( "list" ) ) {
 
+			CyniChat.printDebug( "List key used" );
+
 			if ( channel.equals( "ALL" ) ) {
+
+				CyniChat.printDebug( "All key used" );
 
 				//Otherwise, it's all the players that are on the
 				// server full stop.
@@ -66,6 +70,8 @@ public class IrcActions {
 				successful = true;
 
 			} else {
+
+				CyniChat.printDebug( "Individual channel used" );
 
 				if ( CyniChat.data.getLinkedChans().containsKey( channel ) ) {
 
@@ -115,6 +121,8 @@ public class IrcActions {
 			}
 
 		} else if ( instruct.equals( "kick" ) ) {
+
+			CyniChat.printDebug( "Kick key used" );
 
 			//And get the details of the person we're kicking
 			UserDetails kicking = CyniChat.data.getDetails( player );
@@ -172,6 +180,8 @@ public class IrcActions {
 
 		} else if ( instruct.equals( "mute" ) ) {
 
+			CyniChat.printDebug( "Mute key used" );
+
 			//Get the person that we're meant to be un/muting
 			UserDetails muting = CyniChat.data.getDetails( player );
 
@@ -223,6 +233,8 @@ public class IrcActions {
 
 		} else if ( instruct.equals( "unmute" ) ) {
 
+			CyniChat.printDebug( "Unmute key used" );
+
 			//Get the person that we're meant to be un/muting
 			UserDetails muting = CyniChat.data.getDetails( player );
 
@@ -272,6 +284,8 @@ public class IrcActions {
 			}
 
 		} else if ( instruct.equals( "ban" ) ) {
+
+			CyniChat.printDebug( "Ban key used" );
 
 			//Get the person that this is happening to
 			UserDetails banning = CyniChat.data.getDetails( player );
@@ -325,6 +339,8 @@ public class IrcActions {
 		//UNBAN
 		} else {
 
+			CyniChat.printDebug( "Unban key used" );
+
 			//Get the person that this is happening to
 			UserDetails banning = CyniChat.data.getDetails( player );
 
@@ -377,7 +393,9 @@ public class IrcActions {
 
 		}
 
-		CyniChat.printDebug( result );
+		CyniChat.printDebug( "Result = " + result );
+
+		CyniChat.printDebug( "Success = " + successful );
 
 		if ( successful )
 
