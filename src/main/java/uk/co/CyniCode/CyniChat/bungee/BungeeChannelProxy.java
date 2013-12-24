@@ -9,6 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 
+import uk.co.CyniCode.CyniChat.Command.IrcActions;
 import uk.co.CyniCode.CyniChat.CyniChat;
 import uk.co.CyniCode.CyniChat.objects.Channel;
 import uk.co.CyniCode.CyniChat.routing.ChatRouter;
@@ -107,15 +108,25 @@ public class BungeeChannelProxy implements PluginMessageListener, IChatEndpoint 
 			//Set the type ( if applicable )
 			if ( subChannel.equals( "CyniChat" ) )
 				type = EndpointType.values()[dis.readInt()];
-			
+
 			//Set the fancy name of the player
 			CyniChat.printDebug( "Type: " + type.name() );
 			String fancyPlayerName = dis.readUTF();
-			
+
 			//Set the normal name of the player
 			CyniChat.printDebug( "Name: " + fancyPlayerName );
 			String playerName = dis.readUTF();
-			
+
+			if ( subChannel.equals( "CyniCord" ) &&
+					!playerName.startsWith( "[IRC]" ) ) {
+				CyniChat.printDebug( playerName + " command found..." );
+				String pl  = dis.readUTF();
+				String ch  = dis.readUTF();
+				String rCh = dis.readUTF();
+				IrcActions.extCommands( playerName, pl, ch, rCh );
+				return;
+			}
+
 			//Set the CyniChat chat channel... if applicable
 			CyniChat.printDebug( "Name2: " + playerName );
 			if ( subChannel.equals( "CyniChat" ) )
