@@ -200,7 +200,7 @@ public class UserDetails {
 	 * Toggle the afk status
 	 */
 	public void changeAfk() {
-		this.afk = ( this.afk != true );
+		this.afk = ( !this.afk );
 	}
 	
 	/**
