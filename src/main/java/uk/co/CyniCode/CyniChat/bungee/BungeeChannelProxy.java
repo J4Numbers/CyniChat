@@ -123,6 +123,11 @@ public class BungeeChannelProxy implements PluginMessageListener, IChatEndpoint 
 				String pl  = dis.readUTF();
 				String ch  = dis.readUTF();
 				String rCh = dis.readUTF();
+
+				CyniChat.printDebug( "Player Name : " + pl );
+				CyniChat.printDebug( "Channel Name : " + ch );
+				CyniChat.printDebug( "Return Channel : " + rCh );
+
 				IrcActions.extCommands( playerName, pl, ch, rCh );
 				return;
 			}
