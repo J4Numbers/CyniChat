@@ -40,8 +40,12 @@ public class IrcActions {
 	public static void extCommands( String instruct, String player,
 									String channel, String retChannel ) {
 
+		String serName = CyniChat.bungeeName;
 		String result;
 		boolean successful = false;
+
+		CyniChat.printDebug( String.format( "%s : %s : %s : %s", instruct,
+											player, channel, retChannel ) );
 
 		if ( instruct.equals( "list" ) ) {
 
@@ -59,7 +63,7 @@ public class IrcActions {
 				Set<String> players = users.keySet();
 
 				//And, once again, make a template of the output
-				result = "Players online : ";
+				result = "Players online on "+serName+" : ";
 
 				//Then, for everyone who is online,
 				for ( String thisOne : players )
@@ -83,7 +87,7 @@ public class IrcActions {
 					Map<String, UserDetails> users = CyniChat.data.getOnlineUsers();
 
 					//Make a nice template for the bot's output
-					result = "Players online in "+listChan.getName()+" : ";
+					result = "Players online in "+listChan.getName()+" on "+serName+" : ";
 
 					//Then for everyone who is online...
 					for ( Map.Entry< String, UserDetails > thisOne
@@ -156,13 +160,13 @@ public class IrcActions {
 						if ( kicking.kick( "IRC moderator", kickChan ) ) {
 
 							//Then celebrate by saying that they've been kicked
-							result = "The player has been kicked...";
+							result = "The player has been kicked on "+serName+"...";
 							successful = true;
 
 						} else {
 
 							//The player wasn't in the channel... crafty bugger
-							result = "The player was not in the channel...";
+							result = "The player was not in the channel on "+serName+"...";
 							successful = true;
 
 						}
@@ -210,13 +214,13 @@ public class IrcActions {
 						if ( muting.addMute( "IRC moderator", muteChan ) ) {
 
 							//Succeed, and celebrate.
-							result = "The player has been muted in this channel...";
+							result = "The player has been muted in this channel on "+serName+"...";
 							successful = true;
 
 						} else {
 
 							//Or fail slightly
-							result = "The player was already muted in this channel...";
+							result = "The player was already muted in this channel on "+serName+"...";
 							successful = true;
 
 						}
@@ -263,12 +267,12 @@ public class IrcActions {
 						if ( muting.remMute( "IRC moderator", muteChan ) ) {
 
 							//And be successful
-							result = "The player has been unmuted in the channel...";
+							result = "The player has been unmuted in the channel on "+serName+"...";
 							successful = true;
 
 						} else {
 
-							result = "The player was not muted in the first place...";
+							result = "The player was not muted in the first place on "+serName+"...";
 							successful = true;
 
 						}
@@ -315,13 +319,13 @@ public class IrcActions {
 						if ( banning.newBan( "IRC moderator", banChan ) ) {
 
 							//Yeah... sorry.
-							result = "The player has been banned in the channel...";
+							result = "The player has been banned in the channel on "+serName+"...";
 							successful = true;
 
 						} else {
 
 							//Or not... apparently you get to speak another day
-							result = "The player was already banned in the channel...";
+							result = "The player was already banned in the channel on "+serName+"...";
 							successful = true;
 
 						}
@@ -371,12 +375,12 @@ public class IrcActions {
 						if ( banning.remBan( "IRC moderator", banChan ) ) {
 
 							//And let the player rejoice
-							result = "The player has been unbanned from the channel...";
+							result = "The player has been unbanned from the channel on "+serName+"...";
 							successful = true;
 
 						} else {
 
-							result = "The player was already unbanned in the channel...";
+							result = "The player was already unbanned in the channel on "+serName+"...";
 							successful = true;
 
 						}
@@ -407,11 +411,8 @@ public class IrcActions {
 
 		try {
 
-			ChatRouter.EndpointType type = ChatRouter.EndpointType.IRC;
-
 			ByteArrayOutputStream b = new ByteArrayOutputStream();
 			DataOutputStream out = new DataOutputStream(b);
-			out.writeInt(type.ordinal());// typeId
 
 			//Add the basic details to what we're transmitting
 			out.writeUTF( reply );

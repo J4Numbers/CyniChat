@@ -5,3 +5,5 @@ TestingSheet.xlsx
 .settings
 bin
 target
+/.idea/
+CyniChatI.iml
