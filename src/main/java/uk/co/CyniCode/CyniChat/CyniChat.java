@@ -21,6 +21,7 @@ import java.util.logging.Logger;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import uk.co.CyniCode.CyniChat.Chatting.OnChannelChatEvent;
 import uk.co.CyniCode.CyniChat.Chatting.ServerChatListener;
 import uk.co.CyniCode.CyniChat.Command.AfkCommand;
 import uk.co.CyniCode.CyniChat.Command.ChCommand;
@@ -239,11 +240,12 @@ public class CyniChat extends JavaPlugin{
 		
 		//Register the listeners.
 		ServerChatListener listener = new ServerChatListener();
-		
+
 		//Register all the listeners to their appropriate places
-		ChatRouter.addRouter( ChatRouter.EndpointType.PLAYER,listener );
+		ChatRouter.addRouter(ChatRouter.EndpointType.PLAYER, new OnChannelChatEvent());
+
 		pm.registerEvents(listener, this);
-		
+
 		//And say that we've booted
 		printInfo("CyniChat has been enabled!");
 		

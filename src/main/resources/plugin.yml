@@ -38,7 +38,6 @@ permissions:
       cynichat.basic.chat: true
       cynichat.basic.join: true
       cynichat.basic.leave: true
-      cynichat.basic.leave.info: true
       cynichat.basic.ignore: true
       cynichat.basic.info: true
       cynichat.basic.list: true
@@ -49,30 +48,42 @@ permissions:
   cynichat.basic.chat:
     description: Allows a player to chat
     default: true
+  cynichat.basic.chat.*:
+    description: Allows a player to chat in every channel
+    default: false
   cynichat.basic.msg:
     description: Allows you to send private messages
     default: true
   cynichat.basic.join:
     description: Allows a player to switch channels
     default: true
+  cynichat.basic.join.*:
+      description: Allows a player to join every channel
+      default: false
   cynichat.basic.leave:
     description: Allows a player to leave the channel
     default: true
-  cynichat.basic.leave.info:
-    description: Allows a player to see the information on the leaving command
-    default: true
+  cynichat.basic.leave.*:
+      description: Allows a player to leave every channel
+      default: false
   cynichat.basic.ignore:
     description: Allows a player to ignore another
     default: true
   cynichat.basic.info:
     description: Shows you the information about a specific channel
     default: true
+  cynichat.basic.info.*:
+      description: Allows a player to see information about every channel
+      default: false
   cynichat.basic.list:
     description: Lists all the available channels
     default: true
   cynichat.basic.who:
     description: Lists all the players in a channel
     default: true
+  cynichat.basic.who.*:
+      description: Allows for a player to see who is in every channel
+      default: false
   cynichat.basic.qm:
     description: Sends one message to the specified channel
     default: true
@@ -95,6 +106,7 @@ permissions:
   cynichat.admin.*:
     description: Allows for all admin actions to be carried out
     children:
+      cynichat.mod.*: true
       cynichat.admin.silence: true
       cynichat.admin.create: true
       cynichat.admin.remove: true
