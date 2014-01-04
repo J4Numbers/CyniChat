@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import uk.co.CyniCode.CyniChat.CyniChat;
@@ -33,7 +34,7 @@ import uk.co.CyniCode.CyniChat.objects.UserDetails;
  * 
  * @author CyniCode
  */
-public class ChannelChatEvent extends Event {
+public class ChannelChatEvent extends Event implements Cancellable {
 	
 	/**
 	 * This is the player that originally sent the message
@@ -64,7 +65,12 @@ public class ChannelChatEvent extends Event {
 	 * Create a string for the possible event of it being a /me message
 	 */
 	private String connector;
-	
+
+	/**
+	 * The thing which says whether or not the event is cancelled
+	 */
+	private boolean cancelled;
+
 	/**
 	 * Needed to make bukkit play nice
 	 */
@@ -208,7 +214,15 @@ public class ChannelChatEvent extends Event {
 		return out;
 		
 	}
-	
+
+	public boolean isCancelled() {
+		return cancelled;
+	}
+
+	public void setCancelled(boolean cancel) {
+		cancelled = cancel;
+	}
+
 	/**
 	 * Bukkit requirements
 	 * @return

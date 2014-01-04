@@ -91,7 +91,7 @@ public class BungeeChannelProxy implements PluginMessageListener, IChatEndpoint 
 			byte[] msgbytes = new byte[len];
 			in.readFully(msgbytes);
 			
-			CyniChat.printDebug("CyniChat message recieved!");
+			CyniChat.printDebug("CyniChat message received!");
 			
 			//And read the actual package now
 			DataInputStream dis = new DataInputStream(new ByteArrayInputStream(msgbytes));
@@ -104,10 +104,19 @@ public class BungeeChannelProxy implements PluginMessageListener, IChatEndpoint 
 			EndpointType type = EndpointType.BUNGEE;
 			String chatChannel;
 			String IRCPassword;
-			
+
+			CyniChat.printDebug( "Defaults set" );
+
 			//Set the type ( if applicable )
-			if ( subChannel.equals( "CyniChat" ) )
-				type = EndpointType.values()[dis.readInt()];
+			if ( subChannel.equals( "CyniChat" ) ) {
+
+				int endpointValue = dis.readInt();
+
+				CyniChat.printDebug( "Endpoint value: " + endpointValue );
+
+				type = EndpointType.values()[endpointValue];
+
+			}
 
 			//Set the fancy name of the player
 			CyniChat.printDebug( "Type: " + type.name() );
@@ -137,41 +146,45 @@ public class BungeeChannelProxy implements PluginMessageListener, IChatEndpoint 
 			if ( subChannel.equals( "CyniChat" ) )
 				chatChannel = dis.readUTF();
 			else chatChannel = "N/A";
-			
-			//Set the IRC channel that belongs to the chat channel
+
 			CyniChat.printDebug( "Channel: " + chatChannel );
-			String IRCChannel = dis.readUTF();
-			
-			//Set the IRC password of the channel ( if applicable )
-			CyniChat.printDebug( "IRC Channel: " + IRCChannel );
-			if ( subChannel.equals( "CyniChat" ) )
+
+			if ( subChannel.equals("CyniChat") &&
+					!playerName.startsWith( "[IRC] " ) ) {
+
+				String IRCChannel = dis.readUTF();
+				//Set the IRC password of the channel ( if applicable )
+				CyniChat.printDebug( "IRC Channel: " + IRCChannel );
 				IRCPassword = dis.readUTF();
-			else IRCPassword = "N/A";
-			
+				CyniChat.printDebug( "IRC Password: " + IRCPassword );
+
+			}
+
 			//Get the message contents
-			CyniChat.printDebug( "IRC Password: " + IRCPassword );
 			String message = dis.readUTF();
 			
 			//Now let's set the actual chat channel if it came from
 			// IRC.
-			if ( chatChannel.equals("N/A") )
-				chatChannel = ( CyniChat.data.getLinkedChans().containsKey( IRCChannel ) ) ? 
-					CyniChat.data.getLinkedChans().get( IRCChannel ) :
+			if ( chatChannel.startsWith("#") )
+				chatChannel = ( CyniChat.data.getLinkedChans().containsKey( chatChannel ) ) ?
+					CyniChat.data.getLinkedChans().get( chatChannel ) :
 					"N/A";
-			
+
+			String finalName = ( fancyPlayerName.equals("") ) ? playerName : fancyPlayerName;
+
 			//Print out concise debug
-			CyniChat.printDebug( "Player name : " + playerName );
+			CyniChat.printDebug( "Player name : " + finalName );
 			CyniChat.printDebug( "Channel name : " + chatChannel );
 			CyniChat.printDebug( "Message : " + message );
-			
+
 			//If the channel cannot flag a match, skip over everything
 			// and if this is a player type message, use the fancy 
 			// name, else use the regular name
 			if (CyniChat.data.getChannel(chatChannel) != null) {
 				if (type == EndpointType.PLAYER) {
-					ChatRouter.routeMessage(EndpointType.BUNGEE, fancyPlayerName, chatChannel, message);
+					ChatRouter.routeMessage(EndpointType.BUNGEE, finalName, chatChannel, message);
 				} else {
-					ChatRouter.routeMessage(type, playerName, chatChannel, message);
+					ChatRouter.routeMessage(type, finalName, chatChannel, message);
 				}
 			} else {
 				CyniChat.printDebug( "The getChannel returned null for " + chatChannel );
