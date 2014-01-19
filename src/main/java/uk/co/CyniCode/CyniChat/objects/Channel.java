@@ -144,20 +144,20 @@ public class Channel {
 	 * @param newColour : The channel's colour
 	 * @param newProtect : Whether or not the channel is protected
 	 */
-	public void loadChannel( int id, String newName, String newNick, 
+	public Channel( int id, String newName, String newNick,
 			String ircChan, String ircPass, String newDesc, String newPass, 
 			String newColour, boolean newProtect ) {
 		
 		//Set all the information about the channel we're looking at
-		setId( id );
-		setName( newName );
-		setNick( newNick );
-		setDesc( newDesc );
-		setPassword( newPass );
-		setColor( newColour );
-		setIrcName( ircChan.toLowerCase() );
-		setIrcPass( ircPass );
-		setProtected( newProtect );
+		this.ID = id;
+		this.name = newName;
+		this.nick = newNick;
+		this.desc = newDesc;
+		this.pass = newPass;
+		this.colour = ChatColor.valueOf( newColour );
+		this.ircChannel = ircChan.toLowerCase();
+		this.ircPassword = ircPass;
+		this.protect = newProtect;
 		
 	}
 	
@@ -175,6 +175,7 @@ public class Channel {
 	 */
 	public void setId( int newID ) {
 		this.ID = newID;
+		CyniChat.data.getConnection().saveSingleChannel( this );
 	}
 	
 	/**
@@ -191,6 +192,7 @@ public class Channel {
 	 */
 	public void setName( String name ) {
 		this.name = name;
+		CyniChat.data.getConnection().saveSingleChannel( this );
 	}
 	
 	/**
@@ -207,6 +209,7 @@ public class Channel {
 	 */
 	public void setNick( String nickname ) {
 		this.nick = nickname;
+		CyniChat.data.getConnection().saveSingleChannel( this );
 	}
 	
 	/**
@@ -223,6 +226,7 @@ public class Channel {
 	 */
 	public void setDesc( String desc ) {
 		this.desc = desc;
+		CyniChat.data.getConnection().saveSingleChannel( this );
 	}
 	
 	/**
@@ -239,6 +243,7 @@ public class Channel {
 	 */
 	public void setPassword( String newPass ) {
 		this.pass = newPass;
+		CyniChat.data.getConnection().saveSingleChannel( this );
 	}
 	
 	/**
@@ -255,6 +260,7 @@ public class Channel {
 	 */
 	public void setColor( String newColor ) {
 		this.colour = ChatColor.valueOf( newColor.toUpperCase() );
+		CyniChat.data.getConnection().saveSingleChannel( this );
 	}
 	
 	/**
@@ -271,6 +277,7 @@ public class Channel {
 	 */
 	public void setIrcName( String newName ) {
 		this.ircChannel = newName;
+		CyniChat.data.getConnection().saveSingleChannel( this );
 	}
 	
 	/**
@@ -287,6 +294,7 @@ public class Channel {
 	 */
 	public void setIrcPass( String newPass ) {
 		this.ircPassword = newPass;
+		CyniChat.data.getConnection().saveSingleChannel( this );
 	}
 	
 	/**
@@ -322,6 +330,7 @@ public class Channel {
 	 */
 	public void setProtected( Boolean state ) {
 		this.protect = state;
+		CyniChat.data.getConnection().saveSingleChannel( this );
 	}
 	
 }
