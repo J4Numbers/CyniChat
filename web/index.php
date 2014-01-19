@@ -1,27 +1,34 @@
 <?php
 
-require_once 'config/config.php';
-require_once /*HOME_DIR.*/"bases/cyniBase.php";
-require_once /*HOME_DIR.*/"bases/cyniFile.php";
-require_once /*HOME_DIR.*/"funcs/template.php";
+/**
+ * Copyright 2014 Matthew Ball (CyniCode/M477h3w1012)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-/*if ( file_exists( "install/" ) ) {
-	header( "Location: install/create.php" );
-}*/
+require_once './function/function.php';
 
-$base = ( DATA_STORAGE === "mysql" ) ? new cyniBase() : new cyniFile();
-$pg = new pageTemplate( "index.html" );
+session_start();
 
-$output = "<select class='player'><option selected></option>";
+if ( file_exists( "install/" ) )
+    header( "Location: install/" );
 
-foreach ( $base->getAllPlayers() as $player )
-	$output .= "<option value='$player'>$player</output>";
+#if ( !$_SESSION['is_registered'] ) {
+#	header("Location: ./login.php");
+#}
 
-$output .= "</select><button onClick='getPlayer()'>Get</button><span class='out'></span>";
 
-$pg->setContent( "HEAD", "" );
-$pg->setContent( "CONTENT", $output );
 
-$pg->sendContent();
+
 
 ?>
