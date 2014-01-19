@@ -1,58 +1,127 @@
+/**
+ * Copyright 2013 CyniCode (numbers@cynicode.co.uk).
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package uk.co.CyniCode.CyniChat.Command;
 
-import java.util.Map;
-
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import uk.co.CyniCode.CyniChat.Chatting.ServerChatListener;
 import uk.co.CyniCode.CyniChat.CyniChat;
-import uk.co.CyniCode.CyniChat.DataManager;
+import uk.co.CyniCode.CyniChat.events.ChannelChatEvent;
+import uk.co.CyniCode.CyniChat.objects.Channel;
 import uk.co.CyniCode.CyniChat.objects.UserDetails;
 
 /**
  * As much as this is playing with fire... this is for the /me command
  * so a player can write in the context of themselves
  * i.e. [g] Steve does this rather than [g] Steve : does that
- * @author Matthew Ball
- *
+ * 
+ * @author CyniCode
  */
 public class MeCommand implements CommandExecutor {
-
+	
+	/**
+	 * On the command...
+	 * @param player : The player that is doing the command
+	 * @param command : The command they're executing
+	 * @param key : A keyword of sorts
+	 * @param objects : All the arguments afterwards
+	 * @return true when complete (as per interface)
+	 */
 	public boolean onCommand(CommandSender player, Command command, String key, String[] objects) {
+		
+		//Tell the console that shit is happening
 		CyniChat.printDebug("Initialised a /me command");
+		
+		UserDetails thisUser = CyniChat.data.getOnlineDetails( (Player) player );
+		Channel thisChan = CyniChat.data.getChannel( thisUser.getCurrentChannel() );
+		
+		if ( thisUser.getSilenced() ) {
+			
+			player.sendMessage( "You are silenced. You cannot speak." );
+			return true;
+			
+		}
+		
+		if ( !thisUser.getAllChannels().contains( thisChan.getName() ) ) {
+			
+			player.sendMessage( "You are not in this channel." );
+			return true;
+			
+		}
+		
+		if ( thisUser.getMutedChannels().contains( thisChan.getName() ) ) {
+			
+			player.sendMessage( "You are muted in this channel." );
+			return true;
+			
+		}
+		
+		//And check to see if there is anything to put in the syntax of
 		if ( objects[0] != null ) {
-			String Message = player.getName() + stacker( objects );
-			UserDetails user = DataManager.getOnlineDetails( (Player) player );
-			String curChan = user.getCurrentChannel();
-			String TMessage = DataManager.getChannel(curChan).getColour()+"["+DataManager.getChannel(curChan).getNick()+"] " + Message;
-			Map<String, UserDetails> online = DataManager.returnAllOnline();
-			Object[] all = online.keySet().toArray();
-			for ( int i=0; i<all.length; i++ ) {
-				UserDetails current = online.get(all[i]);
-				if ( current.getAllChannels().contains(curChan) && !current.getIgnoring().contains(player.getName().toLowerCase() ) ) {
-					current.getPlayer().sendMessage(TMessage);
-				}
-			}
 			
-			String linkedChan = DataManager.getChannel(curChan).getIRC();
-			if ( CyniChat.IRC == true ) 
-				CyniChat.PBot.sendAction( linkedChan, user, Message );
+			//Now... create a message from the parts
+			ChannelChatEvent newChat = new ChannelChatEvent(
+					player.getName(),
+					CyniChat.data.getChannel( CyniChat.data
+						.getOnlineDetails( (Player) player )
+						.getCurrentChannel() ),
+					stacker( objects ),
+					ServerChatListener.getRecipients( 
+						CyniChat.data.getOnlineDetails( (Player) player )
+						.getCurrentChannel(), player.getName() ),
+					""
+				);
 			
+			Bukkit.getServer().getPluginManager().callEvent( newChat );
+			
+			//String linkedChan = CyniChat.data.getChannel(curChan).getIRC();
+			
+			//Tell the console that it's over
 			CyniChat.printDebug("End of a /me command");
 			return true;
 		}
-		player.sendMessage("Please provide an action to go with the /me action");
+		
+		//Or tell the player that they can't do this impossible acction
+		player.sendMessage("Please provide an action to go with the /me command");
 		return true;
+		
 	}
 	
+	/**
+	 * Stack a message together into a sentence
+	 * @param message : An array of words to be formed into a sentence
+	 * @return the sentence produced from the words
+	 */
 	public String stacker( String[] message ) {
+		
+		//Initiailise the string
 		String stackedMessage = "";
-		for ( int i=0; i<message.length; i++ ) {
-			stackedMessage += " "+message[i];
-		}
+		
+		//And for each object, add it to that string
+		for (String message1 : message)
+			stackedMessage +=  message1 + " ";
+		
+		//Then return the final string
 		return stackedMessage;
+		
 	}
-
+	
 }

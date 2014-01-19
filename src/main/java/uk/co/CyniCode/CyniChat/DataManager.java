@@ -1,10 +1,23 @@
+/**
+ * Copyright 2013 CyniCode (numbers@cynicode.co.uk).
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package uk.co.CyniCode.CyniChat;
 
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.bukkit.entity.Player;
 
@@ -16,135 +29,252 @@ import uk.co.CyniCode.CyniChat.objects.UserDetails;
 
 /**
  * A sane way to load channel and user data.
- * @author Tehbeard
- * @author Matthew Ball
  * 
+ * @author Tehbeard
+ * @author CyniCode
  */
 public class DataManager {
-	//List of loaded channels
-	private static Map<String,Channel> channels = null;
-	private static Map<String, String> matching = new HashMap<String, String>();
-	private static Map<String, String> linkedChans = null;
-	private static List<String> servers = null;
 	
-	private static Map<String,UserDetails> loadedUsers = new HashMap<String, UserDetails>();//User data loaded from sources 
+	/**
+	 * The list of all channels that are loaded
+	 */
+	private Map<String,Channel> channels = null;
 	
-	private static Map<String,UserDetails> onlineUsers = new HashMap<String, UserDetails>();//Users who are online
+	/**
+	 * The nickname-to-name matching table... I think
+	 */
+	private Map<String, String> matching = new HashMap<String, String>();
 	
-	private static Map<String,UserDetails> activeUsers = new HashMap<String, UserDetails>();//Users that were online
+	/**
+	 * Any channels that are also linked to IRC
+	 */
+	private Map<String, String> linkedChans = null;
 	
-	private static IDataManager Connection;
+	
+	
+	/**
+	 * The list of everyone that is in the data structure,
+	 * regardless of whether they're online or not
+	 */
+	private Map<String,UserDetails> loadedUsers = new HashMap<String, UserDetails>();//User data loaded from sources 
+	
+	/**
+	 * The list of every online user that is currently
+	 *  ... well... online
+	 */
+	private Map<String,UserDetails> onlineUsers = new HashMap<String, UserDetails>();//Users who are online
+	
+	/**
+	 * The active users. These are people that have been online since
+	 * the last reload and save so we know who to update
+	 */
+	private Map<String,UserDetails> activeUsers = new HashMap<String, UserDetails>();//Users that were online
+	
+	/**
+	 * The connection bit that lets us access the data
+	 */
+	private IDataManager connection;
 	
 	/**
 	 * Let's start grabbing all the data we can. Check which method of storage we're using
 	 * Then get the relevant details from that medium.
 	 * @param cynichat : This is an instance of the plugin
 	 */
-	public static void start( CyniChat cynichat) {
-		if ( CyniChat.bungee == true ) {
-			servers = cynichat.getConfig().getStringList( "CyniChat.bungee.connected" );
+	public DataManager( CyniChat cynichat) {
+		
+		//If we're using SQL as a data type...
+		if ( CyniChat.SQL == true ) {
 			
-			Iterator<String> serIter = servers.iterator();
+			//Use the MySQL manager
+			this.connection = new MySQLManager();
 			
-			while ( serIter.hasNext() ) {
-				CyniChat.printDebug( serIter.next() );
+		} else {
+			
+			//Otherwise, we're using JSON
+			this.connection = new JSONManager();
+			
+		}
+		
+		//Start the connection and make sure we /are/ connected
+		if ( this.connection.startConnection(cynichat) ) {
+			
+			//Get the channels
+			this.channels = this.connection.returnChannels();
+			
+			//Set the linked channels
+			setIRCChans( this.channels );
+			
+			//And load all the users in
+			this.loadedUsers  = this.connection.returnPlayers();
+			
+		}
+		
+		cynichat.getServer().getScheduler()
+			.scheduleSyncRepeatingTask( cynichat,
+				this.connection.getBooster(),
+				6000L,
+				6000L);
+	}
+	
+	/**
+	 * Clear the active users map to those that are still using it
+	 */
+	public void flushData() {
+		
+		setActiveUsers( getOnlineUsers() );
+		CyniChat.printInfo( "CyniChat has saved..." );
+		
+	}
+
+	public void reloadChannels() {
+
+		setChannels(getConnection().returnChannels());
+		setIRCChans( getChannels() );
+		channelTable();
+
+	}
+	
+	/**
+	 * Reload all the players on the server into the plugin
+	 * just in case we had a derp at some point or another.
+	 */
+	public void reloadPlayers() {
+		
+		for ( Player thisPlayer : CyniChat.self.getServer().getOnlinePlayers() ) {
+			
+			try {
+				
+				CyniChat.printDebug( "Found player: " + thisPlayer.getDisplayName() );
+				
+				CyniChat.printDebug( "Binding..." );
+				bindPlayer( thisPlayer );
+				
+				CyniChat.printDebug( "Rebound player " + thisPlayer.getDisplayName() );
+				
+			} catch ( Exception e ) {
+				
+				CyniChat.printDebug( "Data failed for player: " + thisPlayer.getDisplayName() );
+				e.printStackTrace();
+				
 			}
 		}
 		
-		if ( CyniChat.SQL == true ) {
-			Connection = new MySQLManager();
-		} else {
-			Connection = new JSONManager();
-		}
+	}
+	
+	/**
+	 * Save all the data
+	 */
+	public void saveUsers() {
 		
-		if ( Connection.startConnection(cynichat) == true ) {
-			channels = Connection.returnChannels();
-			loadedUsers = Connection.returnPlayers();
-		}
-	}
-	
-	public static void saveUsers() {
+		//If we're using the SQL data type...
 		if ( CyniChat.SQL == true ) {
-			Connection.saveUsers( loadedUsers );
+			
+			//Then save everyone
+			getConnection().saveUsers( getLoadedUsers());
+			
 		} else {
-			Connection.saveUsers( activeUsers );
+			
+			//Save only those that have been active
+			getConnection().saveUsers( getActiveUsers());
+			
 		}
 	}
 	
-	public static void saveChannels() {
-		Connection.saveChannels( channels );
+	/**
+	 * Save all the channels
+	 */
+	public void saveChannels() {
+		getConnection().saveChannels( getChannels() );
 	}
 	
 	/**
 	 * Generate a map of nicknames to channel names to make nick-name joining possible
 	 */
-	public static void channelTable() {
-		Set<String> channelKeys = channels.keySet();
-		Iterator<String> chanIter = channelKeys.iterator();
+	public void channelTable() {
+
+		Map<String, String> matchingChans = new HashMap<String, String>();
+
+		//Iterate through the map of all channels
+		for ( Map.Entry< String, Channel > channelSet : getChannels().entrySet() )
+			
+			//And put in the format <nick, name>
+			matchingChans.put( channelSet.getValue().getNick(),
+					channelSet.getKey() );
+
+		setMatching(matchingChans);
 		
-		while ( chanIter.hasNext() ) {
-			String curName = chanIter.next();
-			matching.put( channels.get(curName).getNick(), curName);
-		}
-		return;
 	}
 	
 	/**
-	 * Add a channel
+	 * Add a channel to all our items
 	 * @param channel
 	 */
-	public static void addChannel(Channel channel) {
-		channels.put(channel.getName().toLowerCase(), channel);
-		matching.put( channel.getNick(), channel.getName() );
+	public void addChannel(Channel channel) {
+		getChannels().put(channel.getName().toLowerCase(), channel);
+		getMatching().put( channel.getNick(), channel.getName() );
 	}
 
 	/**
 	 * Return a channel
 	 * @param name
-	 * @return
+	 * @return the asked channel if it exists
 	 */
-	public static Channel getChannel(String name){
-		Channel cn = channels.get(name);
-		if ( cn == null ) {
-			cn = channels.get( matching.get(name) );
-		}
+	public Channel getChannel(String name){
+		
+		//Do a basic ask on the all channels
+		Channel cn = getChannels().get(name.toLowerCase());
+		
+		//If it's still null...
+		if ( cn == null )
+			//Check the nickname
+			cn = getChannels().get( getMatching().get(name.toLowerCase()) );
+		
+		//Return what is left
 		return cn;
+		
 	}
 	
 	/**
 	 * Print all the details about every channel
 	 * (Only visible if you have debug on)
 	 */
-	public static void printAllChannels() {
-		for ( int i=0; i<channels.size(); i++ ) {
-			CyniChat.printDebug( String.valueOf(i) );
-			CyniChat.printDebug( String.valueOf( channels.keySet().toArray()[i] ) );
-			channels.get( channels.keySet().toArray()[i] ).printAll();
+	public void printAllChannels() {
+		
+		//Iterate over all the channels
+		for ( Map.Entry< String, Channel > entrySet : getChannels().entrySet() ) {
+			
+			//And debug everything
+			CyniChat.printDebug( "Channel name : " + entrySet.getKey() );
+			entrySet.getValue().printAll();
+			
 		}
+		
 	}
 	
 	/**
 	 * Set all those channels which are linked in IRC
-	 * @param chans
+	 * @param chans : The channels that we're putting into our links
 	 */
-	public static void setIRCChans( Map<String, String> chans ) {
-		Set<String> setter = chans.keySet();
-		Iterator<String> iter = setter.iterator();
-		while ( iter.hasNext() ) {
-			String thisOne = iter.next();
-			CyniChat.printDebug( "IRC name : "+thisOne );
-			CyniChat.printDebug( "CC name : "+chans.get(thisOne) );
+	public final void setIRCChans( Map<String, Channel> chans ) {
+		
+		//Let's start up a new map for all the channels
+		Map<String, String> linkedChannels = new HashMap<String, String>();
+		
+		//Then for all the channels that we've been given...
+		for ( Map.Entry< String, Channel > entrySet : chans.entrySet() ) {
+			
+			//debug out the basic channel and the irc channel
+			CyniChat.printDebug( "IRC name : "+ entrySet.getValue().getIRC() );
+			CyniChat.printDebug( "CC name : "+ entrySet.getKey() );
+			
+			//then put it into the map as <irc>:<cynichat>
+			linkedChannels.put( entrySet.getValue().getIRC(), entrySet.getKey() );
+			
 		}
 		
-		linkedChans = chans;
-	}
-	
-	public static Map<String, String> getLinkedChannels() {
-		return linkedChans;
-	}
-	
-	public static List<String> getServers() {
-		return servers;
+		//Finally, set the linked channels as this
+		setLinkedChans(linkedChannels);
+		
 	}
 	
 	/**
@@ -153,36 +283,71 @@ public class DataManager {
 	 * @param player
 	 * @return
 	 */
-	public static UserDetails getDetails(String player){
+	public UserDetails getDetails(String player){
+		
+		//Alright... let's firstly put the name to lowercase
 		String uName = player.toLowerCase();
-		UserDetails details = loadedUsers.get(uName);
+		
+		//before we check it against the loaded users
+		UserDetails details = getLoadedUsers().get(uName);
+		
+		//If they're not in the loaded users...
 		if(details == null){
+			
+			//Then make a new UserDetails thing
 			details = new UserDetails(); 
-			loadedUsers.put(uName, details);
+			
+			//And put it as a new entry into the loaded users
+			getLoadedUsers().put( uName, details );
+			
 		}
+		
+		//Finally, return whatever details there are to collect
 		return details;
+		
 	}
 	
 	/**
 	 * Bind the user details of a player to a player object
 	 * @param player
 	 */
-	public static void bindPlayer(Player player){
+	public void bindPlayer(Player player){
+		
+		//Firstly, get the lowercase name of the player from the object
 		String playerName = player.getName().toLowerCase();
+		
+		//then get the player from all our details
 		UserDetails details = getDetails(playerName);
+		
+		//Bind the player to the object
 		details.bindPlayer(player);
-		onlineUsers.put(playerName,details);
-		activeUsers.put(playerName, details);
+		
+		//Then bind them to the maps of players
+		getOnlineUsers().put(playerName, details);
+		getActiveUsers().put(playerName, details);
+		
+		//And put out some debug just in case
 		details.printAll();
 		printAllUsers();
+		
 	}
 	
 	/**
 	 * Unbind a player from being online
 	 * @param player
 	 */
-	public static void unbindPlayer(Player player){
-		onlineUsers.remove(player.getName().toLowerCase()).bindPlayer(null);
+	public void unbindPlayer(Player player){
+		
+		//Get the details of the player in question
+		UserDetails details = getOnlineUsers().get( player.getName().toLowerCase() );
+		
+		//Unbind the player object from the details
+		details.unbindPlayer();
+		
+		//Then remove the player from our list of people on the server
+		// at the current time.
+		getOnlineUsers().remove( player.getName().toLowerCase() );
+		
 	}
 	
 	/**
@@ -190,80 +355,187 @@ public class DataManager {
 	 * @param player
 	 * @return
 	 */
-	public static UserDetails getOnlineDetails(Player player){
-		return onlineUsers.get(player.getName().toLowerCase());
+	public UserDetails getOnlineDetails(Player player){
+		return getOnlineUsers().get( player.getName().toLowerCase() );
 	}
 
 	/**
 	 * Print all the users that are loaded and all the users that are online
 	 * (Only visible if you have debug on)
 	 */
-	public static void printAllUsers() {
-		if ( onlineUsers.size() != 0 ) {
-			for ( int i=0; i<onlineUsers.size(); i++ ) {
-				CyniChat.printDebug( String.valueOf(i) );
-				CyniChat.printDebug( String.valueOf( onlineUsers.keySet().toArray()[i] ) );
-				onlineUsers.get( onlineUsers.keySet().toArray()[i] ).printAll();
+	public void printAllUsers() {
+		
+		//Alright, let's check the online user map first
+		if ( !getOnlineUsers().isEmpty() ) {
+			
+			//For everyone who is online...
+			for ( Map.Entry< String, UserDetails > entrySet : getOnlineUsers().entrySet() ) {
+				
+				//Print out all the debug!
+				CyniChat.printDebug( "Person : " + entrySet.getKey() );
+				entrySet.getValue().printAll();
+				
 			}
+			
 		} else
+			//Otherwise, announce that no-one is online
 			CyniChat.printDebug("No online users");
-		if ( loadedUsers.size() != 0 ) {
-			for ( int i=0; i<loadedUsers.size(); i++ ) {
-				CyniChat.printDebug( String.valueOf(i) );
-				CyniChat.printDebug( String.valueOf( loadedUsers.keySet().toArray()[i] ) );
-				loadedUsers.get( loadedUsers.keySet().toArray()[i] ).printAll();
+		
+		//Now check the loaded users map...
+		if ( !getLoadedUsers().isEmpty() ) {
+			
+			//And for every one of them...
+			for ( Map.Entry< String, UserDetails> entrySet : getLoadedUsers().entrySet() ) {
+				
+				//Add them to the debug pile!
+				CyniChat.printDebug( "Person : " + entrySet.getKey() );
+				entrySet.getValue().printAll();
+				
 			}
+			
 		} else
+			//And otherwise, say that no-one is loaded in
 			CyniChat.printDebug( "No loaded users" );
+		
 	}
-
-	/**
-	 * Get the map of those online.
-	 * @return onlineUsers : Everyone who is currently online
-	 */
-	public static Map<String, UserDetails> returnAllOnline() {
-		return onlineUsers;
-	}
-
+	
 	/**
 	 * Delete an existing channel
 	 * @param name : The name of the channel we're trying to delete
-	 * @return : True when complete, false otherwise
+	 * @return : True when complete, false if the channel did not exist
 	 */
-	public static boolean deleteChannel(String name) {
+	public boolean deleteChannel(String name) {
+		
 		try {
-			Iterator<String> userIter = loadedUsers.keySet().iterator();
-			while ( userIter.hasNext() ) {
-				String username = userIter.next();
-				UserDetails current = loadedUsers.get( username );
-				if ( current.clearChannel(name) == true )
-					activeUsers.put(username, current);
-			}
-			matching.remove( getChannel( name.toLowerCase() ).getNick() );
-			channels.remove( name.toLowerCase() );
+			
+			//Iterate through everyone on the server...
+			for ( Map.Entry< String, UserDetails > entrySet : getLoadedUsers().entrySet() )
+				
+				//And wipe the channel from their records
+				entrySet.getValue().clearChannel(name);
+			
+			//Then remove the channel itself from the matching
+			// map and then again from the usual channel map  
+			getMatching().remove( getChannel( name.toLowerCase() ).getNick() );
+			getChannels().remove( name.toLowerCase() );
+			
+			//Then return true to say we were successful
 			return true;
+			
 		} catch (NullPointerException e) {
+			
+			//Or false if we were not...
 			return false;
+			
 		}
 		
 	}
-
-	/**
-	 * Get all the channels
-	 * @return channels : Every channel
-	 */
-	public static Map<String, Channel> returnAllChannels() {
-		return channels;
-	}
-
+	
 	/**
 	 * If there is a nickname in the matching table which matches the input, say so
 	 * @param nick : The nickname we're checking.
 	 * @return true if it exists, false if not.
 	 */
-	public static boolean hasNick(String nick) {
-		if ( matching.containsKey(nick) )
-			return true;
-		return false;
+	public boolean hasNick(String nick) {
+		return getChannels().containsKey(nick);
 	}
+	
+	/**
+	 * @return the channels
+	 */
+	public Map<String,Channel> getChannels() {
+		return channels;
+	}
+	
+	/**
+	 * @param channels the channels to set
+	 */
+	public void setChannels(Map<String,Channel> channels) {
+		this.channels = channels;
+	}
+	
+	/**
+	 * @return the matching
+	 */
+	public Map<String, String> getMatching() {
+		return matching;
+	}
+	
+	/**
+	 * @param matching the matching to set
+	 */
+	public void setMatching(Map<String, String> matching) {
+		this.matching = matching;
+	}
+	
+	/**
+	 * @return the linkedChans
+	 */
+	public Map<String, String> getLinkedChans() {
+		return linkedChans;
+	}
+	
+	/**
+	 * @param linkedChans the linkedChans to set
+	 */
+	public void setLinkedChans(Map<String, String> linkedChans) {
+		this.linkedChans = linkedChans;
+	}
+	
+	/**
+	 * @return the loadedUsers
+	 */
+	public Map<String,UserDetails> getLoadedUsers() {
+		return loadedUsers;
+	}
+	
+	/**
+	 * @param loadedUsers the loadedUsers to set
+	 */
+	public void setLoadedUsers(Map<String,UserDetails> loadedUsers) {
+		this.loadedUsers = loadedUsers;
+	}
+	
+	/**
+	 * @return the onlineUsers
+	 */
+	public Map<String,UserDetails> getOnlineUsers() {
+		return onlineUsers;
+	}
+	
+	/**
+	 * @param onlineUsers the onlineUsers to set
+	 */
+	public void setOnlineUsers(Map<String,UserDetails> onlineUsers) {
+		this.onlineUsers = onlineUsers;
+	}
+	
+	/**
+	 * @return the activeUsers
+	 */
+	public Map<String,UserDetails> getActiveUsers() {
+		return activeUsers;
+	}
+	
+	/**
+	 * @param activeUsers the activeUsers to set
+	 */
+	public void setActiveUsers(Map<String,UserDetails> activeUsers) {
+		this.activeUsers = activeUsers;
+	}
+	
+	/**
+	 * @return the Connection
+	 */
+	public IDataManager getConnection() {
+		return connection;
+	}
+	
+	/**
+	 * @param connection the Connection to set
+	 */
+	public void setConnection(IDataManager connection) {
+		this.connection = connection;
+	}
+	
 }

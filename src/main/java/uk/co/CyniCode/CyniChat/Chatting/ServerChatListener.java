@@ -1,10 +1,26 @@
+/**
+ * Copyright 2013 CyniCode (numbers@cynicode.co.uk).
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package uk.co.CyniCode.CyniChat.Chatting;
 
-import java.util.Iterator;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -15,248 +31,304 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import uk.co.CyniCode.CyniChat.CyniChat;
-import uk.co.CyniCode.CyniChat.DataManager;
-import uk.co.CyniCode.CyniChat.PermissionManager;
-import uk.co.CyniCode.CyniChat.Command.GeneralCommand;
-import uk.co.CyniCode.CyniChat.bungee.BungeeChannelProxy;
 import uk.co.CyniCode.CyniChat.events.ChannelChatEvent;
-import uk.co.CyniCode.CyniChat.irc.IRCChatListener;
 import uk.co.CyniCode.CyniChat.objects.Channel;
 import uk.co.CyniCode.CyniChat.objects.UserDetails;
 import uk.co.CyniCode.CyniChat.routing.ChatRouter;
 import uk.co.CyniCode.CyniChat.routing.IChatEndpoint;
 
 /**
- * A listener class for everything Three parts: Log in, Log out, and speak
+ * A listener class for everything
+ * Three parts: Log in, Log out, and speak
  *
- * @author Matthew Ball
- *
+ * @author CyniCode
  */
-public class ServerChatListener implements Listener, IChatEndpoint {
+public class ServerChatListener implements Listener {
+	
+	/**
+	 * Listen for any people joining the server so we can load in their
+	 * configurations or generate a new one
+	 *
+	 * @param event : This is what we're listening for
+	 */
+	@EventHandler(priority = EventPriority.MONITOR)
+	public static void joinEvent(PlayerJoinEvent event) {
+		
+		//Tell the debug something happened
+		CyniChat.printDebug("Player joined");
+		
+		//Load player details into online users.
+		CyniChat.data.bindPlayer(event.getPlayer());
+		
+		//Debug again due to a testing error
+		CyniChat.printDebug( "Player Bound" );
+		
+	}
+	
+	/**
+	 * Listen for anyone leaving the server so that we can dump their
+	 * UserDetails into the config and have shot of them
+	 *
+	 * @param event : This is what we're listening for
+	 */
+	@EventHandler(priority = EventPriority.MONITOR)
+	public static void leaveEvent(PlayerQuitEvent event) {
+		
+		//Tell the console something left
+		CyniChat.printDebug("Player Left");
+		
+		//And make the player leave the plugin
+		CyniChat.data.unbindPlayer( event.getPlayer() );
+		
+		//Some more debug, just in case
+		CyniChat.printDebug( "Player Unbound" );
+		
+	}
+	
+	/**
+	 * A command has been fed into the server... wat do?
+	 *
+	 * @param event : The Command event that we're checking
+	 */
+	@EventHandler(priority = EventPriority.MONITOR)
+	public static void commandEvent(PlayerCommandPreprocessEvent event) {
+		
+		CyniChat.printDebug( "Command event called..." );
+		
+		//Okay... so remove the slash from the event so we have a 
+		// command to play with
+		String comm = event.getMessage().replaceFirst("/", "");
+		
+		//Split it into key words and deal with them seperately
+		String[] bits = comm.split(" ");
+		
+		//The message itself, so everything excluding the first word
+		String mess = comm.substring(bits[0].length() + 1, comm.length());
+		
+		//Print the full command
+		CyniChat.printDebug( "Command : " + comm);
+		
+		//Print the first key word
+		CyniChat.printDebug( "Key word: " + bits[0]);
+		
+		//Print everything else
+		CyniChat.printDebug( "Message: " + mess);
+		
+		//If the command is not registered to anything...
+		if (CyniChat.ifCommandExists(bits[0]) == false) {
+			
+			CyniChat.printDebug( "No command existed with this name" );
+			
+			//Then execute it as a quick message
+			if (CyniChat.data.getChannel(bits[0]) != null) {
+				
+				CyniChat.printDebug( "Sending a message..." );
+				
+				ChannelChatEvent newChat = new ChannelChatEvent(
+						event.getPlayer().getDisplayName(),
+						CyniChat.data.getChannel( bits[0] ),
+						mess,
+						getRecipients( bits[0], event.getPlayer().getDisplayName() ),
+						" :"
+					);
+				
+				//Call the event and let it be dealt with from there
+				Bukkit.getServer().getPluginManager().callEvent( newChat );
+				
+				CyniChat.printDebug( "Cancelling the event..." );
+				
+				//Also... cancel the event
+				event.setCancelled(true);
+				
+			} else {
+				
+				//Send a debug to say that nothing happened
+				CyniChat.printDebug("No channel was found for this name");
+				
+			}
+			
+		} else {
+			
+			//Otherwise... the command was registered with a plugin somewhere
+			CyniChat.printDebug("A command existed with this prefix of \"" + bits[0] + "\"");
+			
+		}
+		
+	}
+	
+	/**
+	 * Listen for any chatter on the server so that I can print debug of it for
+	 * the moment
+	 *
+	 * @param event : This is what we're listening for
+	 */
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void chatEvent(AsyncPlayerChatEvent event) {
+		
+		//Alright... firstly, get some debug done
+		CyniChat.printDebug("Format ::== " + event.getFormat());
+		//CyniChat.printDebug( "Recipients ::== " + looper( event.getRecipients() ) );
+		
+		//Then register the basics for what we're going to use
+		Player player = event.getPlayer();
+		UserDetails user = CyniChat.data.getOnlineDetails(player);
+		
+		//If the user has no current channel...
+		if ( user.getCurrentChannel().equals("") ) {
+			
+			//Send out a ton of debug
+			user.printAll();
+			
+			//Tell them that they are in no channels
+			player.sendMessage("You are in no channels. Join one to talk.");
+			
+			//Cancel the chat event and return
+			event.setCancelled(true);
+			return;
+			
+		}
+		
+		//Okay... look at what the channel we're sending a message on
+		// is going to be.
+		Channel current = CyniChat.data.getChannel(user.getCurrentChannel().toLowerCase());
+		
+		//Is the user silenced?
+		if ( user.getSilenced() ) {
+			
+			//Yep... send all the debug again
+			user.printAll();
+			
+			//Tell them so
+			player.sendMessage("You have been globally muted, you cannot talk.");
+			
+			//And cancel the event before we exit
+			event.setCancelled(true);
+			return;
+			
+		}
+		
+		//Is the user muted inside the channel?
+		if ( user.getMutedChannels().contains( current.getName().toLowerCase() ) ) {
+			
+			//Apparently so... wonder what they did
+			//Again, send all the debug
+			user.printAll();
+			
+			//Tell them that they can't talk here
+			player.sendMessage("You have been muted in this channel, move to another channel to talk.");
+			
+			//Cancel the event and return
+			event.setCancelled(true);
+			return;
+			
+		}
+		
+		//Is the channel protected?
+		if ( current.isProtected() ) {
+			
+			//Why yes. Yes it is.
+			//Can our friend talk in this channel?
+			if ( !CyniChat.perms.checkPerm(player, "cynichat.basic.talk."
+						+ current.getName().toLowerCase()) ) {
+				
+				//Nope... 'fraid not
+				//Print out their details
+				user.printAll();
+				
+				//And tell them that they have been denied
+				player.sendMessage("You do not have the permission to talk here.");
+				
+				//Then cancel the event and return
+				event.setCancelled(true);
+				return;
+				
+			}
+			
+		}
+		
+		CyniChat.printDebug( "Generating new chat event..." );
+		
+		//Make the chat event and let anyone access it for a moment or two
+		ChannelChatEvent newChatter = new ChannelChatEvent(
+				player.getDisplayName(), current, event.getMessage(), 
+				getRecipients( current.getName(), player.getDisplayName() ), " :" );
+		
+		CyniChat.printDebug( "And sending it onwards" );
+		
+		Bukkit.getServer().getPluginManager().callEvent(newChatter);
 
-    public static CyniChat plugin;
+		CyniChat.printDebug( "Cancelling the event..." );
+		
+		//Cancel the original event
+		event.setCancelled( true );
+		
+		CyniChat.printDebug( "Event has been cancelled..." );
 
-    /**
-     * Listen for any people joining the server so we can load in their
-     * configurations or generate a new one
-     *
-     * @param event : This is what we're listening for
-     */
-    @EventHandler(priority = EventPriority.MONITOR)
-    public static void joinEvent(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
-        CyniChat.printDebug("Player joined");
-        DataManager.bindPlayer(player);//Load player details into online users.
-    }
+		CyniChat.printDebug( "Now call what we've been left with" );
 
-    /**
-     * Listen for anyone leaving the server so that we can dump their
-     * UserDetails into the config and have shot of them
-     *
-     * @param event : This is what we're listening for
-     */
-    @EventHandler(priority = EventPriority.MONITOR)
-    public static void leaveEvent(PlayerQuitEvent event) {
-        CyniChat.printDebug("Player Left");
-        DataManager.unbindPlayer(event.getPlayer());
-    }
+		OnChannelChatEvent.hearMessage( newChatter );
 
-    /**
-     * A command has been fed into the server... wat do?
-     *
-     * @param event : The Command event that we're checking
-     */
-    @EventHandler(priority = EventPriority.MONITOR)
-    public static void commandEvent(PlayerCommandPreprocessEvent event) {
-        String comm = event.getMessage().replaceFirst("/", "");
-        String[] bits = comm.split(" ");
-        String mess = comm.substring(bits[0].length() + 1, comm.length());
-        CyniChat.printDebug(comm);
-        CyniChat.printDebug(bits[0]);
-        CyniChat.printDebug(mess);
-        if (CyniChat.ifCommandExists(bits[0]) == false) {
-            if (DataManager.getChannel(bits[0]) != null) {
-                GeneralCommand.quickMessage((CommandSender) event.getPlayer(), bits[0], mess);
-                event.setCancelled(true);
-            } else {
-                CyniChat.printDebug("No channel was found for this name");
-            }
-        } else {
-            CyniChat.printDebug("A command existed with this prefix of \"" + bits[0] + "\"");
-        }
-        return;
-    }
-
-    /**
-     * Listen for any chatter on the server so that I can print debug of it for
-     * the moment
-     *
-     * @param event : This is what we're listening for
-     */
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void chatEvent(AsyncPlayerChatEvent event) {
-        CyniChat.printDebug("Format ::== " + event.getFormat());
-        //CyniChat.printDebug( "Recipients ::== " + looper( event.getRecipients() ) );
-        Player player = event.getPlayer();
-        UserDetails user = DataManager.getOnlineDetails(player);
-
-        if (user.getCurrentChannel() == "") {
-            user.printAll();
-            player.sendMessage("You are in no channels. Join one to talk.");
-            event.setCancelled(true);
-            return;
-        }
-
-        Channel current = DataManager.getChannel(user.getCurrentChannel().toLowerCase());
-
-        if (user.getSilenced()) {
-            user.printAll();
-            player.sendMessage("You have been globally muted, you cannot talk.");
-            event.setCancelled(true);
-            return;
-        }
-
-        if (user.getMutedChannels().contains(current.getName().toLowerCase())) {
-            player.sendMessage("You have been muted in this channel, move to another channel to talk.");
-            event.setCancelled(true);
-            return;
-        }
-
-        if (current.isProtected()) {
-            if (PermissionManager.checkPerm(player, "cynichat.basic.talk." + current.getName().toLowerCase()) == false) {
-                player.sendMessage("You do not have the permission to talk here.");
-                event.setCancelled(true);
-                return;
-            }
-        }
-
-        String format = "<CurrentChannel> <Player> : " + current.getColour() + "%2$s";
-        format = format.replace("<CurrentChannel>", current.getColour() + "[" + current.getNick() + "]");
-        format = format.replace("<Player>", PermissionManager.getPlayerFull(player));
-        event.setFormat(format);
-        CyniChat.printDebug("Format ::== " + event.getFormat());
-        Iterator<Player> receivers = event.getRecipients().iterator();
-        Player[] all = new Player[event.getRecipients().size()];
-        int Count = 0;
-
-        while (receivers.hasNext()) {
-            Player currentPlayer = receivers.next();
-            UserDetails users = DataManager.getOnlineDetails(currentPlayer);
-            CyniChat.printDebug(currentPlayer.getName() + " : " + users.getAllVerboseChannels());
-            if (!users.getAllChannels().contains(current.getName().toLowerCase())) {
-                all[Count] = currentPlayer;
-                Count++;
-            } else if ((users.getIgnoring().contains(user.getName())) && (users.getAllChannels().contains(current.getName().toLowerCase()))) {
-                all[Count] = currentPlayer;
-                Count++;
-            }
-        }
-        if (Count > 0) {
-            for (int i = 0; i < Count; i++) {
-                CyniChat.printDebug("Iteration = " + i);
-                CyniChat.printDebug("Removed " + all[i].getDisplayName());
-                event.getRecipients().remove(all[i]);
-            }
-        }
-
-
-        ChatRouter.routeMessage(ChatRouter.EndpointType.PLAYER, player.getName(), current.getName(), event.getMessage());
-        /*if (CyniChat.IRC == true) {
-         CyniChat.PBot.sendMessage(current.getIRC(), player.getDisplayName(), event.getMessage());
-         }*/
-
-        /*if (CyniChat.bungee == true) {
-         CyniChat.bungeeInstance.transmit(player, current, event.getMessage());
-         }*/
-
-        ChannelChatEvent newChatter = new ChannelChatEvent(player.getDisplayName(), current, event.getMessage(), event.getRecipients());
-        Bukkit.getServer().getPluginManager().callEvent(newChatter);
-    }
-
-    /**
-     * Currently used as a testing thing for the event that is registered here
-     *
-     * @param event : The event we're listening to (Only visible if debug is on)
-     */
-    @EventHandler(priority = EventPriority.MONITOR)
-    public static void testingRegister(ChannelChatEvent event) {
-        CyniChat.printDebug(event.getSenderName() + " said " + event.getMessage() + " in " + event.getChannel().getName());
-        CyniChat.printDebug(event.printVerboseRecip());
-    }
-
-    /**
-     * Loop through a set
-     *
-     * @param item : This is what we're iterating over
-     * @return the strings within the set
-     */
-    public static String looper(Set<Player> item) {
-        String recip = null;
-        int j = item.size();
-        Object[] arrItem = null;
-        arrItem = item.toArray();
-        for (int i = 0; i < j; i++) {
-            recip += arrItem[i] + ", ";
-        }
-        return recip;
-    }
-
-    public void giveMessage(ChatRouter.EndpointType type, String player, String channel, String message) {
-        if (type == ChatRouter.EndpointType.IRC) {
-        	CyniChat.printDebug( "Handling an IRC endtype" );
-            _handleIRCMessage(player, channel, message);
-        }
-        if (type == ChatRouter.EndpointType.BUNGEE) {
-        	CyniChat.printDebug( "Handling a bungee endtype" );
-            _handleBungeeMessage(player, channel, message);
-            return;
-        }
-        CyniChat.printDebug( type.name() + " endpoint not defined" );
-    }
-
-    private void _handleIRCMessage(String player, String channel, String message) {
-        Player[] online = Bukkit.getServer().getOnlinePlayers();
-        Channel chatChannel = DataManager.getChannel(channel);
-        for (int i = 0; i < online.length; i++) {
-
-            UserDetails curPl = DataManager.getOnlineDetails(online[i]);
-
-            if (curPl.getAllChannels().contains(channel)) {
-                CyniChat.printDebug("Sending message to " + online[i].getDisplayName());
-                String outing = chatChannel.getColour() + "[IRC] [" + chatChannel.getNick() + "] ";
-                outing += player + " : " + message;
-
-                online[i].sendMessage(outing);
-            }
-
-        }
-    }
-
-    private void _handleBungeeMessage(String player, String channel, String message) {
-
-    	CyniChat.printDebug( "Handling a bungee message..." );
-    	
-        Channel chatChannel = DataManager.getChannel(channel);
-        if(chatChannel == null){
-            CyniChat.printDebug("Dropped bungee message from unknown channel " + channel + ":: " + player + " said " + message);
-            return;
-        }
-        
-        String formattedMsg = chatChannel.getColour() + "[" + chatChannel.getNick() + "] " + player + " : " + chatChannel.getColour() + message;
-        
-        CyniChat.printDebug( "Message : " + formattedMsg );
-        CyniChat.printDebug( "On : " + chatChannel.getName() );
-        
-        for (Player p : Bukkit.getOnlinePlayers()) {
-        	CyniChat.printDebug( "Current Player: " + p.getDisplayName() );
-        	CyniChat.printDebug( "Checking channel: " + chatChannel.getName() );
-            if (DataManager.getOnlineDetails(p).getAllChannels().contains( chatChannel.getName() )) {
-            	CyniChat.printDebug( "Player was in the channel... sending" );
-                p.sendMessage(formattedMsg);
-            } else {
-            	CyniChat.printDebug( "Player was not in the channel..." );
-            }
-            DataManager.getOnlineDetails(p).printAll();
-        }
-    }
+		CyniChat.printDebug( "Event called" );
+		
+	}
+	
+	public static Set<Player> getRecipients( String curChan, String sender ) {
+		
+		Set<Player> players = new HashSet<Player>();
+		
+		for ( Map.Entry< String, UserDetails > entrySet : 
+				CyniChat.data.getOnlineUsers().entrySet() ) {
+			
+			//Logging their details in the process...
+			UserDetails current = entrySet.getValue();
+			
+			//And adding them to a list of debugs
+			CyniChat.printDebug( "Current player: "+ entrySet.getKey() );
+			
+			//Ask if they are in this channel
+			if ( current.getAllChannels().contains( curChan ) ) {
+				
+				//Since they are, debug that fact
+				CyniChat.printDebug( entrySet.getKey() + " is in the channel..." );
+				
+				if ( !current.getIgnoring().contains( sender.toLowerCase() ) ) {
+					
+					CyniChat.printDebug( current.getName() + " was not ignoring " + sender );
+					
+					current.getVerboseIgnoring();
+					
+					//So actually add them to the list
+					players.add( current.getPlayer() );
+					
+				}
+				
+			}
+			
+		}
+		
+		return players;
+		
+	}
+	
+	/**
+	 * Loop through a set
+	 *
+	 * @param item : This is what we're iterating over
+	 * @return the strings within the set
+	 */
+	public static String looper(Set<Player> item) {
+		
+		//Initialise the variable for the returned string
+		String recip = "";
+		
+		//Iterate through all the players and add them to the
+		// final string
+		for ( Player arrItem : item )
+			recip += arrItem.getDisplayName() + ", ";
+		
+		//Then return that final string
+		return recip;
+		
+	}
+	
 }
