@@ -7,7 +7,7 @@ main: uk.co.CyniCode.CyniChat.CyniChat
 softdepend: [Vault]
 commands:
   ch:
-    description: This is a large.
+    description: This is a chat command for everything chatty.
     usage: /ch help
   qm:
     description: Sends a single message to a specified channel
@@ -48,27 +48,42 @@ permissions:
   cynichat.basic.chat:
     description: Allows a player to chat
     default: true
+  cynichat.basic.chat.*:
+    description: Allows a player to chat in every channel
+    default: false
   cynichat.basic.msg:
     description: Allows you to send private messages
     default: true
   cynichat.basic.join:
     description: Allows a player to switch channels
     default: true
+  cynichat.basic.join.*:
+      description: Allows a player to join every channel
+      default: false
   cynichat.basic.leave:
     description: Allows a player to leave the channel
     default: true
+  cynichat.basic.leave.*:
+      description: Allows a player to leave every channel
+      default: false
   cynichat.basic.ignore:
     description: Allows a player to ignore another
     default: true
   cynichat.basic.info:
     description: Shows you the information about a specific channel
     default: true
+  cynichat.basic.info.*:
+      description: Allows a player to see information about every channel
+      default: false
   cynichat.basic.list:
     description: Lists all the available channels
     default: true
   cynichat.basic.who:
     description: Lists all the players in a channel
     default: true
+  cynichat.basic.who.*:
+      description: Allows for a player to see who is in every channel
+      default: false
   cynichat.basic.qm:
     description: Sends one message to the specified channel
     default: true
@@ -91,9 +106,11 @@ permissions:
   cynichat.admin.*:
     description: Allows for all admin actions to be carried out
     children:
+      cynichat.mod.*: true
       cynichat.admin.silence: true
       cynichat.admin.create: true
       cynichat.admin.remove: true
+      cynichat.admin.save: true
     default: op
   cynichat.admin.silence:
     description: Allows for players to be silenced on the server
@@ -103,4 +120,7 @@ permissions:
     default: false
   cynichat.admin.remove:
     description: Allows for channels to be removed
+    default: false
+  cynichat.admin.save:
+    description: Allows for the data to be saved to file
     default: false
