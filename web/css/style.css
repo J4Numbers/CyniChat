@@ -1,0 +1,145 @@
+body {
+	background-color:#E2E2E2;
+	padding: 0;
+	margin: 0;
+	height: 100%;
+}
+
+.column{
+	background-color: rgb(240,240,255);
+	padding: 5px;
+	height: 100%;
+	margin: 0 auto;
+	margin-top: 20px;
+	min-width: 1100px;
+	max-width: 1100px;
+	position: relative;
+}
+
+.menu{
+
+}
+
+.header {
+	background-color: rgb(150,150,185);
+	width:100%;
+	height: 70px;
+}
+
+img.logo {
+	float: left;
+	height: 50px;
+	padding: 10px;
+}
+
+.menuItem{
+	background-color: rgb(100,100,100);
+	padding: 10px;
+	margin-left: 10px;
+	padding-top: 2px;
+	border-bottom-right-radius: 5px;
+	border-bottom-left-radius: 5px;
+	min-width: auto;
+	max-width: 100px;
+	text-align: right;
+	border-style: ridge;
+	border-width: 2px;
+	border-top-width: 0px;
+	border-color: rgb(200,200,200);
+	color: white;
+	font: 20px Copperplate, "Copperplate Gothic Light", fantasy;
+}
+
+.menuItem:hover{
+	background-color: rgb(240,240,240);
+	padding: 10px;
+	margin-left: 10px;
+	padding-bottom:20px;
+	border-bottom-right-radius:5px;
+	border-bottom-left-radius:5px;
+	min-width: auto;
+	max-width:100px;
+	text-align:right;
+	border-style:ridge;
+	border-width:2px;
+	border-top-width:0px;
+	border-color:rgb(100,100,100);
+	color:rgb(75,75,75);
+	font: 20px Copperplate, "Copperplate Gothic Light", fantasy;
+}
+
+.main{
+	width: 75%;
+	margin: 0 auto;
+	margin-top: 10px;
+}
+
+.news_avatar {
+	float:left;
+	position: relative;
+	z-index: 100;
+	width: 50px;
+	height: 50px;
+	background-color: rgb(155,155,155);
+	text-align: center;
+	line-height: 50px;
+}
+
+.news_avatar > img {
+	display:inline-block;
+	width:48px;
+	height:48px;
+}
+
+.newsarticle {
+	margin-top:10px;
+	margin-bottom:10px;
+	margin-right: 0;
+	min-width:100%;
+	max-width:100%;
+	vertical-align:top;
+	border: 1px solid #9B9B9B;
+}
+
+.newsarticle_header h1 {
+	color:#444;
+	background-color: #c6c6c6;
+	padding-left: 10px;
+	font-family: 'Titillium Web', sans-serif;
+	text-shadow: 1px 1px 0 rgba(255,255,255,0.15);
+	margin: 0;
+}
+
+.newsarticle_text {
+	text-align: justify;
+	padding:10px;
+	background-color: rgb(240,240,255);
+	font-family: sans-serif;
+	font-size: 10pt;
+}
+
+.newsarticle_footer {
+	border-top:2px solid rgb(155,155,155);
+	padding:10px;
+	text-align:right;
+	background-color: rgb(190,190,190);
+	font: 14px Veranda, sans-serif;
+}
+
+.table_of_things {
+	margin: 0 auto;
+	border: 1px #9B9B9B;
+}
+
+.buttons {
+	text-align: center;
+}
+
+.field_name {
+	font: 15px bold 'Arial Black', sans-serif;
+	color: #464646;
+}
+
+input.input {
+	width: 200px;
+}
