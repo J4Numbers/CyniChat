@@ -219,7 +219,28 @@ public class MySQLManager implements IDataManager {
 			}
 		}
 	}
-	
+
+	public void saveSingleChannel( Channel channel ) {
+
+		try {
+
+			getUpdateChannel().setString(1, channel.getDesc());
+			getUpdateChannel().setString(2, channel.getIRC());
+			getUpdateChannel().setString(3, channel.getIRCPass());
+			getUpdateChannel().setString(4, channel.getColour().name());
+			getUpdateChannel().setBoolean(5, channel.isProtected());
+			getUpdateChannel().setInt(6, channel.getID());
+			getUpdateChannel().execute();
+			getUpdateChannel().clearParameters();
+
+		} catch (SQLException e) {
+			CyniChat.printSevere("Saving failed on channel: "+channel.getName());
+			e.printStackTrace();
+			return;
+		}
+
+	}
+
 	/**
 	 * Save users that have been online at some point since the last save
 	 * @param loadedPlayers : The active players that we're saving
@@ -422,8 +443,7 @@ public class MySQLManager implements IDataManager {
 				String pass = rs.getString(8);
 				String colour = rs.getString(9);
 				Boolean protect = rs.getBoolean(10);
-				Channel current = new Channel();
-				current.loadChannel(ID, name, nick, irc, ircPass, desc, pass, colour, protect);
+				Channel current = new Channel(ID, name, nick, irc, ircPass, desc, pass, colour, protect);
 				current.printAll();
 				try {
 					getChannels().put(rs.getString(2).toLowerCase(),current);
@@ -450,7 +470,7 @@ public class MySQLManager implements IDataManager {
 		
 		public void run() {
 			
-			saveChannels( CyniChat.data.getChannels() );
+			//saveChannels( CyniChat.data.getChannels() );
 			saveUsers( CyniChat.data.getActiveUsers() );
 			
 			CyniChat.data.flushData();

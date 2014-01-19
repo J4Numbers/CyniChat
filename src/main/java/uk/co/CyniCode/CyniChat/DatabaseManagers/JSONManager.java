@@ -204,6 +204,10 @@ public class JSONManager implements IDataManager {
 		}
 		
 	}
+
+	public void saveSingleChannel( Channel channel ) {
+
+	}
 	
 	/**
 	 * Return all the players that are accessible within the 

@@ -42,7 +42,13 @@ public interface IDataManager {
 	 * @param channels : The channel object that we're going to save into the data
 	 */
 	public void saveChannels( Map<String, Channel> channels );
-	
+
+	/**
+	 * As recommended by @Tulonsae with reasonable doubt on my end...
+	 * @param channel : The channel that we're going to update in the table
+	 */
+	public void saveSingleChannel( Channel channel );
+
 	/**
 	 * All the users are also going to have to be saved
 	 * @param loadedPlayers : Save these people. Save them from the monsters.

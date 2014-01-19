@@ -96,7 +96,7 @@ public class DataManager {
 		}
 		
 		//Start the connection and make sure we /are/ connected
-		if ( this.connection.startConnection(cynichat) == true ) {
+		if ( this.connection.startConnection(cynichat) ) {
 			
 			//Get the channels
 			this.channels = this.connection.returnChannels();
@@ -124,6 +124,14 @@ public class DataManager {
 		setActiveUsers( getOnlineUsers() );
 		CyniChat.printInfo( "CyniChat has saved..." );
 		
+	}
+
+	public void reloadChannels() {
+
+		setChannels(getConnection().returnChannels());
+		setIRCChans( getChannels() );
+		channelTable();
+
 	}
 	
 	/**
@@ -183,13 +191,17 @@ public class DataManager {
 	 * Generate a map of nicknames to channel names to make nick-name joining possible
 	 */
 	public void channelTable() {
-		
+
+		Map<String, String> matchingChans = new HashMap<String, String>();
+
 		//Iterate through the map of all channels
 		for ( Map.Entry< String, Channel > channelSet : getChannels().entrySet() )
 			
 			//And put in the format <nick, name>
-			getMatching().put( channelSet.getValue().getNick(),
+			matchingChans.put( channelSet.getValue().getNick(),
 					channelSet.getKey() );
+
+		setMatching(matchingChans);
 		
 	}
 	
